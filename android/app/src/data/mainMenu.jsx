@@ -3,38 +3,39 @@ import {
   DompetIkon,
   HandphoneIkon,
   InternetIkon,
-  PLNIcon,
+  PLNIkon,
+  PDAMIkon,
 } from '../assets';
 
 export default [
   {
-    title: 'Pulsa & Paket Data',
-    icon: HandphoneIkon,
+    label: 'Pulsa & Data',
+    ikon: HandphoneIkon,
     path: '',
   },
   {
-    title: 'PLN',
-    icon: PLNIcon,
+    label: 'PLN',
+    ikon: PLNIkon,
     path: '',
   },
   {
-    title: 'Dompet Elektronik',
-    icon: DompetIkon,
+    label: 'Dompet Elektronik',
+    ikon: DompetIkon,
     path: '',
   },
   {
-    title: 'BPJS Kesehatan',
-    icon: BPJSIkon,
+    label: 'BPJS Kesehatan',
+    ikon: BPJSIkon,
     path: '',
   },
   {
-    title: 'PDAM',
-    icon: PDAMIkon,
+    label: 'PDAM',
+    ikon: PDAMIkon,
     path: '',
   },
   {
-    title: 'Internet',
-    icon: InternetIkon,
+    label: 'Internet',
+    ikon: InternetIkon,
     path: '',
   },
 ];

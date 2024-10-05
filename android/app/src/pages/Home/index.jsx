@@ -20,10 +20,13 @@ import {
   windowWidth,
   HORIZONTAL_MARGIN,
   REGULAR_FONT,
+  SLATE_COLOR,
 } from '../../utils/const';
 import {windowHeight} from '../../utils/const';
 import Icon from 'react-native-vector-icons/Entypo';
 import OctiIcons from 'react-native-vector-icons/Octicons';
+import mainMenu from '../../data/mainMenu';
+import {Image} from 'react-native';
 
 export default function HomeScreen() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -49,12 +52,16 @@ export default function HomeScreen() {
           }}>
           Hai, AksaRollcake
         </Text>
-        {/* <BellIkon /> */}
+        <BellIkon
+          width={24}
+          height={24}
+          fill={isDarkMode ? 'white' : 'black'}
+        />
       </View>
 
       <View
         style={{
-          backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
+          backgroundColor: isDarkMode ? DARK_BACKGROUND : '#fff',
           marginHorizontal: HORIZONTAL_MARGIN,
           padding: 15,
           borderRadius: 10,
@@ -83,11 +90,15 @@ export default function HomeScreen() {
         <View style={{flexDirection: 'row', columnGap: 15}}>
           <TouchableOpacity
             style={{flexDirection: 'column', alignItems: 'center', rowGap: 10}}>
-            {/* <SendIkon /> */}
-            <OctiIcons
+            <SendIkon
+              width={24}
+              height={24}
+              fill={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+            />
+            {/* <OctiIcons
               name="paper-airplane"
               size={20}
-              color={'black'}></OctiIcons>
+              color={'black'}></OctiIcons> */}
             <Text
               style={{
                 color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
@@ -99,8 +110,12 @@ export default function HomeScreen() {
           </TouchableOpacity>
           <TouchableOpacity
             style={{flexDirection: 'column', alignItems: 'center', rowGap: 10}}>
-            {/* <AddIkon /> */}
-            <Icon name="plus" size={20} color={'black'}></Icon>
+            <AddIkon
+              width={24}
+              height={24}
+              fill={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+            />
+            {/* <Icon name="plus" size={20} color={'black'}></Icon> */}
             <Text
               style={{
                 color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
@@ -110,6 +125,50 @@ export default function HomeScreen() {
               Topup
             </Text>
           </TouchableOpacity>
+        </View>
+      </View>
+
+      <View style={{marginHorizontal: HORIZONTAL_MARGIN}}>
+        <View style={{ marginTop : 35}}>
+          <Text style={{fontFamily: BOLD_FONT, fontSize: FONT_NORMAL}}>
+            Topup & Tagihan
+          </Text>
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            justifyContent: 'space-between',
+          }}>
+          {mainMenu.map(item => {
+            return (
+              <TouchableOpacity
+                key={item.label}
+                style={{
+                  width: 100,
+                  // height: 100,
+                  padding: 15,
+                  backgroundColor: isDarkMode ? DARK_BACKGROUND : '#FFF',
+                  borderRadius: 10,
+                  marginTop: 15,
+                  borderWidth: isDarkMode ? 1 : 0,
+                  borderColor: isDarkMode ? SLATE_COLOR : '',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Image source={item.ikon} />
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    fontFamily: MEDIUM_FONT,
+                    fontSize: FONT_NORMAL,
+                    marginTop: 10,
+                  }}>
+                  {item.label}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
         </View>
       </View>
     </ImageBackground>

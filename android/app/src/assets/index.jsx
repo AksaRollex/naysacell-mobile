@@ -3,13 +3,19 @@ import DompetIkon from './images/dompet-icon.png';
 import HandphoneIkon from './images/handphone-icon.png';
 import InternetIkon from './images/internet-icon.png';
 import PDAMIkon from './images/pdam-icon.png';
-import PLNIcon from './images/pln-icon.png';
+import PLNIkon from './images/pln-icon.png';
 import BPJSIkon from './images/bpjs-icon.png';
 
 // SVG FILE
 import BellIkon from './images/svg/bell-icon.svg';
 import SendIkon from './images/svg/send.svg';
 import AddIkon from './images/svg/add.svg';
+import HomeDefault from './images/svg/home-default.svg';
+import TransaksiDefault from './images/svg/transaksi-default.svg';
+import UserDefault from './images/svg/user-default.svg';
+import HomeActive from './images/svg/home-active.svg';
+import TransaksiActive from './images/svg/transaksi-active.svg';
+import UserActive from './images/svg/user-active.svg';
 
 export {
   HeaderBG,
@@ -17,9 +23,15 @@ export {
   InternetIkon,
   DompetIkon,
   PDAMIkon,
-  PLNIcon,
+  PLNIkon,
   BPJSIkon,
   BellIkon,
   SendIkon,
   AddIkon,
+  HomeDefault,
+  TransaksiDefault,
+  UserDefault,
+  HomeActive,
+  TransaksiActive,
+  UserActive,
 };

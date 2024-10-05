@@ -19,3 +19,5 @@ export const LIGHT_BACKGROUND = Colors.lighter;
 
 export const LIGHT_COLOR = '#374957';
 export const DARK_COLOR = '#FFFFFF';
+export const SLATE_COLOR = '#94A3BB';
+export const BLUE_COLOR = '#138EE9';

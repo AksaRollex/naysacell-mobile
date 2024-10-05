@@ -1,19 +1,24 @@
 // In App.js in a new project
 
 import * as React from 'react';
-import {View, Text, Button} from 'react-native';
+import {View, Text} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MyTabBar from './android/app/src/components/BottomTab';
-import { HomeScreen } from './android/app/src/pages';
+import {HomeScreen} from './android/app/src/pages';
 
-
-
-function SettingsScreen() {
+function Transaksi() {
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Settings!</Text>
+      <Text>Transaksi!</Text>
+    </View>
+  );
+}
+function Profil() {
+  return (
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <Text>Profil!</Text>
     </View>
   );
 }
@@ -30,8 +35,13 @@ function MyTabs() {
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="Setting"
-        component={SettingsScreen}
+        name="Transaksi"
+        component={Transaksi}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Profil"
+        component={Profil}
         options={{headerShown: false}}
       />
     </Tab.Navigator>
