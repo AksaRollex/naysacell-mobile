@@ -1,12 +1,10 @@
-// In App.js in a new project
-
 import * as React from 'react';
 import {View, Text} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MyTabBar from './android/app/src/components/BottomTab';
-import {HomeScreen} from './android/app/src/pages';
+import {HomeScreen, Pulsa} from './android/app/src/pages';
 
 function Transaksi() {
   return (
@@ -58,6 +56,7 @@ function App() {
           // initialRouteName="MyTabs"
           options={{headerShown: false}}
         />
+      <Stack.Screen name="Pulsa" component={Pulsa} options={{title: 'Pulsa & Paket Data'}} />
       </Stack.Navigator>
     </NavigationContainer>
   );

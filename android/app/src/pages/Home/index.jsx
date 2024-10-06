@@ -11,7 +11,6 @@ import {AddIkon, BellIkon, HeaderBG, SendIkon} from '../../assets';
 import {
   BOLD_FONT,
   DARK_BACKGROUND,
-  LIGHT_BACKGROUND,
   DARK_COLOR,
   FONT_NORMAL,
   FONT_SEDANG,
@@ -23,12 +22,11 @@ import {
   SLATE_COLOR,
 } from '../../utils/const';
 import {windowHeight} from '../../utils/const';
-import Icon from 'react-native-vector-icons/Entypo';
-import OctiIcons from 'react-native-vector-icons/Octicons';
 import mainMenu from '../../data/mainMenu';
+import {rupiah} from '../../utils/utils';
 import {Image} from 'react-native';
 
-export default function HomeScreen() {
+export default function HomeScreen({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <ImageBackground
@@ -85,7 +83,7 @@ export default function HomeScreen() {
             fontFamily: MEDIUM_FONT,
             fontSize: FONT_NORMAL,
           }}>
-          Saldo
+          {rupiah(15000)}
         </Text>
         <View style={{flexDirection: 'row', columnGap: 15}}>
           <TouchableOpacity
@@ -95,10 +93,7 @@ export default function HomeScreen() {
               height={24}
               fill={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
             />
-            {/* <OctiIcons
-              name="paper-airplane"
-              size={20}
-              color={'black'}></OctiIcons> */}
+
             <Text
               style={{
                 color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
@@ -115,7 +110,6 @@ export default function HomeScreen() {
               height={24}
               fill={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
             />
-            {/* <Icon name="plus" size={20} color={'black'}></Icon> */}
             <Text
               style={{
                 color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
@@ -129,7 +123,7 @@ export default function HomeScreen() {
       </View>
 
       <View style={{marginHorizontal: HORIZONTAL_MARGIN}}>
-        <View style={{ marginTop : 35}}>
+        <View style={{marginTop: 35}}>
           <Text style={{fontFamily: BOLD_FONT, fontSize: FONT_NORMAL}}>
             Topup & Tagihan
           </Text>
@@ -155,7 +149,8 @@ export default function HomeScreen() {
                   borderColor: isDarkMode ? SLATE_COLOR : '',
                   alignItems: 'center',
                   justifyContent: 'center',
-                }}>
+                }}
+                onPress={() => navigation.navigate('Pulsa')}>
                 <Image source={item.ikon} />
                 <Text
                   style={{
