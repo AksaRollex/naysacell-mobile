@@ -27,35 +27,31 @@ import {product_data, product_pulsa} from '../../data/product_pulsa';
 import {CheckProduct} from '../../assets';
 import BottomModal from '../../components/BottomModal';
 import {rupiah} from '../../utils/utils';
+import Input from '../../components/form/input';
 
-export default function Pulsa() {
+export default function Pulsa({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
   const [type, setType] = useState('Pulsa');
   const [selectItem, setSelectedItem] = useState(null);
   const [nomorTujuan, setNomor] = useState(null);
   const product_type = ['Pulsa', 'Data'];
   const [showModal, setShowModal] = useState(false);
+
+  const clearNomor = () => {
+    setNomor(null);
+  }
   return (
     <>
       <SafeAreaView>
         <View style={{marginHorizontal: HORIZONTAL_MARGIN, marginTop: 15}}>
           <View style={{rowGap: 10}}>
-            <TextInput
-              style={{
-                borderWidth: 1,
-                borderRadius: 5,
-                borderColor: isDarkMode ? SLATE_COLOR : GREY_COLOR,
-                backgroundColor: isDarkMode
-                  ? DARK_BACKGROUND
-                  : WHITE_BACKGROUND,
-                fontFamily: REGULAR_FONT,
-                padding: 10,
-              }}
-              keyboardType="numeric"
-              placeholder="Masukan Nomor Tujuan"
-              placeholderTextColor={GREY_COLOR}
+            <Input
               value={nomorTujuan}
-              onChangeText={text => setNomor(text)}></TextInput>
+              placeholder="Masukan Nomor Tujuan"
+              onChange={text => setNomor(text)}
+              onDelete={clearNomor}
+              type="numeric"
+            />
             <TouchableOpacity style={styles.button}>
               <Text style={styles.buttonLabel}>Tampilkan Produk</Text>
             </TouchableOpacity>
@@ -194,13 +190,20 @@ export default function Pulsa() {
           <View style={styles.modalData(isDarkMode)}>
             <Text style={styles.labelModalData(isDarkMode)}>Harga </Text>
             <Text style={styles.valueModalData(isDarkMode)}>
-              {selectItem?.product_price}
+              {rupiah(selectItem?.product_price)}
             </Text>
           </View>
         </View>
         {selectItem && (
           <View style={[styles.bottom(isDarkMode)]}>
-            <TouchableOpacity style={styles.bottomButton}>
+            <TouchableOpacity
+              style={styles.bottomButton}
+              onPress={() =>
+                navigation.navigate('SuccessNotif', {
+                  nomorTujuan: nomorTujuan,
+                  item: selectItem,
+                })
+              }>
               <Text style={styles.buttonLabel}>Bayar</Text>
             </TouchableOpacity>
           </View>

@@ -1,4 +1,5 @@
 import HomeScreen from './Home';
 import Pulsa from './Pulsa';
+import SuccessNotif from './Notifikasi/SuccessNotif';
 
-export {HomeScreen, Pulsa};
+export {HomeScreen, Pulsa, SuccessNotif};

@@ -4,7 +4,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MyTabBar from './android/app/src/components/BottomTab';
-import {HomeScreen, Pulsa} from './android/app/src/pages';
+import {HomeScreen, Pulsa, SuccessNotif} from './android/app/src/pages';
 
 function Transaksi() {
   return (
@@ -57,6 +57,7 @@ function App() {
           options={{headerShown: false}}
         />
       <Stack.Screen name="Pulsa" component={Pulsa} options={{title: 'Pulsa & Paket Data'}} />
+      <Stack.Screen name="SuccessNotif" component={SuccessNotif} options={{title: ''}} />
       </Stack.Navigator>
     </NavigationContainer>
   );
