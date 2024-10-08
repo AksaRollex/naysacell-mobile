@@ -13,6 +13,7 @@ import {
   SLATE_COLOR,
   WHITE_BACKGROUND,
 } from '../../utils/const';
+import { rupiah } from '../../utils/utils';
 
 export default function SuccessNotif({route}) {
   const {item, nomor_tujuan} = route.params;
@@ -23,19 +24,19 @@ export default function SuccessNotif({route}) {
         flex: 1,
         backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
       }}>
-      <View
-        style={{
-          width: 150,
-          height: 150,
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginTop: 15,
-        }}>
-        <LottieView
-          source={require('../../assets/lottie/success-animation.json')}
-          autoPlay
-          loop
-        />
+      <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+        <View
+          style={{
+            width: 200,
+            height: 200,
+            marginTop: 15,
+          }}>
+          <LottieView
+            source={require('../../assets/lottie/success-animation.json')}
+            autoPlay
+            loop
+          />
+        </View>
       </View>
       <View style={{marginHorizontal: HORIZONTAL_MARGIN}}>
         <View style={styles.modalData(isDarkMode)}>
@@ -51,7 +52,7 @@ export default function SuccessNotif({route}) {
         <View style={styles.modalData(isDarkMode)}>
           <Text style={styles.labelModalData(isDarkMode)}>Harga </Text>
           <Text style={styles.valueModalData(isDarkMode)}>
-            {item?.product_price}
+            {rupiah(item?.product_price)}
           </Text>
         </View>
         <View style={styles.modalData(isDarkMode)}>

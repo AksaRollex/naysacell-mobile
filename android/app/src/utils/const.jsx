@@ -24,3 +24,4 @@ export const SLATE_COLOR = '#94A3BB';
 export const BLUE_COLOR = '#138EE9';
 export const GREY_COLOR = '#D9D9D9';
 export const GREEN_COLOR = '#01C1A2';
+export const WHITE_COLOR = '#FFFFFF';

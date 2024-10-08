@@ -11,12 +11,12 @@ export default [
   {
     label: 'Pulsa & Data',
     ikon: HandphoneIkon,
-    path: '',
+    path: 'Pulsa',
   },
   {
     label: 'PLN',
     ikon: PLNIkon,
-    path: '',
+    path: 'LayananPLN',
   },
   {
     label: 'Dompet Elektronik',

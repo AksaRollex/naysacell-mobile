@@ -13,10 +13,11 @@ import {
   REGULAR_FONT,
   SLATE_COLOR,
   WHITE_BACKGROUND,
+  windowWidth,
 } from '../../utils/const';
 import {XClose} from '../../assets';
 
-export default function Input({value, placeholder, onChange, onDelete, type}) {
+export default function Input({value, placeholder, onChange, onDelete, type, lebar}) {
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <View
@@ -35,14 +36,16 @@ export default function Input({value, placeholder, onChange, onDelete, type}) {
         placeholderTextColor={GREY_COLOR}
         value={value}
         onChangeText={onChange}
-        style={{flex: 1}}></TextInput>
-      {value !== null && (
-        <TouchableOpacity
-          style={{position: 'absolute', right: 10}}
-          onPress={onDelete}>
-          <XClose width={15} height={15} />
-        </TouchableOpacity>
-      )}
+        style={{ width : lebar}}
+        ></TextInput>
+      {value !== null ||
+        (value !== '' && (
+          <TouchableOpacity
+            style={{position: 'absolute', right: 10}}
+            onPress={onDelete}>
+            <XClose width={15} height={15} />
+          </TouchableOpacity>
+        ))}
     </View>
   );
 }
