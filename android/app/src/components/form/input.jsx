@@ -36,7 +36,7 @@ export default function Input({value, placeholder, onChange, onDelete, type, leb
         placeholderTextColor={GREY_COLOR}
         value={value}
         onChangeText={onChange}
-        style={{ width : lebar}}
+        style={{ width : lebar ? lebar : ''}}
         ></TextInput>
       {value !== null ||
         (value !== '' && (
