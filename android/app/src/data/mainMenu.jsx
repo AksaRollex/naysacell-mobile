@@ -21,7 +21,7 @@ export default [
   {
     label: 'Dompet Elektronik',
     ikon: DompetIkon,
-    path: '',
+    path: 'DompetElektronik',
   },
   {
     label: 'BPJS Kesehatan',

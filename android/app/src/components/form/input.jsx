@@ -1,6 +1,5 @@
 import {
   StyleSheet,
-  Text,
   View,
   TextInput,
   useColorScheme,
@@ -13,7 +12,6 @@ import {
   REGULAR_FONT,
   SLATE_COLOR,
   WHITE_BACKGROUND,
-  windowWidth,
 } from '../../utils/const';
 import {XClose} from '../../assets';
 

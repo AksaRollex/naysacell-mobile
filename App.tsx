@@ -11,6 +11,8 @@ import {
   LayananPLN,
   PLNPascaBayar,
   PLNPrabayar,
+  DompetElektronik,
+  TopupDompet,
 } from './android/app/src/pages';
 
 function Transaksi() {
@@ -87,6 +89,16 @@ function App() {
           name="SuccessNotif"
           component={SuccessNotif}
           options={{title: ''}}
+        />
+        <Stack.Screen
+          name="DompetElektronik"
+          component={DompetElektronik}
+          options={{title: 'Pilih Dompet Elektronik'}}
+        />
+        <Stack.Screen
+          name="TopupDompet"
+          component={TopupDompet}
+          options={{title: 'Topup Dompet'}}
         />
       </Stack.Navigator>
     </NavigationContainer>
