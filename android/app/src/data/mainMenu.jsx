@@ -26,16 +26,16 @@ export default [
   {
     label: 'BPJS Kesehatan',
     ikon: BPJSIkon,
-    path: '',
+    path: 'BPJSKesehatan',
   },
   {
     label: 'PDAM',
     ikon: PDAMIkon,
-    path: '',
+    path: 'PDAM',
   },
   {
     label: 'Internet',
     ikon: InternetIkon,
-    path: '',
+    path: 'Internet',
   },
 ];

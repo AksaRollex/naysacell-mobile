@@ -13,6 +13,9 @@ import {
   PLNPrabayar,
   DompetElektronik,
   TopupDompet,
+  BPJSKesehatan,
+  PDAM,
+  Internet,
 } from './android/app/src/pages';
 
 function Transaksi() {
@@ -99,6 +102,17 @@ function App() {
           name="TopupDompet"
           component={TopupDompet}
           options={{title: 'Topup Dompet'}}
+        />
+        <Stack.Screen
+          name="BPJSKesehatan"
+          component={BPJSKesehatan}
+          options={{title: 'BPJS Kesehatan'}}
+        />
+        <Stack.Screen name="PDAM" component={PDAM} options={{title: 'PDAM'}} />
+        <Stack.Screen
+          name="Internet"
+          component={Internet}
+          options={{title: 'Internet Pasca'}}
         />
       </Stack.Navigator>
     </NavigationContainer>
