@@ -9,5 +9,7 @@ import TopupDompet from './Dompet_elektronik/topupDompet';
 import BPJSKesehatan from './BPJS';
 import PDAM from './PDAM';
 import Internet from './Internet';
+import LoginPage from './BPJS/auth/login';
+import RegisterPage from './BPJS/auth/register';
 
-export {HomeScreen, Pulsa, SuccessNotif, LayananPLN, PLNPascaBayar, PLNPrabayar, DompetElektronik, TopupDompet, BPJSKesehatan, PDAM, Internet};
+export {HomeScreen, Pulsa, SuccessNotif, LayananPLN, PLNPascaBayar, PLNPrabayar, DompetElektronik, TopupDompet, BPJSKesehatan, PDAM, Internet, LoginPage, RegisterPage};

@@ -16,6 +16,8 @@ import {
   BPJSKesehatan,
   PDAM,
   Internet,
+  LoginPage,
+  RegisterPage,
 } from './android/app/src/pages';
 
 function Transaksi() {
@@ -61,11 +63,20 @@ function MyTabs() {
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName="Login">
+        <Stack.Screen
+          name="Login"
+          component={LoginPage}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="Register"
+          component={RegisterPage}
+          options={{headerShown: false}}
+        />
         <Stack.Screen
           name="MyTabs"
           component={MyTabs}
-          // initialRouteName="MyTabs"
           options={{headerShown: false}}
         />
         <Stack.Screen

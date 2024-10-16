@@ -19,6 +19,8 @@ import UserActive from './images/svg/user-active.svg';
 import CheckProduct from './images/svg/check.svg';
 import XClose from './images/svg/x-close.svg';
 import ArrowRight from './images/svg/arrow-right.svg';
+import Eye from './images/svg/eye.svg';
+import EyeCrossed from './images/svg/eye-crossed.svg';
 
 export {
   HeaderBG,
@@ -40,4 +42,6 @@ export {
   CheckProduct,
   XClose,
   ArrowRight,
+  Eye,
+  EyeCrossed,
 };
