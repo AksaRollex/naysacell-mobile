@@ -36,82 +36,88 @@ export default function PLNPrabayar() {
 
   const resetInput = () => {
     setCustomerNo('');
-  }
+  };
 
   return (
     <>
-      <View style={styles.container}>
-        <View style={styles.formGroup}>
-          <Input
-            value={customer_no}
-            placeholder="Masukan Nomor meter"
-            onChange={text => setCustomerNo(text)}
-            type="numeric"
-            lebar={windowWidth * 0.7}
-            onDelete={resetInput}
-          />
-          <TouchableOpacity style={styles.buttonSearch}>
-            <Text style={styles.buttonText}>Cek</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.infoPelanggan(isDarkMode)}>
-          <View style={styles.contentBlock(isDarkMode)}>
-            <Text style={styles.label(isDarkMode)}>Nama</Text>
-            <Text style={styles.value(isDarkMode)}>Lorem Ipsum</Text>
+      <View
+      className="w-full h-full"
+        style={{
+          backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
+        }}>
+        <View style={styles.container}>
+          <View style={styles.formGroup}>
+            <Input
+              value={customer_no}
+              placeholder="Masukan Nomor meter"
+              onChange={text => setCustomerNo(text)}
+              type="numeric"
+              lebar={windowWidth * 0.7}
+              onDelete={resetInput}
+            />
+            <TouchableOpacity style={styles.buttonSearch}>
+              <Text style={styles.buttonText}>Cek</Text>
+            </TouchableOpacity>
           </View>
-          <View style={styles.contentBlock(isDarkMode)}>
-            <Text style={styles.label(isDarkMode)}>ID Pelanggan</Text>
-            <Text style={styles.value(isDarkMode)}>123456789</Text>
+          <View style={styles.infoPelanggan(isDarkMode)}>
+            <View style={styles.contentBlock(isDarkMode)}>
+              <Text style={styles.label(isDarkMode)}>Nama</Text>
+              <Text style={styles.value(isDarkMode)}>Lorem Ipsum</Text>
+            </View>
+            <View style={styles.contentBlock(isDarkMode)}>
+              <Text style={styles.label(isDarkMode)}>ID Pelanggan</Text>
+              <Text style={styles.value(isDarkMode)}>123456789</Text>
+            </View>
+            <View style={styles.contentBlock(isDarkMode)}>
+              <Text style={styles.label(isDarkMode)}>Daya / Segmen Power</Text>
+              <Text style={styles.value(isDarkMode)}> 900 kwh</Text>
+            </View>
           </View>
-          <View style={styles.contentBlock(isDarkMode)}>
-            <Text style={styles.label(isDarkMode)}>Daya / Segmen Power</Text>
-            <Text style={styles.value(isDarkMode)}> 900 kwh</Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              justifyContent: 'space-between',
+              rowGap: 25,
+              marginTop: 20,
+            }}>
+            {product_token.map(p => {
+              return (
+                <TouchableOpacity
+                  key={p.id}
+                  style={[
+                    styles.productWrapper(isDarkMode),
+                    selectItem?.id === p.id
+                      ? {
+                          borderColor: GREEN_COLOR,
+                        }
+                      : '',
+                  ]}
+                  onPress={() => setSelectedItem(p)}>
+                  <Text style={styles.productLabel(isDarkMode)}>{p.label}</Text>
+                  <Text style={styles.productPrice(isDarkMode)}>
+                    {rupiah(p.price)}
+                  </Text>
+                  {selectItem?.id === p.id && (
+                    <CheckProduct
+                      width={20}
+                      style={{position: 'absolute', right: 7, top: 2}}
+                    />
+                  )}
+                </TouchableOpacity>
+              );
+            })}
           </View>
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            justifyContent: 'space-between',
-            rowGap: 25,
-            marginTop: 20,
-          }}>
-          {product_token.map(p => {
-            return (
-              <TouchableOpacity
-                key={p.id}
-                style={[
-                  styles.productWrapper(isDarkMode),
-                  selectItem?.id === p.id
-                    ? {
-                        borderColor: GREEN_COLOR,
-                      }
-                    : '',
-                ]}
-                onPress={() => setSelectedItem(p)}>
-                <Text style={styles.productLabel(isDarkMode)}>{p.label}</Text>
-                <Text style={styles.productPrice(isDarkMode)}>
-                  {rupiah(p.price)}
-                </Text>
-                {selectItem?.id === p.id && (
-                  <CheckProduct
-                    width={20}
-                    style={{position: 'absolute', right: 7, top: 2}}
-                  />
-                )}
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-      </View>
 
-      {selectItem && (
-        <View style={[styles.bottom(isDarkMode)]}>
-          <TouchableOpacity style={styles.bottomButton}>
-            <Text style={styles.buttonText}>Bayar</Text>
-          </TouchableOpacity>
-        </View>
-      )}
+        {selectItem && (
+          <View style={[styles.bottom(isDarkMode)]}>
+            <TouchableOpacity style={styles.bottomButton}>
+              <Text style={styles.buttonText}>Bayar</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
     </>
   );
 }

@@ -5,9 +5,15 @@ import {
   InternetIkon,
   PLNIkon,
   PDAMIkon,
+  MobileLegendsIcon,
+  FreeFireIcon,
+  PUBGIcon,
+  ValorantIcon,
+  PointBlankIcon,
+  GrowtopiaIcon,
 } from '../assets';
 
-export default [
+export default mainMenu = [
   {
     label: 'Pulsa & Data',
     ikon: HandphoneIkon,
@@ -37,5 +43,38 @@ export default [
     label: 'Internet',
     ikon: InternetIkon,
     path: 'Internet',
+  },
+];
+
+export const gameMenu = [
+  {
+    label: 'Mobile Legends',
+    ikon: InternetIkon,
+    path: '',
+  },
+  {
+    label: 'FreeFire',
+    ikon: InternetIkon,
+    path: '',
+  },
+  {
+    label: 'PUBG',
+    ikon: InternetIkon,
+    path: '',
+  },
+  {
+    label: 'Valorant',
+    ikon: InternetIkon,
+    path: '',
+  },
+  {
+    label: 'Point Blank',
+    ikon: InternetIkon,
+    path: '',
+  },
+  {
+    label: 'Growtopia',
+    ikon: InternetIkon,
+    path: '',
   },
 ];

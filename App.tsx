@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, useColorScheme} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -18,19 +18,20 @@ import {
   Internet,
   LoginPage,
   RegisterPage,
+  BantuanLogin,
+  Profile,
+  ProfileFormEdit,
 } from './android/app/src/pages';
+import {
+  DARK_BACKGROUND,
+  WHITE_BACKGROUND,
+  WHITE_COLOR,
+} from './android/app/src/utils/const';
 
 function Transaksi() {
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <Text>Transaksi!</Text>
-    </View>
-  );
-}
-function Profil() {
-  return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Profil!</Text>
     </View>
   );
 }
@@ -53,7 +54,7 @@ function MyTabs() {
       />
       <Stack.Screen
         name="Profil"
-        component={Profil}
+        component={Profile}
         options={{headerShown: false}}
       />
     </Tab.Navigator>
@@ -61,6 +62,7 @@ function MyTabs() {
 }
 
 function App() {
+  const isDarkMode = useColorScheme() === 'dark';
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
@@ -82,48 +84,130 @@ function App() {
         <Stack.Screen
           name="Pulsa"
           component={Pulsa}
-          options={{title: 'Pulsa & Paket Data'}}
+          options={{
+            title: 'Pulsa & Paket Data',
+            headerStyle: {
+              backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
+            },
+            headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
+          }}
         />
         <Stack.Screen
           name="LayananPLN"
           component={LayananPLN}
-          options={{title: 'Pilih Layanan PLN'}}
+          options={{
+            title: 'Pilih Layanan PLN',
+            headerStyle: {
+              backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
+            },
+            headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
+          }}
         />
         <Stack.Screen
           name="PLNPascaBayar"
           component={PLNPascaBayar}
-          options={{title: 'PLN Pasca Bayar'}}
+          options={{
+            title: 'PLN Pasca Bayar',
+            headerStyle: {
+              backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
+            },
+            headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
+          }}
         />
         <Stack.Screen
           name="PLNPrabayar"
           component={PLNPrabayar}
-          options={{title: 'PLN Prabayar'}}
+          options={{
+            title: 'PLN Prabayar',
+            headerStyle: {
+              backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
+            },
+            headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
+          }}
         />
         <Stack.Screen
           name="SuccessNotif"
           component={SuccessNotif}
-          options={{title: ''}}
+          options={{
+            title: '',
+            headerStyle: {
+              backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
+            },
+            headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
+          }}
         />
         <Stack.Screen
           name="DompetElektronik"
           component={DompetElektronik}
-          options={{title: 'Pilih Dompet Elektronik'}}
+          options={{
+            title: 'Pilih Dompet Elektronik',
+            headerStyle: {
+              backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
+            },
+            headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
+          }}
         />
         <Stack.Screen
           name="TopupDompet"
           component={TopupDompet}
-          options={{title: 'Topup Dompet'}}
+          options={{
+            title: 'Topup Dompet',
+            headerStyle: {
+              backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
+            },
+            headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
+          }}
         />
         <Stack.Screen
           name="BPJSKesehatan"
           component={BPJSKesehatan}
-          options={{title: 'BPJS Kesehatan'}}
+          options={{
+            title: 'BPJS Kesehatan',
+            headerStyle: {
+              backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
+            },
+            headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
+          }}
         />
-        <Stack.Screen name="PDAM" component={PDAM} options={{title: 'PDAM'}} />
+        <Stack.Screen
+          name="PDAM"
+          component={PDAM}
+          options={{
+            title: 'PDAM',
+            headerStyle: {
+              backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
+            },
+            headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
+          }}
+        />
         <Stack.Screen
           name="Internet"
           component={Internet}
-          options={{title: 'Internet Pasca'}}
+          options={{
+            title: 'Internet Pasca',
+            headerStyle: {
+              backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
+            },
+            headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
+          }}
+        />
+        <Stack.Screen
+          name="BantuanLogin"
+          component={BantuanLogin}
+          options={{
+            title: 'Bantuan',
+            headerStyle: {
+              backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
+            },
+            headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
+          }}
+        />
+        <Stack.Screen
+          name="ProfileFormEdit"
+          component={ProfileFormEdit}
+          options={{
+            headerShown: false,
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>

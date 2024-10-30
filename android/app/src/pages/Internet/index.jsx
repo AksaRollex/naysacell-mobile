@@ -40,86 +40,96 @@ export default function Internet() {
 
   return (
     <>
-      <View style={styles.container}>
-        <View style={styles.formGroup}>
-          <Input
-            value={customer_no}
-            placeholder="Masukan Nomor motor  "
-            onChange={text => setCustomerNo(text)}
-            onDelete={() => setCustomerNo('')}
-            type="numeric"
-          />
-          <TouchableOpacity
-            style={{
-              borderWidth: 1,
-              borderColor: isDarkMode ? SLATE_COLOR : GREY_COLOR,
-              borderRadius: 5,
-              backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
-              padding: 10,
-              height: 50,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-            onPress={() => setShowModal(!showModal)}>
-            <Text
+      <View
+        className="h-full w-full"
+        style={{
+          backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
+        }}>
+        <View style={styles.container}>
+          <View style={styles.formGroup}>
+            <Input
+              value={customer_no}
+              placeholder="Masukan Nomor motor  "
+              onChange={text => setCustomerNo(text)}
+              onDelete={() => setCustomerNo('')}
+              type="numeric"
+            />
+            <TouchableOpacity
               style={{
-                color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-                fontFamily: REGULAR_FONT,
-              }}>
-              {provider ? provider?.label : 'Pilih Provider'}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.buttonSearch}>
-            <Text style={styles.buttonText}>Cek</Text>
-          </TouchableOpacity>
+                borderWidth: 1,
+                borderColor: isDarkMode ? SLATE_COLOR : GREY_COLOR,
+                borderRadius: 5,
+                backgroundColor: isDarkMode
+                  ? DARK_BACKGROUND
+                  : WHITE_BACKGROUND,
+                padding: 10,
+                height: 50,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              onPress={() => setShowModal(!showModal)}>
+              <Text
+                style={{
+                  color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+                  fontFamily: REGULAR_FONT,
+                }}>
+                {provider ? provider?.label : 'Pilih Provider'}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.buttonSearch}>
+              <Text style={styles.buttonText}>Cek</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.infoPelanggan(isDarkMode)}>
+            <View style={styles.contentBlock(isDarkMode)}>
+              <Text style={styles.label(isDarkMode)}>Nama</Text>
+              <Text style={styles.value(isDarkMode)}>Lorem Ipsum</Text>
+            </View>
+            <View style={styles.contentBlock(isDarkMode)}>
+              <Text style={styles.label(isDarkMode)}>ID Pelanggan</Text>
+              <Text style={styles.value(isDarkMode)}>123456789</Text>
+            </View>
+            <View style={styles.contentBlock(isDarkMode)}>
+              <Text style={styles.label(isDarkMode)}>Jumlah Peserta</Text>
+              <Text style={styles.value(isDarkMode)}> 2</Text>
+            </View>
+            <View style={styles.contentBlock(isDarkMode)}>
+              <Text style={styles.label(isDarkMode)}>Lembar Tagihan</Text>
+              <Text style={styles.value(isDarkMode)}> 2 lbr</Text>
+            </View>
+            <View style={styles.contentBlock(isDarkMode)}>
+              <Text style={styles.label(isDarkMode)}>Total Tagihan</Text>
+              <Text style={styles.value(isDarkMode)}>120.000</Text>
+            </View>
+          </View>
         </View>
-        <View style={styles.infoPelanggan(isDarkMode)}>
-          <View style={styles.contentBlock(isDarkMode)}>
-            <Text style={styles.label(isDarkMode)}>Nama</Text>
-            <Text style={styles.value(isDarkMode)}>Lorem Ipsum</Text>
+        <BottomButton
+          label="Bayar Tagihan"
+          action={() => console.log(selectItem)}
+          isLoading={false}
+        />
+        <BottomModal
+          visible={showModal}
+          onDismiss={() => setShowModal(!showModal)}
+          title="Provider Internet">
+          <View>
+            <FlatList
+              data={product_internet}
+              renderItem={({item}) => (
+                <TouchableOpacity
+                  key={item.id}
+                  style={styles.wilayahButton(isDarkMode)}
+                  onPress={() => handleSetProvider(item)}>
+                  <Text style={styles.textOption(isDarkMode)}>
+                    {item.label}
+                  </Text>
+                  <ArrowRight />
+                </TouchableOpacity>
+              )}
+            />
           </View>
-          <View style={styles.contentBlock(isDarkMode)}>
-            <Text style={styles.label(isDarkMode)}>ID Pelanggan</Text>
-            <Text style={styles.value(isDarkMode)}>123456789</Text>
-          </View>
-          <View style={styles.contentBlock(isDarkMode)}>
-            <Text style={styles.label(isDarkMode)}>Jumlah Peserta</Text>
-            <Text style={styles.value(isDarkMode)}> 2</Text>
-          </View>
-          <View style={styles.contentBlock(isDarkMode)}>
-            <Text style={styles.label(isDarkMode)}>Lembar Tagihan</Text>
-            <Text style={styles.value(isDarkMode)}> 2 lbr</Text>
-          </View>
-          <View style={styles.contentBlock(isDarkMode)}>
-            <Text style={styles.label(isDarkMode)}>Total Tagihan</Text>
-            <Text style={styles.value(isDarkMode)}>120.000</Text>
-          </View>
-        </View>
+        </BottomModal>
       </View>
-      <BottomButton
-        label="Bayar Tagihan"
-        action={() => console.log(selectItem)}
-        isLoading={false}
-      />
-      <BottomModal
-        visible={showModal}
-        onDismiss={() => setShowModal(!showModal)}
-        title="Provider Internet">
-        <View>
-          <FlatList
-            data={product_internet}
-            renderItem={({item}) => (
-              <TouchableOpacity
-                key={item.id}
-                style={styles.wilayahButton(isDarkMode)}
-                onPress={() => handleSetProvider(item)}>
-                <Text style={styles.textOption(isDarkMode)}>{item.label}</Text>
-                <ArrowRight />
-              </TouchableOpacity>
-            )}
-          />
-        </View>
-      </BottomModal>
     </>
   );
 }

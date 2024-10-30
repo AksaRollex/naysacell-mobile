@@ -30,6 +30,8 @@ export default function BPJSKesehatan() {
 
   return (
     <>
+    <View className="w-full h-full" style={{ backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND }}>
+
       <View style={styles.container}>
         <View style={styles.formGroup}>
           <Input
@@ -72,6 +74,8 @@ export default function BPJSKesehatan() {
             <Text style={styles.buttonText}>Bayar</Text>
           </TouchableOpacity>
         </View>
+    </View>
+
     </>
   );
 }

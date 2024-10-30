@@ -24,7 +24,7 @@ import {
 import {Eye, EyeCrossed} from '../../../assets';
 import Icon from 'react-native-vector-icons/Feather';
 
-export default function LoginPage({ navigation }) {
+export default function LoginPage({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
   const [isSecure, setIsSecure] = useState(false);
   return (
@@ -75,20 +75,23 @@ export default function LoginPage({ navigation }) {
           <TouchableOpacity
             className="w-11/12 rounded-3xl mx-auto px-4  h-12 bg-[#f8f8f8] items-center justify-center"
             style={{backgroundColor: BLUE_COLOR}}
-            onPress={() => navigation.navigate('MyTabs')}
-            >
+            onPress={() => navigation.navigate('MyTabs')}>
             <Text className=" text-white  text-md font-extrabold ">MASUK</Text>
           </TouchableOpacity>
         </View>
         <View className="flex-row items-center justify-center my-8 ">
-          <Text className="">Belum punya akun? </Text>
+          <Text style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+            Belum punya akun?
+          </Text>
           <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-            <Text style={{color: BLUE_COLOR}}>Daftar</Text>
+            <Text style={{color: BLUE_COLOR}}> Daftar</Text>
           </TouchableOpacity>
         </View>
-        <Text className="text-center  text-md" style={{color: BLUE_COLOR}}>
-          Butuh bantuan?
-        </Text>
+        <TouchableOpacity onPress={() => navigation.navigate('BantuanLogin')}>
+          <Text className="text-center  text-md" style={{color: BLUE_COLOR}}>
+            Butuh bantuan?
+          </Text>
+        </TouchableOpacity>
       </View>
       {/* <View
         style={{

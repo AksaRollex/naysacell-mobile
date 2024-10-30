@@ -20,6 +20,7 @@ import {
   WHITE_BACKGROUND,
   GREEN_COLOR,
   FONT_SEDANG,
+  LIGHT_BACKGROUND,
 } from '../../utils/const';
 import {useColorScheme} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -39,176 +40,186 @@ export default function Pulsa({navigation}) {
 
   const clearNomor = () => {
     setNomor(null);
-  }
+  };
   return (
     <>
-      <SafeAreaView>
-        <View style={{marginHorizontal: HORIZONTAL_MARGIN, marginTop: 15}}>
-          <View style={{rowGap: 10}}>
-            <Input
-              value={nomorTujuan}
-              placeholder="Masukan Nomor Tujuan"
-              onChange={text => setNomor(text)}
-              onDelete={clearNomor}
-              type="numeric"
-            />
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonLabel}>Tampilkan Produk</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={{flexDirection: 'row', marginTop: 15, columnGap: 15}}>
-            {product_type.map(t => {
-              return (
-                <TouchableOpacity
-                  key={t}
-                  style={[
-                    styles.buttonTab,
-                    t === type
-                      ? {
-                          borderBottomColor: BLUE_COLOR,
-                          borderBottomWidth: 2,
-                        }
-                      : '',
-                  ]}
-                  onPress={() => {
-                    setType(t);
-                  }}>
-                  <Text
+      <View
+        style={{
+          backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
+        }}
+        className="w-full h-full">
+        <SafeAreaView>
+          <View style={{marginHorizontal: HORIZONTAL_MARGIN, marginTop: 15}}>
+            <View style={{rowGap: 10}}>
+              <Input
+                value={nomorTujuan}
+                placeholder="Masukan Nomor Tujuan"
+                onChange={text => setNomor(text)}
+                onDelete={clearNomor}
+                type="numeric"
+              />
+              <TouchableOpacity style={styles.button}>
+                <Text style={styles.buttonLabel}>Tampilkan Produk</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={{flexDirection: 'row', marginTop: 15, columnGap: 15}}>
+              {product_type.map(t => {
+                return (
+                  <TouchableOpacity
+                    key={t}
                     style={[
-                      styles.buttonTabLabel(isDarkMode),
+                      styles.buttonTab,
                       t === type
                         ? {
-                            color: BLUE_COLOR,
+                            borderBottomColor: BLUE_COLOR,
+                            borderBottomWidth: 2,
                           }
                         : '',
-                    ]}>
-                    {type}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-          {/* PRODUK */}
-          <View
-            style={{
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-              justifyContent: 'space-between',
-              rowGap: 25,
-              marginTop: 20,
-            }}>
-            {type === 'Pulsa' ? (
-              <>
-                {product_pulsa.map(p => {
-                  return (
-                    <TouchableOpacity
-                      key={p.id}
+                    ]}
+                    onPress={() => {
+                      setType(t);
+                    }}>
+                    <Text
                       style={[
-                        styles.productWrapper(isDarkMode),
-                        selectItem?.id === p.id
+                        styles.buttonTabLabel(isDarkMode),
+                        t === type
                           ? {
-                              borderColor: GREEN_COLOR,
+                              color: BLUE_COLOR,
                             }
                           : '',
-                      ]}
-                      onPress={() => setSelectedItem(p)}>
-                      <Text style={styles.productLabel(isDarkMode)}>
-                        {p.product_name}
-                      </Text>
-                      <Text style={styles.productPrice(isDarkMode)}>
-                        {rupiah(p.product_price)}
-                      </Text>
-                      {selectItem?.id === p.id && (
-                        <CheckProduct
-                          width={20}
-                          style={{position: 'absolute', right: 7, top: 2}}
-                        />
-                      )}
-                    </TouchableOpacity>
-                  );
-                })}
-              </>
-            ) : (
-              <>
-                {product_data.map(d => {
-                  return (
-                    <TouchableOpacity
-                      key={d.id}
-                      style={[
-                        styles.productWrapper(isDarkMode),
-                        selectItem?.id === d.id
-                          ? {
-                              borderColor: GREEN_COLOR,
-                            }
-                          : '',
-                      ]}
-                      onPress={() => setSelectedItem(d)}>
-                      <Text style={styles.productLabel(isDarkMode)}>
-                        {d.product_name}
-                      </Text>
-                      <Text style={styles.productPrice(isDarkMode)}>
-                        {rupiah(d.product_price)}
-                      </Text>
-                      {selectItem?.id === d.id && (
-                        <CheckProduct
-                          width={20}
-                          style={{position: 'absolute', right: 7, top: 2}}
-                        />
-                      )}
-                    </TouchableOpacity>
-                  );
-                })}
-              </>
-            )}
+                      ]}>
+                      {type}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+            {/* PRODUK */}
+            <View
+              style={{
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                justifyContent: 'space-between',
+                rowGap: 25,
+                marginTop: 20,
+              }}>
+              {type === 'Pulsa' ? (
+                <>
+                  {product_pulsa.map(p => {
+                    return (
+                      <TouchableOpacity
+                        key={p.id}
+                        style={[
+                          styles.productWrapper(isDarkMode),
+                          selectItem?.id === p.id
+                            ? {
+                                borderColor: GREEN_COLOR,
+                              }
+                            : '',
+                        ]}
+                        onPress={() => setSelectedItem(p)}>
+                        <Text style={styles.productLabel(isDarkMode)}>
+                          {p.product_name}
+                        </Text>
+                        <Text style={styles.productPrice(isDarkMode)}>
+                          {rupiah(p.product_price)}
+                        </Text>
+                        {selectItem?.id === p.id && (
+                          <CheckProduct
+                            width={20}
+                            style={{position: 'absolute', right: 7, top: 2}}
+                          />
+                        )}
+                      </TouchableOpacity>
+                    );
+                  })}
+                </>
+              ) : (
+                <>
+                  {product_data.map(d => {
+                    return (
+                      <TouchableOpacity
+                        key={d.id}
+                        style={[
+                          styles.productWrapper(isDarkMode),
+                          selectItem?.id === d.id
+                            ? {
+                                borderColor: GREEN_COLOR,
+                              }
+                            : '',
+                        ]}
+                        onPress={() => setSelectedItem(d)}>
+                        <Text style={styles.productLabel(isDarkMode)}>
+                          {d.product_name}
+                        </Text>
+                        <Text style={styles.productPrice(isDarkMode)}>
+                          {rupiah(d.product_price)}
+                        </Text>
+                        {selectItem?.id === d.id && (
+                          <CheckProduct
+                            width={20}
+                            style={{position: 'absolute', right: 7, top: 2}}
+                          />
+                        )}
+                      </TouchableOpacity>
+                    );
+                  })}
+                </>
+              )}
+            </View>
           </View>
-        </View>
-      </SafeAreaView>
-      {selectItem && (
-        <View style={[styles.bottom(isDarkMode)]}>
-          <TouchableOpacity
-            style={styles.bottomButton}
-            onPress={() => setShowModal(!showModal)}>
-            <Text style={styles.buttonLabel}>Lanjutkan</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-      <BottomModal
-        visible={showModal}
-        onDismiss={() => setShowModal(showModal)}
-        title="Detail Transaksi">
-        <View>
-          <View style={styles.modalData(isDarkMode)}>
-            <Text style={styles.labelModalData(isDarkMode)}>Nomor Tujuan </Text>
-            <Text style={styles.valueModalData(isDarkMode)}>{nomorTujuan}</Text>
-          </View>
-          <View style={styles.modalData(isDarkMode)}>
-            <Text style={styles.labelModalData(isDarkMode)}>Produk </Text>
-            <Text style={styles.valueModalData(isDarkMode)}>
-              {selectItem?.product_name}
-            </Text>
-          </View>
-          <View style={styles.modalData(isDarkMode)}>
-            <Text style={styles.labelModalData(isDarkMode)}>Harga </Text>
-            <Text style={styles.valueModalData(isDarkMode)}>
-              {rupiah(selectItem?.product_price)}
-            </Text>
-          </View>
-        </View>
+        </SafeAreaView>
         {selectItem && (
           <View style={[styles.bottom(isDarkMode)]}>
             <TouchableOpacity
               style={styles.bottomButton}
-              onPress={() =>
-                navigation.navigate('SuccessNotif', {
-                  nomorTujuan: nomorTujuan,
-                  item: selectItem,
-                })
-              }>
-              <Text style={styles.buttonLabel}>Bayar</Text>
+              onPress={() => setShowModal(!showModal)}>
+              <Text style={styles.buttonLabel}>Lanjutkan</Text>
             </TouchableOpacity>
           </View>
         )}
-      </BottomModal>
+        <BottomModal
+          visible={showModal}
+          onDismiss={() => setShowModal(showModal)}
+          title="Detail Transaksi">
+          <View>
+            <View style={styles.modalData(isDarkMode)}>
+              <Text style={styles.labelModalData(isDarkMode)}>
+                Nomor Tujuan{' '}
+              </Text>
+              <Text style={styles.valueModalData(isDarkMode)}>
+                {nomorTujuan}
+              </Text>
+            </View>
+            <View style={styles.modalData(isDarkMode)}>
+              <Text style={styles.labelModalData(isDarkMode)}>Produk </Text>
+              <Text style={styles.valueModalData(isDarkMode)}>
+                {selectItem?.product_name}
+              </Text>
+            </View>
+            <View style={styles.modalData(isDarkMode)}>
+              <Text style={styles.labelModalData(isDarkMode)}>Harga </Text>
+              <Text style={styles.valueModalData(isDarkMode)}>
+                {rupiah(selectItem?.product_price)}
+              </Text>
+            </View>
+          </View>
+          {selectItem && (
+            <View style={[styles.bottom(isDarkMode)]}>
+              <TouchableOpacity
+                style={styles.bottomButton}
+                onPress={() =>
+                  navigation.navigate('SuccessNotif', {
+                    nomorTujuan: nomorTujuan,
+                    item: selectItem,
+                  })
+                }>
+                <Text style={styles.buttonLabel}>Bayar</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </BottomModal>
+      </View>
     </>
   );
 }
@@ -219,11 +230,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
   },
-  buttonLabel: {
-    color: WHITE_BACKGROUND,
-    textAlign: 'center',
-    fontFamily: REGULAR_FONT,
-  },
+
   buttonTab: {
     width: '47%',
     borderBottomColor: GREY_COLOR,
@@ -252,6 +259,11 @@ const styles = StyleSheet.create({
     fontFamily: REGULAR_FONT,
     color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
   }),
+  buttonLabel: {
+    color: WHITE_BACKGROUND,
+    textAlign: 'center',
+    fontFamily: REGULAR_FONT,
+  },
   bottom: isDarkMode => ({
     position: 'absolute',
     bottom: 0,

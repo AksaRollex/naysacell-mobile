@@ -11,5 +11,25 @@ import PDAM from './PDAM';
 import Internet from './Internet';
 import LoginPage from './BPJS/auth/login';
 import RegisterPage from './BPJS/auth/register';
+import BantuanLogin from './Bantuan/bantuan_login';
+import Profile from './Profile';
+import ProfileFormEdit from './Profile/tab/profileFormEdit';
 
-export {HomeScreen, Pulsa, SuccessNotif, LayananPLN, PLNPascaBayar, PLNPrabayar, DompetElektronik, TopupDompet, BPJSKesehatan, PDAM, Internet, LoginPage, RegisterPage};
+export {
+  HomeScreen,
+  Pulsa,
+  SuccessNotif,
+  LayananPLN,
+  PLNPascaBayar,
+  PLNPrabayar,
+  DompetElektronik,
+  TopupDompet,
+  BPJSKesehatan,
+  PDAM,
+  Internet,
+  LoginPage,
+  RegisterPage,
+  BantuanLogin,
+  Profile,
+  ProfileFormEdit,
+};

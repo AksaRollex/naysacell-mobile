@@ -54,21 +54,28 @@ export default function RegisterPage({navigation}) {
       <View>
         <View className="mt-6">
           <TextInput
-            placeholder="Masukkan Nama"
-            label="Nama"
+            placeholder="Masukkan nama"
+            label="name"
             placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
             className="h-12 w-11/12 rounded-3xl mx-auto  px-4 bg-[#f8f8f8 ] border border-stone-600"></TextInput>
         </View>
-        <View className="my-6">
+        <View className="mt-6">
           <TextInput
             placeholder="Masukkan email"
             label="Email"
             placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
             className="h-12 w-11/12 rounded-3xl mx-auto  px-4 bg-[#f8f8f8 ] border border-stone-600"></TextInput>
         </View>
+        <View className="my-6">
+          <TextInput
+            placeholder="Masukkan nomor telepon"
+            label="phone"
+            placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
+            className="h-12 w-11/12 rounded-3xl mx-auto  px-4 bg-[#f8f8f8 ] border border-stone-600"></TextInput>
+        </View>
         <View>
           <TextInput
-            placeholder="Masukkan Password"
+            placeholder="Masukkan password"
             label="Password"
             placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
             className="h-12 w-11/12 rounded-3xl mx-auto  px-4 bg-[#f8f8f8 ] border border-stone-600"></TextInput>
@@ -77,19 +84,24 @@ export default function RegisterPage({navigation}) {
         <View className="flex mt-8">
           <TouchableOpacity
             className="w-11/12 rounded-3xl mx-auto px-4  h-12 bg-[#f8f8f8] items-center justify-center"
-            style={{backgroundColor: BLUE_COLOR}}>
+            style={{backgroundColor: BLUE_COLOR}}
+            onPress={() => navigation.navigate('Login')}>
             <Text className=" text-white  text-md font-extrabold ">DAFTAR</Text>
           </TouchableOpacity>
         </View>
         <View className="flex-row items-center justify-center my-8 ">
-          <Text className="">Sudah punya akun? </Text>
+          <Text style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+            Sudah punya akun?
+          </Text>
           <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-            <Text style={{color: BLUE_COLOR}}>Masuk</Text>
+            <Text style={{color: BLUE_COLOR}}> Masuk</Text>
           </TouchableOpacity>
         </View>
-        <Text className="text-center  text-md" style={{color: BLUE_COLOR}}>
-          Butuh bantuan?
-        </Text>
+        <TouchableOpacity onPress={() => navigation.navigate('BantuanLogin')}>
+          <Text className="text-center  text-md" style={{color: BLUE_COLOR}}>
+            Butuh bantuan?
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

@@ -5,22 +5,26 @@ import {
   Modal,
   TouchableWithoutFeedback,
   TouchableOpacity,
+  useColorScheme,
 } from 'react-native';
 import React from 'react';
 import {
   BOLD_FONT,
+  DARK_BACKGROUND,
   WHITE_BACKGROUND,
   windowWidth,
 } from '../utils/const';
 import {XClose} from '../assets';
 
 export default function FullModal({visible, onDismiss, title, children}) {
+  const isDarkMode = useColorScheme() === 'dark';
   return (
     <Modal
       visible={visible}
       animationType="slide"
       onRequestClose={onDismiss}
-      transparent={true}>
+      transparent={true}
+      >
       <TouchableWithoutFeedback onPress={onDismiss}>
         <View
           style={{
@@ -35,7 +39,7 @@ export default function FullModal({visible, onDismiss, title, children}) {
       <View
         style={{
           height: '100%',
-          backgroundColor: WHITE_BACKGROUND,
+          backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
           width: windowWidth,
           position: 'absolute',
           bottom: 0,
