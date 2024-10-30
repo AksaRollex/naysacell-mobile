@@ -56,7 +56,9 @@ export default function Profile({navigation}) {
           //   backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
           // }}
         >
-          <TouchableOpacity className="mx-5" onPress={() => navigation.navigate("ProfileFormEdit")}>
+          <TouchableOpacity
+            className="mx-5"
+            onPress={() => navigation.navigate('ProfileFormEdit')}>
             <Pencil
               fill={isDarkMode ? 'white' : 'black'}
               width={24}

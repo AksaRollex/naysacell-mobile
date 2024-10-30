@@ -98,11 +98,11 @@ export default function HomeScreen({navigation}) {
                     fill={isDarkMode ? 'white' : 'black'}
                   />
                 </TouchableOpacity>
-                <BellIkon
+                {/* <BellIkon
                   width={24}
                   height={24}
                   fill={isDarkMode ? 'white' : 'black'}
-                />
+                /> */}
               </View>
             </View>
 
@@ -140,7 +140,7 @@ export default function HomeScreen({navigation}) {
                   flexDirection: 'row',
                   columnGap: 15,
                 }}>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   style={{
                     flexDirection: 'column',
                     alignItems: 'center',
@@ -160,13 +160,15 @@ export default function HomeScreen({navigation}) {
                     className="text-md">
                     Transfer
                   </Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <TouchableOpacity
                   style={{
                     flexDirection: 'column',
                     alignItems: 'center',
                     rowGap: 10,
-                  }}>
+                  }}
+                  onPress={() => navigation.navigate('Deposit')}
+                  >
                   <AddIkon
                     width={24}
                     height={24}
@@ -178,7 +180,7 @@ export default function HomeScreen({navigation}) {
                       fontFamily: REGULAR_FONT,
                     }}
                     className="text-md">
-                    Topup
+                    Deposit
                   </Text>
                 </TouchableOpacity>
               </View>

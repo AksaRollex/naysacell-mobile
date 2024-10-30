@@ -15,6 +15,7 @@ import {
   WHITE_BACKGROUND,
   REGULAR_FONT,
   BLUE_COLOR,
+  GREY_COLOR,
 } from '../../../utils/const';
 
 export default function ProfileFormEdit({ navigation }) {
@@ -32,7 +33,7 @@ export default function ProfileFormEdit({ navigation }) {
         <TextInput
           value="Aksa Rollcake"
           label="name"
-          placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
+          placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
           className="h-12 w-full mx-auto  px-4 bg-[#f8f8f8 ] rounded-md border border-stone-600"></TextInput>
       </View>
       <View className="px-4 py-2 ">
@@ -44,7 +45,7 @@ export default function ProfileFormEdit({ navigation }) {
         <TextInput
           value="ramsimw8@gmail.com"
           label="email"
-          placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
+          placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
           className="h-12 w-full  mx-auto px-4 bg-[#f8f8f8 ] rounded-md border border-stone-600"></TextInput>
       </View>
       <View className="px-4 py-2 ">
@@ -56,7 +57,7 @@ export default function ProfileFormEdit({ navigation }) {
         <TextInput
           value="085336970707"
           label="phone"
-          placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
+          placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
           className="h-12 w-full  mx-auto px-4 bg-[#f8f8f8 ]  rounded-md border border-stone-600"></TextInput>
       </View>
       <View className="px-4 py-2 ">
@@ -68,8 +69,8 @@ export default function ProfileFormEdit({ navigation }) {
         <TextInput
           value="Sambiarum LOR VIII / 2 Blok 54E / 2"
           label="alamat"
-          placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
-          className="h-12 w-full  mx-aut px-4 bg-[#f8f8f8 ] rounded-md border border-stone-600"></TextInput>
+          placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
+          className="h-12 w-full  mx-auto px-4 bg-[#f8f8f8 ] rounded-md border border-stone-600"></TextInput>
       </View>
       <View className="px-4 py-2 ">
         <Text
@@ -81,8 +82,8 @@ export default function ProfileFormEdit({ navigation }) {
           placeholder="2022-01-01"
           label="register_date"
           editable={false}
-          placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
-          className="h-12 w-full  mx-aut px-4 bg-[#f8f8f8 ] rounded-md border border-stone-600"></TextInput>
+          placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
+          className="h-12 w-full  mx-auto px-4 bg-[#f8f8f8 ] rounded-md border border-stone-600"></TextInput>
       </View>
       <View className="px-4 py-2 ">
         <TouchableOpacity style={styles.bottomButton} onPress={() => navigation.navigate("Profil")}>

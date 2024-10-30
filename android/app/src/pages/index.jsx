@@ -14,6 +14,9 @@ import RegisterPage from './BPJS/auth/register';
 import BantuanLogin from './Bantuan/bantuan_login';
 import Profile from './Profile';
 import ProfileFormEdit from './Profile/tab/profileFormEdit';
+import Transaksi from './Transaction';
+import Deposit from './Deposit';
+import HistoriDeposit from './Deposit/HistoryDeposit';
 
 export {
   HomeScreen,
@@ -32,4 +35,7 @@ export {
   BantuanLogin,
   Profile,
   ProfileFormEdit,
+  Transaksi,
+  Deposit,
+  HistoriDeposit,
 };

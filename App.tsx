@@ -21,20 +21,11 @@ import {
   BantuanLogin,
   Profile,
   ProfileFormEdit,
+  Transaksi,
+  Deposit,
+  HistoriDeposit,
 } from './android/app/src/pages';
-import {
-  DARK_BACKGROUND,
-  WHITE_BACKGROUND,
-  WHITE_COLOR,
-} from './android/app/src/utils/const';
-
-function Transaksi() {
-  return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Transaksi!</Text>
-    </View>
-  );
-}
+import {DARK_BACKGROUND, WHITE_BACKGROUND} from './android/app/src/utils/const';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -207,6 +198,28 @@ function App() {
           component={ProfileFormEdit}
           options={{
             headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="Deposit"
+          component={Deposit}
+          options={{
+            title: 'Deposit',
+            headerStyle: {
+              backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
+            },
+            headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
+          }}
+        />
+        <Stack.Screen
+          name="HistoriDeposit"
+          component={HistoriDeposit}
+          options={{
+            title: 'Histori Deposit',
+            headerStyle: {
+              backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
+            },
+            headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
           }}
         />
       </Stack.Navigator>
