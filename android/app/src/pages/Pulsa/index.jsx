@@ -185,7 +185,7 @@ export default function Pulsa({navigation}) {
           <View>
             <View style={styles.modalData(isDarkMode)}>
               <Text style={styles.labelModalData(isDarkMode)}>
-                Nomor Tujuan{' '}
+                Nomor Tujuan
               </Text>
               <Text style={styles.valueModalData(isDarkMode)}>
                 {nomorTujuan}

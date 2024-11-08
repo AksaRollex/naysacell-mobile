@@ -24,6 +24,7 @@ import {
   Transaksi,
   Deposit,
   HistoriDeposit,
+  SuccessNotifDeposit,
 } from './android/app/src/pages';
 import {DARK_BACKGROUND, WHITE_BACKGROUND} from './android/app/src/utils/const';
 
@@ -197,7 +198,11 @@ function App() {
           name="ProfileFormEdit"
           component={ProfileFormEdit}
           options={{
-            headerShown: false,
+            title: 'Edit Profile',
+            headerStyle: {
+              backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
+            },
+            headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
           }}
         />
         <Stack.Screen
@@ -216,6 +221,17 @@ function App() {
           component={HistoriDeposit}
           options={{
             title: 'Histori Deposit',
+            headerStyle: {
+              backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
+            },
+            headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
+          }}
+        />
+        <Stack.Screen
+          name="SuccessNotifDeposit"
+          component={SuccessNotifDeposit}
+          options={{
+            title: '',
             headerStyle: {
               backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
             },

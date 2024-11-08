@@ -22,7 +22,7 @@ import {
 import {rupiah} from '../../utils/utils';
 import HistoryDeposit from './HistoryDeposit';
 
-export default function Deposit() {
+export default function Deposit({ navigation }) {
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <View
@@ -92,7 +92,9 @@ export default function Deposit() {
           </TouchableOpacity>
         </View>
         <View className="px-4 py-2 ">
-          <TouchableOpacity style={styles.bottomButton}>
+          <TouchableOpacity
+            style={styles.bottomButton}
+            onPress={() => navigation.navigate('SuccessNotifDeposit')}>
             <Text style={styles.buttonLabel}>Deposit</Text>
           </TouchableOpacity>
         </View>

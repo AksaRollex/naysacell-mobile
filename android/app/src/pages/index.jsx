@@ -17,6 +17,7 @@ import ProfileFormEdit from './Profile/tab/profileFormEdit';
 import Transaksi from './Transaction';
 import Deposit from './Deposit';
 import HistoriDeposit from './Deposit/HistoryDeposit';
+import SuccessNotifDeposit from './Notifikasi/SuccessNotifDeposit';
 
 export {
   HomeScreen,
@@ -38,4 +39,5 @@ export {
   Transaksi,
   Deposit,
   HistoriDeposit,
+  SuccessNotifDeposit,
 };
