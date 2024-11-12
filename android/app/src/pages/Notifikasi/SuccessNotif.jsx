@@ -13,7 +13,7 @@ import {
   SLATE_COLOR,
   WHITE_BACKGROUND,
 } from '../../utils/const';
-import { rupiah } from '../../utils/utils';
+import { rupiah } from '../../libs/utils';
 
 export default function SuccessNotif({route}) {
   const {item, nomor_tujuan} = route.params;

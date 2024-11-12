@@ -26,7 +26,7 @@ import {
 } from '../../utils/const';
 import {windowHeight} from '../../utils/const';
 import mainMenu, {gameMenu} from '../../data/mainMenu';
-import {rupiah} from '../../utils/utils';
+import {rupiah} from '../../libs/utils';
 import {Image} from 'react-native';
 
 const getGreeting = () => {

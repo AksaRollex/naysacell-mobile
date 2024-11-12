@@ -26,7 +26,7 @@ import {
 } from '../../utils/const';
 import Input from '../../components/form/input';
 import {product_token} from '../../data/product_pln';
-import {rupiah} from '../../utils/utils';
+import {rupiah} from '../../libs/utils';
 import {CheckProduct} from '../../assets';
 
 export default function PLNPascaBayar() {

@@ -25,6 +25,10 @@ import {
   Deposit,
   HistoriDeposit,
   SuccessNotifDeposit,
+  ForgotPassword,
+  Credential,
+  OtpEmail,
+  Password,
 } from './android/app/src/pages';
 import {DARK_BACKGROUND, WHITE_BACKGROUND} from './android/app/src/utils/const';
 
@@ -236,6 +240,34 @@ function App() {
               backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
             },
             headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
+          }}
+        />
+        <Stack.Screen
+          name="ForgotPassword"
+          component={ForgotPassword}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="Credential"
+          component={Credential}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="OtpEmail"
+          component={OtpEmail}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="Password"
+          component={Password}
+          options={{
+            headerShown: false,
           }}
         />
       </Stack.Navigator>

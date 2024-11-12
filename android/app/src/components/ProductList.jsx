@@ -16,7 +16,7 @@ import {
   WHITE_BACKGROUND,
 } from '../utils/const';
 import {CheckProduct} from '../assets';
-import { rupiah } from '../utils/utils';
+import { rupiah } from '../libs/utils';
 
 export default function ProductList({action, selectItem, data}) {
   const isDarkMode = useColorScheme() === 'dark';

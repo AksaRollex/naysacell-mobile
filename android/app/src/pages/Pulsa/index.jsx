@@ -27,7 +27,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {product_data, product_pulsa} from '../../data/product_pulsa';
 import {CheckProduct} from '../../assets';
 import BottomModal from '../../components/BottomModal';
-import {rupiah} from '../../utils/utils';
+import {rupiah} from '../../libs/utils';
 import Input from '../../components/form/input';
 
 export default function Pulsa({navigation}) {

@@ -19,7 +19,7 @@ import {
   WHITE_COLOR,
   windowWidth,
 } from '../../utils/const';
-import {rupiah} from '../../utils/utils';
+import {rupiah} from '../../libs/utils';
 import HistoryDeposit from './HistoryDeposit';
 
 export default function Deposit({ navigation }) {

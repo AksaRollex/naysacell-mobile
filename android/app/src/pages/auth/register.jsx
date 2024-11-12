@@ -20,8 +20,8 @@ import {
   REGULAR_FONT,
   SLATE_COLOR,
   WHITE_BACKGROUND,
-} from '../../../utils/const';
-import {Eye, EyeCrossed} from '../../../assets';
+} from '../../utils/const';
+import {Eye, EyeCrossed} from '../../assets';
 import Icon from 'react-native-vector-icons/Feather';
 
 export default function RegisterPage({navigation}) {
@@ -38,7 +38,7 @@ export default function RegisterPage({navigation}) {
         style={{borderBottomStartRadius: 100, backgroundColor: BLUE_COLOR}}>
         <View>
           <Image
-            source={require('../../../assets/images/logo.png')}
+            source={require('../../assets/images/logo.png')}
             className="w-16 h-16 mx-auto mt-3"
           />
         </View>
