@@ -37,6 +37,7 @@ export default function Password({}) {
             render={({field: {onChange, onBlur, value}}) => (
               <TextInput
                 placeholder="Masukkan Password Lama"
+                style={{fontFamily: 'Poppins-Regular'}}
                 label="password"
                 color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
                 placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
@@ -60,6 +61,7 @@ export default function Password({}) {
               render={({field: {onChange, onBlur, value}}) => (
                 <TextInput
                   placeholder="Masukkan Password Baru"
+                  style={{fontFamily: 'Poppins-Regular'}}
                   label="password"
                   color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
                   placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
@@ -85,6 +87,7 @@ export default function Password({}) {
                 <TextInput
                   placeholder="Konfirmasi Password Baru"
                   label="password"
+                  style={{fontFamily: 'Poppins-Regular'}}
                   color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
                   placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
                   className="h-12 w-11/12 rounded-3xl mx-auto  px-4 bg-[#f8f8f8 ] border border-stone-600"
@@ -109,7 +112,7 @@ export default function Password({}) {
           style={{
             backgroundColor: BLUE_COLOR,
           }}>
-          <Text className="text-white text-md font-extrabold">LOGIN</Text>
+          <Text className="text-white text-md font-poppins-bold">SUBMIT</Text>
         </TouchableOpacity>
       </View>
     </View>

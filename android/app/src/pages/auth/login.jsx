@@ -10,27 +10,34 @@ import {
 import React, {useState} from 'react';
 import {
   BLUE_COLOR,
+  BOLD_FONT,
   DARK_BACKGROUND,
   DARK_COLOR,
   GREY_COLOR,
+  HORIZONTAL_MARGIN,
   LIGHT_COLOR,
+  REGULAR_FONT,
   SLATE_COLOR,
   WHITE_BACKGROUND,
 } from '../../utils/const';
 import {Eye, EyeCrossed} from '../../assets';
-import {Colors} from 'react-native-ui-lib';
 import {Controller, useForm} from 'react-hook-form';
 import axios from '../../libs/axios';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '@env';
 import {useNavigation} from '@react-navigation/native';
-
+import Header from '../../components/Header';
+import {useMutation, useQueryClient} from '@tanstack/react-query';
+import ModalProcess from '../../components/ModalProcess';
+import ModalAfterProcess from '../../components/ModalAfterProcess';
+rem = multiplier => baseRem * multiplier;
+const baseRem = 16;
 export default function LoginPage({}) {
   const isDarkMode = useColorScheme() === 'dark';
 
+  const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
-  const [isLoading, setIsLoading] = useState(false);
   const [isSecure, setIsSecure] = useState(false);
   const {
     control,
@@ -38,107 +45,107 @@ export default function LoginPage({}) {
     formState: {errors},
   } = useForm();
 
-  const onSubmit = async data => {
-    try {
-      setIsLoading(true);
-      console.log('Sending login request with data:', data); // Debug log
+  const queryClient = useQueryClient();
 
-      const response = await axios.post(
-        `${API_URL}/login`,
-        {
-          email: data.email,
-          password: data.password,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-          },
-          timeout: 10000, // Timeout setelah 10 detik
-        },
-      );
+  // const onSubmit = async data => {
+  //   try {
+  //     const response = await axios.post(
+  //       `/auth/login`,
+  //       {
+  //         email: data.email,
+  //         password: data.password,
+  //         type: 'email',
+  //       },
+  //       {
+  //         timeout: 10000,
+  //       },
+  //     );
 
-      console.log('Login response:', response.data); // Debug log
+  //     if (response.data.token) {
+  //       await AsyncStorage.setItem('userToken', response.data.token);
+  //       await AsyncStorage.setItem(
+  //         'userData',
+  //         JSON.stringify(response.data.user),
+  //       );
 
-      if (response.data.status) {
-        // Simpan token
-        await AsyncStorage.setItem('userToken', response.data.token);
-        await AsyncStorage.setItem(
-          'userData',
-          JSON.stringify(response.data.user),
-        );
+  //       axios.defaults.headers.common[
+  //         'Authorization'
+  //       ] = `Bearer ${response.data.token}`;
 
-        // Set default header untuk request selanjutnya
-        axios.defaults.headers.common[
-          'Authorization'
-        ] = `Bearer ${response.data.token}`;
+  //       Toast.show({
+  //         type: 'success',
+  //         text1: 'Success',
+  //         text2: 'Login berhasil',
+  //       });
 
-        Toast.show({
-          type: 'success',
-          text1: 'Success',
-          text2: 'Login berhasil',
-        });
+  //       navigation.replace('MyTabs', {screen: 'Profile'});
+  //     } else {
+  //       Toast.show({
+  //         type: 'error',
+  //         text1: 'Error',
+  //         text2: 'Login gagal, Password / Email Salah',
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error('Login error:', error.response || error);
 
-        navigation.replace('Home'); // Gunakan replace agar tidak bisa kembali ke halaman login
-      } else {
-        Toast.show({
-          type: 'error',
-          text1: 'Error',
-          text2: response.data.message || 'Login gagal, Password / Email Salah',
-        });
-      }
-    } catch (error) {
-      console.error('Login error:', error.response || error); // Debug log
+  //     const errorMessage =
+  //       error.response?.data?.message ||
+  //       'Terjadi kesalahan saat login. Silakan coba lagi.';
 
-      const errorMessage =
-        error.response?.data?.message ||
-        'Terjadi kesalahan saat login. Silakan coba lagi.';
+  //     Toast.show({
+  //       type: 'error',
+  //       text1: 'Error',
+  //       text2: errorMessage,
+  //     });
+  //   } finally {
+  //   }
+  // };
 
-      Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: errorMessage,
+  const {
+    mutate: login,
+    isLoading,
+    isSuccess,
+  } = useMutation( {
+    mutationFn: data => axios.post(`/auth/login`, data),
+    onSuccess: async res => {
+      await AsyncStorage.setItem('userToken', res.data.token);
+      queryClient.invalidateQueries({
+        queryKey: ['auth', 'user'],
       });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      navigation.replace('MyTabs', {screen: 'Profile'});
+    },
+    onError: error => {
+      // console.error(error.response.data);
+      setModalVisible(true);
+      setTimeout(() => {
+        setModalVisible(false);
+      }, 2000);
+    },
+  });
+
   return (
     <View
       style={{
         backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
       }}
       className="h-full">
-      <View
-        className="  h-40 w-full "
-        style={{borderBottomStartRadius: 100, backgroundColor: BLUE_COLOR}}>
-        <View>
-          <Image
-            source={require('../../assets/images/logo.png')}
-            className="w-16 h-16 mx-auto mt-3"
-          />
-        </View>
-        <View className="flex-1 justify-center items-end pr-6">
-          <Text className=" text-white font-bold text-base font-sans my-1 ">
-            Masuk
-          </Text>
-          <Text className="text-white text-sm font-sans">
-            Silahkan login ke akun NAYSA CELL
-          </Text>
-        </View>
-      </View>
+      <Header title="Masuk" subtitle="Silahkan Login Ke NAYSA CELL" />
+
+      {/* OPEN FORM */}
       <View>
-        <View className="my-6">
+        <View className="mt-6">
           <Controller
             name="email"
             control={control}
-            rules={{required: 'Email Tidak Boleh Kosong'}}
+            rules={{required: 'Email Harus Diisi'}}
             render={({field: {onChange, onBlur, value}}) => (
               <TextInput
-                placeholder="Masukkan email"
+                placeholder="Masukkan Email"
                 label="Email"
                 color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
                 placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
+                style={{fontFamily: 'Poppins-Regular'}}
                 className="h-12 w-11/12 rounded-3xl mx-auto  px-4 bg-[#f8f8f8 ] border border-stone-600"
                 onBlur={onBlur}
                 value={value}
@@ -146,39 +153,59 @@ export default function LoginPage({}) {
             )}
           />
           {errors.email && (
-            <Text className="mt-2 mx-auto text-red-400" body>
+            <Text
+              className="mt-1 text-red-400 font-poppins-regular"
+              style={{marginLeft: rem(2)}}>
               {errors.email.message}
             </Text>
           )}
         </View>
-        <View>
+        <View className="mt-6">
           <Controller
             name="password"
             control={control}
-            rules={{required: 'Password Tidak Boleh Kosong'}}
+            rules={{required: 'Password Harus Diisi'}}
             render={({field: {onChange, onBlur, value}}) => (
-              <TextInput
-                placeholder="Masukkan Password"
-                label="Password"
-                placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
-                className="h-12 w-11/12 rounded-3xl mx-auto  px-4 bg-[#f8f8f8 ] border border-stone-600"
-                onBlur={onBlur}
-                value={value}
-                onChangeText={onChange}
-                secureTextEntry={isSecure}
-              />
+              <View className="relative">
+                <TextInput
+                  placeholder="Masukkan Password"
+                  label="Password"
+                  style={{fontFamily: 'Poppins-Regular'}}
+                  color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+                  placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
+                  className="h-12 w-11/12 rounded-3xl mx-auto px-4 pr-10 border border-stone-600"
+                  onBlur={onBlur}
+                  value={value}
+                  keyboardType='number-pad'
+                  onChangeText={onChange}
+                  secureTextEntry={isSecure}
+                />
+                <TouchableOpacity
+                  onPress={() => setIsSecure(!isSecure)}
+                  style={{
+                    position: 'absolute',
+                    right: 30,
+                    top: '50%',
+                    transform: [{translateY: -12}],
+                  }}>
+                  {isSecure ? <EyeCrossed /> : <Eye />}
+                </TouchableOpacity>
+              </View>
             )}
           />
           {errors.password && (
-            <Text className="mt-2 mx-auto text-red-400" body>
+            <Text
+              className="mt-1 text-red-400 font-poppins-regular"
+              style={{marginLeft: rem(2)}}>
               {errors.password.message}
             </Text>
           )}
         </View>
+
         <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
           <Text
             className="text-right mx-6 my-8 text-black text-md"
-            style={{color: BLUE_COLOR}}>
+            style={{color: BLUE_COLOR, fontFamily: 'Poppins-Regular'}}>
             Lupa Kata Sandi?
           </Text>
         </TouchableOpacity>
@@ -190,28 +217,36 @@ export default function LoginPage({}) {
               opacity: isLoading ? 0.7 : 1,
             }}
             disabled={isLoading}
-            onPress={handleSubmit(onSubmit)}>
-            <Text className="text-white text-md font-extrabold">
+            onPress={handleSubmit(login)}>
+            <Text className="text-white text-md font-poppins-bold">
               {isLoading ? 'LOADING...' : 'MASUK'}
             </Text>
           </TouchableOpacity>
         </View>
         <View className="flex-row items-center justify-center my-8 ">
-          <Text style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-            Belum punya akun?
+          <Text
+            style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}
+            className="mx-1 font-poppins-regular">
+            Belum punya akun ?
           </Text>
           <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-            <Text style={{color: BLUE_COLOR}}> Daftar</Text>
+            <Text style={{color: BLUE_COLOR, fontFamily: 'Poppins-Regular'}}>
+              Daftar
+            </Text>
           </TouchableOpacity>
         </View>
         <TouchableOpacity onPress={() => navigation.navigate('BantuanLogin')}>
-          <Text className="text-center  text-md" style={{color: BLUE_COLOR}}>
+          <Text
+            className="text-center  text-md font-poppins-regular"
+            style={{color: BLUE_COLOR}}>
             Butuh bantuan?
           </Text>
         </TouchableOpacity>
       </View>
-      <View>
-        {/* <View
+      {/* CLOSE FORM */}
+
+      {/* <View>
+        <View
         style={{
           marginHorizontal: HORIZONTAL_MARGIN,
           justifyContent: 'center',
@@ -270,8 +305,15 @@ export default function LoginPage({}) {
           style={{backgroundColor: BLUE_COLOR}}>
           <Text className="text-center text-white font-bold">Login</Text>
         </TouchableOpacity>
-      </View> */}
       </View>
+      </View> */}
+
+      <ModalAfterProcess
+        modalVisible={modalVisible}
+        title="Login Gagal"
+        subTitle="Email atau Password Salah, Silahkan Coba Lagi !"
+        url={require('../../assets/lottie/failed-animation.json')}
+      />
     </View>
   );
 }

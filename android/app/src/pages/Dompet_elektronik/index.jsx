@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   }),
   buttonText: isDarkMode => ({
-    fontFamily: REGULAR_FONT,
+    fontFamily: 'Poppins-SemiBold',
     color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
   }),
 });

@@ -58,13 +58,14 @@ export default function Credential({navigation}) {
               color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
               placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
               className="h-12 w-11/12 rounded-3xl mx-auto  px-4 bg-[#f8f8f8 ] border border-stone-600"
+              style={{fontFamily: 'Poppins-Regular'}}
               onBlur={onBlur}
               value={value}
               onChangeText={onChange}></TextInput>
           )}
         />
         {errors.email && (
-          <Text className="mt-2 mx-auto text-red-400" body>
+          <Text className="mt-2 mx-auto text-red-400 font-poppins-regular" body>
             {errors.email.message}
           </Text>
         )}
@@ -76,7 +77,9 @@ export default function Credential({navigation}) {
           style={{
             backgroundColor: BLUE_COLOR,
           }}>
-          <Text className="text-white text-md font-extrabold">LANJUT</Text>
+          <Text className="text-white text-md font-poppins-bold">
+            LANJUT
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

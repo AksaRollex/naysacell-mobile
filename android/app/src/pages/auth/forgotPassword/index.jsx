@@ -19,6 +19,7 @@ import Credential from './step/credential';
 import Password from './step/password';
 import {If} from '../../../libs/component';
 import OtpEmail from './step/otpEmail';
+import Header from '../../../components/Header';
 
 // export const useFormStep = create(set => ({
 //   index: 0,
@@ -36,26 +37,10 @@ export default function ForgotPassword({navigation}) {
       style={{
         backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
       }}>
-      <View
-        className="  h-40 w-full "
-        style={{borderBottomStartRadius: 100, backgroundColor: BLUE_COLOR}}>
-        <View>
-          <Image
-            source={require('../../../assets/images/logo.png')}
-            s
-            className="w-16 h-16 mx-auto mt-3"
-          />
-        </View>
-        <View className="flex-1 justify-center items-end pr-6">
-          <Text className=" text-white font-bold text-base font-sans my-1 ">
-            Reset Password
-          </Text>
-          <Text className="text-white text-sm font-sans text-right ">
-            Silahkan melakukan reset password{'\n'} dengan langkah langkah yang
-            di sediakan !
-          </Text>
-        </View>
-      </View>
+      <Header
+        title="Lupa Kata Sandi"
+        subtitle="Silahkan Mengikuti Langkah Langkah Berikut !"
+      />
       <View>
         {/* <If isTrue={index === 0}>
           <Credential />
@@ -73,16 +58,16 @@ export default function ForgotPassword({navigation}) {
         <View className="flex-row justify-center mt-4">
           <Text
             className="text-sm font-sans text-center mx-1"
-            style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-            Sudah ingat ?  
+            style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR, fontFamily: 'Poppins-Regular'}}>
+            Sudah ingat ?
           </Text>
           <TouchableOpacity
             onPress={() => navigation.navigate('Login')}
             className="ms-1">
             <Text
               className="text-sm font-sans text-center "
-              style={{color: isDarkMode ? BLUE_COLOR : BLUE_COLOR}}>
-                Login
+              style={{color: isDarkMode ? BLUE_COLOR : BLUE_COLOR, fontFamily: 'Poppins-Regular'}}>
+              Login
             </Text>
           </TouchableOpacity>
         </View>

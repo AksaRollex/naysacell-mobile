@@ -22,7 +22,7 @@ import {
 import {rupiah} from '../../libs/utils';
 import HistoryDeposit from './HistoryDeposit';
 
-export default function Deposit({ navigation }) {
+export default function Deposit({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <View
@@ -48,7 +48,7 @@ export default function Deposit({ navigation }) {
               backgroundColor: isDarkMode ? '#27272A' : WHITE_BACKGROUND,
               width: windowWidth * 0.3,
             }}>
-            <Text>{rupiah(10000)}</Text>
+            <Text className="font-poppins-regular">{rupiah(10000)}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             className="px-1 py-4 w-1/3 rounded-md justify-center items-center"
@@ -56,7 +56,7 @@ export default function Deposit({ navigation }) {
               backgroundColor: isDarkMode ? '#27272A' : WHITE_BACKGROUND,
               width: windowWidth * 0.3,
             }}>
-            <Text>{rupiah(20000)}</Text>
+            <Text className="font-poppins-regular">{rupiah(20000)}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             className="px-1 py-4 w-1/3 rounded-md justify-center items-center"
@@ -64,7 +64,7 @@ export default function Deposit({ navigation }) {
               backgroundColor: isDarkMode ? '#27272A' : WHITE_BACKGROUND,
               width: windowWidth * 0.3,
             }}>
-            <Text>{rupiah(30000)}</Text>
+            <Text className="font-poppins-regular">{rupiah(30000)}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             className="px-1 py-4 mt-3  rounded-md justify-center items-center"
@@ -72,7 +72,7 @@ export default function Deposit({ navigation }) {
               backgroundColor: isDarkMode ? '#27272A' : WHITE_BACKGROUND,
               width: windowWidth * 0.3,
             }}>
-            <Text>{rupiah(10000)}</Text>
+            <Text className="font-poppins-regular">{rupiah(10000)}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             className="px-1 py-4 w-1/3 rounded-md justify-center items-center"
@@ -80,7 +80,7 @@ export default function Deposit({ navigation }) {
               backgroundColor: isDarkMode ? '#27272A' : WHITE_BACKGROUND,
               width: windowWidth * 0.3,
             }}>
-            <Text>{rupiah(20000)}</Text>
+            <Text className="font-poppins-regular">{rupiah(20000)}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             className="px-1 py-4 w-1/3 rounded-md justify-center items-center"
@@ -88,21 +88,23 @@ export default function Deposit({ navigation }) {
               backgroundColor: isDarkMode ? '#27272A' : WHITE_BACKGROUND,
               width: windowWidth * 0.3,
             }}>
-            <Text>{rupiah(30000)}</Text>
+            <Text className="font-poppins-regular">{rupiah(30000)}</Text>
           </TouchableOpacity>
         </View>
         <View className="px-4 py-2 ">
           <TouchableOpacity
             style={styles.bottomButton}
             onPress={() => navigation.navigate('SuccessNotifDeposit')}>
-            <Text style={styles.buttonLabel}>Deposit</Text>
+            <Text className="font-poppins-semibold" style={styles.buttonLabel}>
+              Deposit
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
       {/* HISTORI */}
       <View className="px-4 py-2 mt-11">
         <View className="my-2">
-          <Text>Histori Deposit</Text>
+          <Text className="font-poppins-semibold">Histori Deposit</Text>
         </View>
         <HistoryDeposit />
       </View>
@@ -114,7 +116,6 @@ const styles = StyleSheet.create({
   buttonLabel: {
     color: WHITE_BACKGROUND,
     textAlign: 'center',
-    fontFamily: REGULAR_FONT,
   },
   bottom: isDarkMode => ({
     position: 'absolute',

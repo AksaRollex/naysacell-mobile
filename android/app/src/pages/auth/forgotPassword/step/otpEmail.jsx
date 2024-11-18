@@ -23,7 +23,7 @@ export default function OtpEmail({navigation}) {
   return (
     <View>
       <View style={styles.otpContainer}>
-        <Text className="text-base font-sans font-bold  text-center my-5">
+        <Text className="text-base font-poppins-semibold  text-center my-5">
           Masukkan Kode OTP
         </Text>
         <Controller
@@ -46,7 +46,9 @@ export default function OtpEmail({navigation}) {
           )}
         />
         {errors.otp && (
-          <Text style={styles.errorText}>{errors.otp.message}</Text>
+          <Text style={[styles.errorText, {fontFamily: 'Poppins-Regular'}]}>
+            {errors.otp.message}
+          </Text>
         )}
       </View>
       <View className="flex">
@@ -56,7 +58,7 @@ export default function OtpEmail({navigation}) {
           style={{
             backgroundColor: BLUE_COLOR,
           }}>
-          <Text className="text-white text-md font-extrabold">LANJUT</Text>
+          <Text className="text-white text-md font-poppins-bold">LANJUT</Text>
         </TouchableOpacity>
       </View>
     </View>

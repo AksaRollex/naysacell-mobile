@@ -37,50 +37,55 @@ export default function PLNPascaBayar() {
 
   return (
     <>
-      <View style={styles.container}>
-        <View style={styles.formGroup}>
-          <Input
-            value={customer_no}
-            placeholder="Masukan Nomor meter"
-            onChange={text => setCustomerNo(text)}
-            onDelete={() => setCustomerNo('')}
-            type="numeric"
-          />
-          <TouchableOpacity style={styles.buttonSearch} >
-            <Text style={styles.buttonText}>Cek</Text>
-          </TouchableOpacity>
+      <View
+        className="w-full h-full"
+        style={{
+          backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
+        }}>
+        <View style={styles.container}>
+          <View style={styles.formGroup}>
+            <Input
+              value={customer_no}
+              placeholder="Masukan Nomor meter"
+              onChange={text => setCustomerNo(text)}
+              onDelete={() => setCustomerNo('')}
+              type="numeric"
+            />
+            <TouchableOpacity style={styles.buttonSearch}>
+              <Text style={styles.buttonText}>Cek</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.infoPelanggan(isDarkMode)}>
+            <View style={styles.contentBlock(isDarkMode)}>
+              <Text style={styles.label(isDarkMode)}>Nama</Text>
+              <Text style={styles.value(isDarkMode)}>Lorem Ipsum</Text>
+            </View>
+            <View style={styles.contentBlock(isDarkMode)}>
+              <Text style={styles.label(isDarkMode)}>ID Pelanggan</Text>
+              <Text style={styles.value(isDarkMode)}>123456789</Text>
+            </View>
+            <View style={styles.contentBlock(isDarkMode)}>
+              <Text style={styles.label(isDarkMode)}>Daya / Segmen Power</Text>
+              <Text style={styles.value(isDarkMode)}> 900 kwh</Text>
+            </View>
+            <View style={styles.contentBlock(isDarkMode)}>
+              <Text style={styles.label(isDarkMode)}>Lembar Tagihan</Text>
+              <Text style={styles.value(isDarkMode)}> 2 lbr</Text>
+            </View>
+            <View style={styles.contentBlock(isDarkMode)}>
+              <Text style={styles.label(isDarkMode)}>Total Tagihan</Text>
+              <Text style={styles.value(isDarkMode)}>120.000</Text>
+            </View>
+          </View>
         </View>
-        <View style={styles.infoPelanggan(isDarkMode)}>
-          <View style={styles.contentBlock(isDarkMode)}>
-            <Text style={styles.label(isDarkMode)}>Nama</Text>
-            <Text style={styles.value(isDarkMode)}>Lorem Ipsum</Text>
+        {selectItem && (
+          <View style={[styles.bottom(isDarkMode)]}>
+            <TouchableOpacity style={styles.bottomButton}>
+              <Text style={styles.buttonText}>Bayar</Text>
+            </TouchableOpacity>
           </View>
-          <View style={styles.contentBlock(isDarkMode)}>
-            <Text style={styles.label(isDarkMode)}>ID Pelanggan</Text>
-            <Text style={styles.value(isDarkMode)}>123456789</Text>
-          </View>
-          <View style={styles.contentBlock(isDarkMode)}>
-            <Text style={styles.label(isDarkMode)}>Daya / Segmen Power</Text>
-            <Text style={styles.value(isDarkMode)}> 900 kwh</Text>
-          </View>
-          <View style={styles.contentBlock(isDarkMode)}>
-            <Text style={styles.label(isDarkMode)}>Lembar Tagihan</Text>
-            <Text style={styles.value(isDarkMode)}> 2 lbr</Text>
-          </View>
-          <View style={styles.contentBlock(isDarkMode)}>
-            <Text style={styles.label(isDarkMode)}>Total Tagihan</Text>
-            <Text style={styles.value(isDarkMode)}>120.000</Text>
-          </View>
-        </View>
+        )}
       </View>
-
-      {selectItem && (
-        <View style={[styles.bottom(isDarkMode)]}>
-          <TouchableOpacity style={styles.bottomButton}>
-            <Text style={styles.buttonText}>Bayar</Text>
-          </TouchableOpacity>
-        </View>
-      )}
     </>
   );
 }
@@ -98,11 +103,11 @@ const styles = StyleSheet.create({
     backgroundColor: BLUE_COLOR,
     borderRadius: 5,
     padding: 10,
-    marginTop : 10
+    marginTop: 10,
   },
   buttonText: {
     color: WHITE_COLOR,
-    fontFamily: REGULAR_FONT,
+    fontFamily: 'Poppins-SemiBold',
     textAlign: 'center',
   },
   infoPelanggan: isDarkMode => ({
@@ -120,13 +125,11 @@ const styles = StyleSheet.create({
     rowGap: 5,
   }),
   label: isDarkMode => ({
-    fontFamily: MEDIUM_FONT,
-    fontSize: FONT_SEDANG,
+    fontFamily : 'Poppins-SemiBold',
     color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
   }),
   value: isDarkMode => ({
-    fontFamily: REGULAR_FONT,
-    fontSize: FONT_NORMAL,
+    fontFamily: 'Poppins-Regular',
     color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
   }),
   productWrapper: isDarkMode => ({

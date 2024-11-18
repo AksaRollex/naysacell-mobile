@@ -4,6 +4,7 @@ import {
   View,
   TouchableOpacity,
   useColorScheme,
+  TextInput,
 } from 'react-native';
 import React, {useState} from 'react';
 import {
@@ -41,7 +42,7 @@ export default function PLNPrabayar() {
   return (
     <>
       <View
-      className="w-full h-full"
+        className="w-full h-full"
         style={{
           backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
         }}>
@@ -54,6 +55,7 @@ export default function PLNPrabayar() {
               type="numeric"
               lebar={windowWidth * 0.7}
               onDelete={resetInput}
+              style={{fontFamily: 'Poppins-Regular'}}
             />
             <TouchableOpacity style={styles.buttonSearch}>
               <Text style={styles.buttonText}>Cek</Text>
@@ -136,12 +138,12 @@ const styles = StyleSheet.create({
   buttonSearch: {
     backgroundColor: BLUE_COLOR,
     borderRadius: 5,
-    padding: 14.5,
+    padding: 13,
     flex: 1,
   },
   buttonText: {
     color: WHITE_COLOR,
-    fontFamily: REGULAR_FONT,
+    fontFamily: 'Poppins-SemiBold',
     textAlign: 'center',
   },
   infoPelanggan: isDarkMode => ({
@@ -159,13 +161,13 @@ const styles = StyleSheet.create({
     rowGap: 5,
   }),
   label: isDarkMode => ({
-    fontFamily: MEDIUM_FONT,
     fontSize: FONT_KECIL,
+    fontFamily: 'Poppins-Regular',
     color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
   }),
   value: isDarkMode => ({
-    fontFamily: REGULAR_FONT,
     fontSize: FONT_NORMAL,
+    fontFamily: 'Poppins-SemiBold',
     color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
   }),
   productWrapper: isDarkMode => ({
@@ -177,12 +179,12 @@ const styles = StyleSheet.create({
     backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
   }),
   productLabel: isDarkMode => ({
-    fontFamily: MEDIUM_FONT,
+    fontFamily: 'Poppins-SemiBold',
     fontSize: FONT_NORMAL,
     color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
   }),
   productPrice: isDarkMode => ({
-    fontFamily: REGULAR_FONT,
+    fontFamily: 'Poppins-Regular',
     color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
   }),
   bottom: isDarkMode => ({

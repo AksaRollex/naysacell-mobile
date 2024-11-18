@@ -1,33 +1,33 @@
+import React, {useEffect, useState} from 'react';
 import {
-  StyleSheet,
-  Text,
-  View,
-  useColorScheme,
+  Image,
   ImageBackground,
-  TouchableOpacity,
   Linking,
   ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  useColorScheme,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
-import {AddIkon, BellIkon, HeaderBG, Mail, SendIkon} from '../../assets';
+import {useQuery} from '@tanstack/react-query';
+import {AddIkon, HeaderBG, Mail} from '../../assets';
+import mainMenu, {gameMenu} from '../../data/mainMenu';
+import axios from '../../libs/axios';
+import {rupiah} from '../../libs/utils';
 import {
   BOLD_FONT,
   DARK_BACKGROUND,
   DARK_COLOR,
   FONT_NORMAL,
-  FONT_SEDANG,
+  HORIZONTAL_MARGIN,
+  LIGHT_BACKGROUND,
   LIGHT_COLOR,
   MEDIUM_FONT,
-  windowWidth,
-  HORIZONTAL_MARGIN,
   REGULAR_FONT,
-  SLATE_COLOR,
-  LIGHT_BACKGROUND,
+  windowHeight,
+  windowWidth,
 } from '../../utils/const';
-import {windowHeight} from '../../utils/const';
-import mainMenu, {gameMenu} from '../../data/mainMenu';
-import {rupiah} from '../../libs/utils';
-import {Image} from 'react-native';
 
 const getGreeting = () => {
   const hour = new Date().getHours();
@@ -40,15 +40,15 @@ const getGreeting = () => {
 export default function HomeScreen({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
   const [greeting, setGreeting] = useState(getGreeting());
+  const [data, setData] = useState([]);
+
   useEffect(() => {
     const timer = setInterval(() => {
       setGreeting(getGreeting());
-    }, 60000); // Update every minute
+    }, 60000);
 
     return () => clearInterval(timer);
   }, []);
-
-  const nama = 'Aksa Rollcake';
 
   const openWhatsApp = () => {
     const phoneNumber = '+6285336970707';
@@ -62,11 +62,28 @@ export default function HomeScreen({navigation}) {
       alert('WhatsApp is not installed or there is an issue.');
     });
   };
+
+  useEffect(() => {
+    axios
+      .get('/auth/me')
+      .then(response => {
+        setData(response.data.user);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
+  
   return (
     <>
-      <ScrollView style={{ backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND }}>
+      <ScrollView
+        style={{
+          backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
+        }}>
         <View
-          style={{backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND}}
+          style={{
+            backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
+          }}
           className="w-full h-full">
           <ImageBackground
             source={HeaderBG}
@@ -80,16 +97,18 @@ export default function HomeScreen({navigation}) {
                 justifyContent: 'space-between',
                 padding: 20,
               }}>
-              <Text
-                style={{
-                  color: isDarkMode ? 'white' : 'black',
-                  fontSize: FONT_NORMAL,
-                  fontWeight: '500',
-                  fontFamily: MEDIUM_FONT,
-                  marginBottom: 5,
-                }}>
-                {greeting} , {nama}
-              </Text>
+              {data && (
+                <Text
+                  style={{
+                    color: isDarkMode ? 'white' : 'black',
+                    fontWeight: '500',
+                    marginBottom: 5,
+                  }}
+                  className="font-poppins-regular">
+                  {greeting} , {data.name}
+                </Text>
+              )}
+
               <View className="flex-row gap-4">
                 <TouchableOpacity onPress={openWhatsApp}>
                   <Mail
@@ -99,10 +118,10 @@ export default function HomeScreen({navigation}) {
                   />
                 </TouchableOpacity>
                 {/* <BellIkon
-                  width={24}
-                  height={24}
-                  fill={isDarkMode ? 'white' : 'black'}
-                /> */}
+         width={24}
+         height={24}
+         fill={isDarkMode ? 'white' : 'black'}
+       /> */}
               </View>
             </View>
 
@@ -130,9 +149,8 @@ export default function HomeScreen({navigation}) {
               <Text
                 style={{
                   color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-                  fontFamily: MEDIUM_FONT,
-                  fontSize: FONT_NORMAL,
-                }}>
+                }}
+                className="font-poppins-regular">
                 {rupiah(15000)}
               </Text>
               <View
@@ -141,34 +159,33 @@ export default function HomeScreen({navigation}) {
                   columnGap: 15,
                 }}>
                 {/* <TouchableOpacity
-                  style={{
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    rowGap: 10,
-                  }}>
-                  <SendIkon
-                    width={24}
-                    height={24}
-                    fill={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
-                  />
+         style={{
+           flexDirection: 'column',
+           alignItems: 'center',
+           rowGap: 10,
+         }}>
+         <SendIkon
+           width={24}
+           height={24}
+           fill={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+         />
 
-                  <Text
-                    style={{
-                      color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-                      fontFamily: REGULAR_FONT,
-                    }}
-                    className="text-md">
-                    Transfer
-                  </Text>
-                </TouchableOpacity> */}
+         <Text
+           style={{
+             color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+             fontFamily: REGULAR_FONT,
+           }}
+           className="text-md">
+           Transfer
+         </Text>
+       </TouchableOpacity> */}
                 <TouchableOpacity
                   style={{
                     flexDirection: 'column',
                     alignItems: 'center',
                     rowGap: 10,
                   }}
-                  onPress={() => navigation.navigate('Deposit')}
-                  >
+                  onPress={() => navigation.navigate('Deposit')}>
                   <AddIkon
                     width={24}
                     height={24}
@@ -177,15 +194,15 @@ export default function HomeScreen({navigation}) {
                   <Text
                     style={{
                       color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-                      fontFamily: REGULAR_FONT,
                     }}
-                    className="text-md">
+                    className="font-poppins-semibold">
                     Deposit
                   </Text>
                 </TouchableOpacity>
               </View>
             </View>
           </ImageBackground>
+
           {/* TOPUP & TAGIHAN */}
           <View
             style={{
@@ -196,10 +213,9 @@ export default function HomeScreen({navigation}) {
             <View>
               <Text
                 style={{
-                  fontFamily: BOLD_FONT,
-                  fontSize: FONT_NORMAL,
                   color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-                }}>
+                }}
+                className="font-poppins-semibold">
                 Topup & Tagihan
               </Text>
             </View>
@@ -230,11 +246,10 @@ export default function HomeScreen({navigation}) {
                     <Text
                       style={{
                         textAlign: 'center',
-                        fontFamily: MEDIUM_FONT,
-                        fontSize: FONT_NORMAL,
                         marginTop: 10,
                         color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-                      }}>
+                      }}
+                      className="font-poppins-regular">
                       {item.label}
                     </Text>
                   </TouchableOpacity>
@@ -252,10 +267,9 @@ export default function HomeScreen({navigation}) {
             <View>
               <Text
                 style={{
-                  fontFamily: BOLD_FONT,
-                  fontSize: FONT_NORMAL,
                   color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-                }}>
+                }}
+                className="font-poppins-semibold">
                 Game
               </Text>
             </View>
@@ -284,11 +298,10 @@ export default function HomeScreen({navigation}) {
                     <Text
                       style={{
                         textAlign: 'center',
-                        fontFamily: MEDIUM_FONT,
-                        fontSize: FONT_NORMAL,
                         marginTop: 10,
                         color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-                      }}>
+                      }}
+                      className="font-poppins-regular">
                       {item.label}
                     </Text>
                   </TouchableOpacity>

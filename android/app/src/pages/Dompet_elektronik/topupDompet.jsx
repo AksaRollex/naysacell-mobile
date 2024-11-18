@@ -32,13 +32,16 @@ export default function TopupDompet({route}) {
 
   return (
     <>
-      <View className="h-full w-full" style={{ backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND }}>
+      <View
+        className="h-full w-full"
+        style={{
+          backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
+        }}>
         <View style={styles.container}>
           <View style={{marginBottom: 15}}>
             <Text
               style={{
-                fontFamily: MEDIUM_FONT,
-                fontSize: 16,
+                fontFamily: 'Poppins-SemiBold',
                 color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
               }}>
               {item}

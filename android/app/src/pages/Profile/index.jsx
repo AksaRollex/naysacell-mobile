@@ -9,7 +9,6 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import * as React from 'react';
-import MaterialComunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
   BLUE_COLOR,
   DARK_BACKGROUND,
@@ -24,6 +23,12 @@ import {
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 import ProfileForm from './tab/profileForm';
 import {HeaderBG, Pencil, SignOut} from '../../assets';
+import {useState, useEffect} from 'react';
+import ModalProcess from '../../components/ModalProcess';
+import Toast from 'react-native-toast-message';
+import {useQueryClient, useMutation} from '@tanstack/react-query';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from '../../libs/axios';
 
 const formPage = () => <ProfileForm />;
 
@@ -35,6 +40,50 @@ export default function Profile({navigation}) {
   const layout = useWindowDimensions();
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([{key: 'form', title: 'Detail Akun'}]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const queryClient = useQueryClient();
+
+  const [data, setData] = useState(null);
+
+  const handleLogout = () => {
+    setModalVisible(true);
+  };
+
+  const confirmLogout = () => {
+    setModalVisible(false);
+    logout();
+  };
+
+  const {mutate: logout} = useMutation({
+    mutationFn: () => axios.post('/auth/logout'),
+    onSuccess: async () => {
+      await AsyncStorage.removeItem('@auth-token');
+      Toast.show({
+        type: 'success',
+        text1: 'Logout Berhasil',
+      });
+      queryClient.invalidateQueries(['auth', 'user']);
+    },
+    onError: () => {
+      Toast.show({
+        type: 'error',
+        text1: 'Gagal Logout',
+      });
+    },
+  });
+
+  useEffect(() => {
+    axios
+      .get('/auth/me')
+      .then(response => {
+        setData(response.data.user);
+        console.log(response.data.user);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
+
   return (
     <View
       className="w-full h-full flex"
@@ -50,64 +99,26 @@ export default function Profile({navigation}) {
           width: windowWidth,
           height: windowHeight * 0.2,
         }}>
-        <View
-          className="w-full py-3 px-2 items-end justify-end flex-row  "
-          // style={{
-          //   backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
-          // }}
-        >
-          <TouchableOpacity
-            className="mx-5"
-            onPress={() => navigation.navigate('ProfileFormEdit')}>
-            <Pencil
-              fill={isDarkMode ? 'white' : 'black'}
-              width={24}
-              height={24}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            className="mr-2"
-            onPress={() => navigation.navigate('Login')}>
-            <SignOut
-              width={24}
-              height={24}
-              fill={isDarkMode ? 'white' : 'black'}
-            />
+        <View className="w-full py-3 px-2 items-end justify-end flex-row  ">
+          <TouchableOpacity className="mr-2" onPress={handleLogout}>
+            <SignOut width={24} height={24} fill={isDarkMode ? 'red' : 'red'} />
           </TouchableOpacity>
         </View>
-        <View
-          className=" flex-row items-center justify-center  py-4 "
-          // style={{
-          //   backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
-          // }}
-        >
+        <View className=" flex-col items-center justify-center  py-4 ">
           <Image
             source={require('../../../src/assets/images/avatar.jpg')}
             className="w-20 h-20 rounded-full"
           />
-          {/* <View
-            className="
-          flex-col items-start justify-center 
-          ">
+          {data && (
             <Text
-              className="text-base font-bold font-sans"
+              className="text-base font-poppins-regular my-2"
               style={{color: isDarkMode ? 'white' : 'black'}}>
-              Aksa Rollcake
+              {data.name}
             </Text>
-            <Text
-              className="text-sm  font-bold font-sans"
-              style={{color: isDarkMode ? 'white' : 'black'}}>
-              ramsimw8@gmail.com
-            </Text>
-            <Text
-              className="text-sm   font-bold font-sans"
-              style={{color: isDarkMode ? 'white' : 'black'}}>
-              08123456789
-            </Text>
-          </View> */}
+          )}
         </View>
       </ImageBackground>
-      <View style={{flex: 1}} className="">
+      <View style={{flex: 1}}>
         <TabView
           navigationState={{index, routes}}
           renderScene={renderScene}
@@ -123,11 +134,23 @@ export default function Profile({navigation}) {
               style={{
                 backgroundColor: isDarkMode ? '#18181B' : WHITE_BACKGROUND,
               }} // Warna background tab
-              labelStyle={{fontWeight: 'bold'}}
+              labelStyle={{fontFamily: 'Poppins-semiBold'}}
               activeColor={BLUE_COLOR} // Warna teks tab aktif
               inactiveColor="gray" // Warna teks tab tidak aktif
             />
           )}
+        />
+      
+      </View>
+
+      <View>
+        <ModalProcess
+          modalVisible={modalVisible}
+          title={'Apakah Anda Yakin Ingin Keluar?'}
+          url={require('../../assets/lottie/logout-animation.json')}
+          buttonFalseText={'Batal'}
+          buttonTrueText={'Ya, Keluar'}
+          functionTrueButton={confirmLogout}
         />
       </View>
     </View>

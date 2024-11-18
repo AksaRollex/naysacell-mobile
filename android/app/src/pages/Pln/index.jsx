@@ -18,16 +18,16 @@ import {
 } from '../../utils/const';
 import {ArrowRight} from '../../assets';
 
-export default function LayananPLN({ navigation}) {
+export default function LayananPLN({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
 
   const layanans = [
     {
-      label: 'Prabayar/Token',
+      label: 'Prabayar / Token',
       path: 'PLNPrabayar',
     },
     {
-      label: 'Pascabayar/Tagihan',
+      label: 'Pascabayar / Tagihan',
       path: 'PLNPascaBayar',
     },
   ];
@@ -41,8 +41,7 @@ export default function LayananPLN({ navigation}) {
               <TouchableOpacity
                 key={item.label}
                 style={styles.layananButton(isDarkMode)}
-                onPress={() => navigation.navigate(item.path)}
-                >
+                onPress={() => navigation.navigate(item.path)}>
                 <Text style={styles.buttonText(isDarkMode)}>{item.label}</Text>
                 <ArrowRight />
               </TouchableOpacity>
@@ -73,7 +72,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   }),
   buttonText: isDarkMode => ({
-    fontFamily: REGULAR_FONT,
     color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+    fontFamily: 'Poppins-SemiBold',
   }),
 });

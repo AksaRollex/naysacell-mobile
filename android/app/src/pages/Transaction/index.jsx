@@ -48,7 +48,7 @@ export default function Transaction() {
           width: windowWidth,
           height: windowHeight * 0.2,
         }}>
-        <Text className="text-white font-bold text-base font-sans mx-6 my-5">
+        <Text className="text-white font-poppins-semibold text-base  mx-6 my-5">
           Histori Transaksi
         </Text>
       </ImageBackground>
@@ -69,7 +69,7 @@ export default function Transaction() {
               backgroundColor: isDarkMode ? '#27272A' : WHITE_BACKGROUND,
             }}>
             <Text
-              className="font-bold text-base font-sans"
+              className="font-poppins-semibold"
               style={{color: isDarkMode ? BLUE_COLOR : BLUE_COLOR}}>
               Sukses
             </Text>
@@ -82,7 +82,7 @@ export default function Transaction() {
               backgroundColor: isDarkMode ? '#27272A' : WHITE_BACKGROUND,
             }}>
             <Text
-              className="font-bold text-base font-sans"
+              className="font-poppins-semibold"
               style={{color: isDarkMode ? BLUE_COLOR : BLUE_COLOR}}>
               Pending
             </Text>
@@ -108,18 +108,18 @@ export default function Transaction() {
                   style={{borderColor: isDarkMode ? GREY_COLOR : LIGHT_COLOR}}>
                   <View className="flex-col justify-start items-start">
                     <Text
-                      className="font-bold font-sans"
+                      className="font-poppins-semibold"
                       style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                       Pulsa
                     </Text>
                     <Text
-                      className="font-bold font-sans"
+                      className="font-poppins-semibold"
                       style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                       18 September 2022
                     </Text>
                   </View>
                   <View className="flex justify-end items-end">
-                    <Text className="font-bold font-sans text-end text-green-400">
+                    <Text className="font-poppins-semibold text-end text-green-400">
                       Sukses
                     </Text>
                   </View>
@@ -127,27 +127,27 @@ export default function Transaction() {
                 <View id="cardTitle" className="flex-row  justify-between py-3">
                   <View className="flex-col justify-start items-start">
                     <Text
-                      className="font-bold font-sans"
+                      className="font-poppins-regular"
                       style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                       Kode Transaksi : 12345
                     </Text>
                     <Text
-                      className="font-bold font-sans"
+                      className="font-poppins-regular"
                       style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                       Provider : Telkomsel
                     </Text>
                     <Text
-                      className="font-bold font-sans"
+                      className="font-poppins-regular"
                       style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                       Produk : Telkomsel 5000
                     </Text>
                     <Text
-                      className="font-bold font-sans"
+                      className="font-poppins-regular"
                       style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                       Nomor Tujuan : 085336970707
                     </Text>
                     <Text
-                      className="font-bold font-sans"
+                      className="font-poppins-regular"
                       style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                       Total Harga : Rp. 100.000,00
                     </Text>
@@ -171,18 +171,18 @@ export default function Transaction() {
                   style={{borderColor: isDarkMode ? GREY_COLOR : LIGHT_COLOR}}>
                   <View className="flex-col justify-start items-start">
                     <Text
-                      className="font-bold font-sans"
+                      className="font-poppins-semibold"
                       style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                       Pulsa
                     </Text>
                     <Text
-                      className="font-bold font-sans"
+                      className="font-poppins-semibold"
                       style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                       18 September 2022
                     </Text>
                   </View>
                   <View className="flex justify-end items-end">
-                    <Text className="font-bold font-sans text-end text-indigo-400">
+                    <Text className="font-poppins-semibold text-end text-indigo-400">
                       Pending
                     </Text>
                   </View>
@@ -190,27 +190,27 @@ export default function Transaction() {
                 <View id="cardTitle" className="flex-row  justify-between py-3">
                   <View className="flex-col justify-start items-start">
                     <Text
-                      className="font-bold font-sans"
+                      className="font-poppins-regular"
                       style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                       Kode Transaksi : 12345
                     </Text>
                     <Text
-                      className="font-bold font-sans"
+                      className="font-poppins-regular"
                       style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                       Provider : Telkomsel
                     </Text>
                     <Text
-                      className="font-bold font-sans"
+                      className="font-poppins-regular"
                       style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                       Produk : Telkomsel 5000
                     </Text>
                     <Text
-                      className="font-bold font-sans"
+                      className="font-poppins-regular"
                       style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                       Nomor Tujuan : 085336970707
                     </Text>
                     <Text
-                      className="font-bold font-sans"
+                      className="font-poppins-regular"
                       style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                       Total Harga : Rp. 100.000,00
                     </Text>

@@ -26,25 +26,25 @@ export default function HistoryDeposit() {
           style={{borderColor: isDarkMode ? GREY_COLOR : LIGHT_COLOR}}>
           <View className="flex-col justify-start items-start">
             <Text
-              className="font-bold font-sans"
+              className="font-poppins-semibold"
               style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
               18 September 2022
             </Text>
           </View>
           <View className="flex justify-end items-end">
-            <Text className="font-bold font-sans text-end text-green-400">
+            <Text className="font-poppins-semibold text-end text-green-400">
               Sukses
             </Text>
           </View>
         </View>
         <View className="flex-col justify-start items-start py-3">
           <Text
-            className="font-bold font-sans"
+            className="font-poppins-regular"
             style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
             Metode Pembayaran : BNI
           </Text>
           <Text
-            className="font-bold font-sans"
+            className="font-poppins-regular"
             style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
             Jumlah Deposit : Rp. 100.000,00
           </Text>

@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
   buttonTabLabel: isDarkMode => ({
     textAlign: 'center',
     color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-    fontFamily: REGULAR_FONT,
+    fontFamily : 'Poppins-SemiBold',
   }),
   productWrapper: isDarkMode => ({
     borderWidth: 1,
@@ -251,19 +251,19 @@ const styles = StyleSheet.create({
     backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
   }),
   productLabel: isDarkMode => ({
-    fontFamily: MEDIUM_FONT,
-    fontSize: FONT_NORMAL,
+    fontFamily: 'Poppins-SemiBold',
     color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
   }),
   productPrice: isDarkMode => ({
-    fontFamily: REGULAR_FONT,
+    fontFamily: 'Poppins-Regular',
     color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
   }),
   buttonLabel: {
     color: WHITE_BACKGROUND,
     textAlign: 'center',
-    fontFamily: REGULAR_FONT,
+    fontFamily : 'Poppins-SemiBold',
   },
+
   bottom: isDarkMode => ({
     position: 'absolute',
     bottom: 0,
