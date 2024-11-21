@@ -15,12 +15,16 @@ import {
   LIGHT_COLOR,
   SLATE_COLOR,
 } from '../../../../utils/const';
-import {useFormStep} from '..';
+import {useFormStep, useFormStore} from '..';
 import axios from '../../../../libs/axios';
 import {API_URL} from '@env';
+import {useNavigation} from '@react-navigation/native';
+import {useMutation} from '@tanstack/react-query';
 
-export default function Credential({navigation}) {
-  //   const {nextStep, setIndex} = useFormStep();
+export default function Credential() {
+  const {nextStep, setIndex} = useFormStep();
+  const {setCredential} = useFormStore();
+  const navigation = useNavigation();
   const isDarkMode = useColorScheme() === 'dark';
 
   const {
@@ -44,6 +48,12 @@ export default function Credential({navigation}) {
   //         console.log(err);
   //       });
   //   };
+
+  const onSubmit = () => {
+    setCredential(getValues());
+    nextStep();
+  };
+
   return (
     <View>
       <View className="my-6">
@@ -73,13 +83,11 @@ export default function Credential({navigation}) {
       <View className="flex">
         <TouchableOpacity
           className="w-11/12 rounded-3xl mx-auto px-4 h-12 items-center justify-center"
-          onPress={() => navigation.navigate('otpEmail')}
+          onPress={handleSubmit(onSubmit)}
           style={{
             backgroundColor: BLUE_COLOR,
           }}>
-          <Text className="text-white text-md font-poppins-bold">
-            LANJUT
-          </Text>
+          <Text className="text-white text-md font-poppins-bold">LANJUT</Text>
         </TouchableOpacity>
       </View>
     </View>

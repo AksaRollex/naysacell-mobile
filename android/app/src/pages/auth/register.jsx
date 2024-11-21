@@ -26,6 +26,7 @@ import {Controller, useForm} from 'react-hook-form';
 import {API_URL} from '@env';
 import Header from '../../components/Header';
 import ModalAfterProcess from '../../components/ModalAfterProcess';
+import {Eye, EyeCrossed} from '../../assets';
 
 const baseRem = 16;
 const rem = multiplier => baseRem * multiplier;
@@ -36,8 +37,8 @@ export default function RegisterPage({navigation}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalFailed, setModalFailed] = useState(false);
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(true);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
   const [errorMessage, setErrorMessage] = useState('');
@@ -65,7 +66,7 @@ export default function RegisterPage({navigation}) {
       const formData = {
         ...data,
       };
-      await axios.post(`${API_URL}/auth/user/store`, formData);
+      await axios.post(`/auth/user/store`, formData);
       setModalVisible(true);
       setTimeout(() => {
         setModalVisible(false);
@@ -225,38 +226,44 @@ export default function RegisterPage({navigation}) {
             </View>
             {/* PASSWORD */}
             <View className="mt-6">
-              <View className="relative">
-                <Controller
-                  name="password"
-                  control={control}
-                  rules={{
-                    required: 'Password Harus Diisi',
-                    minLength: {
-                      value: 8,
-                      message: 'Password minimal 8 karakter',
-                    },
-                  }}
-                  render={({field: {onChange, onBlur, value}}) => (
+              <Controller
+                name="password"
+                control={control}
+                rules={{
+                  required: 'Password Harus Diisi',
+                  minLength: {
+                    value: 8,
+                    message: 'Password minimal 8 karakter',
+                  },
+                }}
+                render={({field: {onChange, onBlur, value}}) => (
+                  <View className="relative">
                     <TextInput
                       value={value}
                       onChangeText={onChange}
                       onBlur={onBlur}
                       style={{fontFamily: 'Poppins-Regular'}}
                       placeholder="Password"
-                      secureTextEntry={!showPassword}
                       placeholderTextColor={
                         isDarkMode ? SLATE_COLOR : GREY_COLOR
                       }
-                      keyboardType="phone-pad"
+                      keyboardType="numeric"
                       className="h-12 w-11/12 rounded-3xl mx-auto px-4 border border-stone-600"
+                      secureTextEntry={showPassword}
                     />
-                  )}
-                />
-                {/* <PasswordIcon
-                  shown={showPassword}
-                  onPress={() => setShowPassword(!showPassword)}
-                /> */}
-              </View>
+                    <TouchableOpacity
+                      onPress={() => setShowPassword(!showPassword)}
+                      style={{
+                        position: 'absolute',
+                        top: '50%',
+                        right: 30,
+                        transform: [{translateY: -12}],
+                      }}>
+                      {showPassword ? <Eye /> : <EyeCrossed />}
+                    </TouchableOpacity>
+                  </View>
+                )}
+              />
               {errors.password && (
                 <Text className="mt-1 text-red-400 ml-8 font-poppins-regular">
                   {errors.password.message}
@@ -275,19 +282,33 @@ export default function RegisterPage({navigation}) {
                       value === password || 'Password tidak cocok',
                   }}
                   render={({field: {onChange, onBlur, value}}) => (
-                    <TextInput
-                      value={value}
-                      onChangeText={onChange}
-                      onBlur={onBlur}
-                      placeholder="Konfirmasi Password"
-                      secureTextEntry={!showConfirmPassword}
-                      style={{fontFamily: 'Poppins-Regular'}}
-                      keyboardType="phone-pad"
-                      placeholderTextColor={
-                        isDarkMode ? SLATE_COLOR : GREY_COLOR
-                      }
-                      className="h-12 w-11/12 rounded-3xl mx-auto px-4 border border-stone-600"
-                    />
+                    <View className="relative">
+                      <TextInput
+                        value={value}
+                        onChangeText={onChange}
+                        onBlur={onBlur}
+                        placeholder="Konfirmasi Password"
+                        style={{fontFamily: 'Poppins-Regular'}}
+                        keyboardType="numeric"
+                        placeholderTextColor={
+                          isDarkMode ? SLATE_COLOR : GREY_COLOR
+                        }
+                        secureTextEntry={showConfirmPassword}
+                        className="h-12 w-11/12 rounded-3xl mx-auto px-4 border border-stone-600"
+                      />
+                      <TouchableOpacity
+                        onPress={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
+                        style={{
+                          position: 'absolute',
+                          top: '50%',
+                          right: 30,
+                          transform: [{translateY: -12}],
+                        }}>
+                        {showConfirmPassword ? <Eye /> : <EyeCrossed />}
+                      </TouchableOpacity>
+                    </View>
                   )}
                 />
                 {/* <PasswordIcon
@@ -324,10 +345,12 @@ export default function RegisterPage({navigation}) {
             <Text
               style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}
               className="font-poppins-regular">
-              Sudah punya akun?
+              Sudah punya akun ?
             </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-              <Text style={{color: BLUE_COLOR, fontFamily: 'Poppins-Regular'}}>
+              <Text
+                style={{color: BLUE_COLOR, fontFamily: 'Poppins-Regular'}}
+                className="mx-1">
                 Masuk
               </Text>
             </TouchableOpacity>

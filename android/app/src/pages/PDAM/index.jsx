@@ -81,25 +81,27 @@ export default function PDAM() {
             </TouchableOpacity>
           </View>
           <View style={styles.infoPelanggan(isDarkMode)}>
-            <View style={styles.contentBlock(isDarkMode)}>
-              <Text style={styles.label(isDarkMode)}>Nama</Text>
-              <Text style={styles.value(isDarkMode)}>Lorem Ipsum</Text>
-            </View>
-            <View style={styles.contentBlock(isDarkMode)}>
-              <Text style={styles.label(isDarkMode)}>ID Pelanggan</Text>
-              <Text style={styles.value(isDarkMode)}>123456789</Text>
-            </View>
-            <View style={styles.contentBlock(isDarkMode)}>
-              <Text style={styles.label(isDarkMode)}>Jumlah Peserta</Text>
-              <Text style={styles.value(isDarkMode)}> 2</Text>
-            </View>
-            <View style={styles.contentBlock(isDarkMode)}>
-              <Text style={styles.label(isDarkMode)}>Lembar Tagihan</Text>
-              <Text style={styles.value(isDarkMode)}> 2 lbr</Text>
-            </View>
-            <View style={styles.contentBlock(isDarkMode)}>
-              <Text style={styles.label(isDarkMode)}>Total Tagihan</Text>
-              <Text style={styles.value(isDarkMode)}>120.000</Text>
+            <View className="pb-2">
+              <View style={styles.contentBlock(isDarkMode)}>
+                <Text style={styles.label(isDarkMode)}>Nama</Text>
+                <Text style={styles.value(isDarkMode)}>Lorem Ipsum</Text>
+              </View>
+              <View style={styles.contentBlock(isDarkMode)}>
+                <Text style={styles.label(isDarkMode)}>ID Pelanggan</Text>
+                <Text style={styles.value(isDarkMode)}>123456789</Text>
+              </View>
+              <View style={styles.contentBlock(isDarkMode)}>
+                <Text style={styles.label(isDarkMode)}>Jumlah Peserta</Text>
+                <Text style={styles.value(isDarkMode)}> 2</Text>
+              </View>
+              <View style={styles.contentBlock(isDarkMode)}>
+                <Text style={styles.label(isDarkMode)}>Lembar Tagihan</Text>
+                <Text style={styles.value(isDarkMode)}> 2 lbr</Text>
+              </View>
+              <View style={styles.contentBlock(isDarkMode)}>
+                <Text style={styles.label(isDarkMode)}>Total Tagihan</Text>
+                <Text style={styles.value(isDarkMode)}>120.000</Text>
+              </View>
             </View>
           </View>
         </View>
@@ -151,11 +153,11 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: WHITE_COLOR,
-    fontFamily: REGULAR_FONT,
+    fontFamily: 'Poppins-SemiBold',
     textAlign: 'center',
   },
   textOption: isDarkMode => ({
-    fontFamily: REGULAR_FONT,
+    fontFamily: 'Poppins-Regular',
     color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
   }),
   infoPelanggan: isDarkMode => ({
@@ -173,13 +175,11 @@ const styles = StyleSheet.create({
     rowGap: 5,
   }),
   label: isDarkMode => ({
-    fontFamily: MEDIUM_FONT,
-    fontSize: FONT_SEDANG,
+    fontFamily: 'Poppins-SemiBold',
     color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
   }),
   value: isDarkMode => ({
-    fontFamily: REGULAR_FONT,
-    fontSize: FONT_NORMAL,
+    fontFamily: 'Poppins-Regular',
     color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
   }),
   productWrapper: isDarkMode => ({

@@ -12,23 +12,21 @@ import * as React from 'react';
 import {
   BLUE_COLOR,
   DARK_BACKGROUND,
-  DARK_COLOR,
-  GREY_COLOR,
   LIGHT_BACKGROUND,
-  LIGHT_COLOR,
   windowHeight,
   windowWidth,
   WHITE_BACKGROUND,
 } from '../../utils/const';
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 import ProfileForm from './tab/profileForm';
-import {HeaderBG, Pencil, SignOut} from '../../assets';
-import {useState, useEffect} from 'react';
+import {HeaderBG, SignOut} from '../../assets';
+import {useState} from 'react';
 import ModalProcess from '../../components/ModalProcess';
 import Toast from 'react-native-toast-message';
-import {useQueryClient, useMutation} from '@tanstack/react-query';
+import {useQueryClient, useMutation, useQuery} from '@tanstack/react-query';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from '../../libs/axios';
+import ModalAfterProcess from '../../components/ModalAfterProcess';
 
 const formPage = () => <ProfileForm />;
 
@@ -40,49 +38,61 @@ export default function Profile({navigation}) {
   const layout = useWindowDimensions();
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([{key: 'form', title: 'Detail Akun'}]);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [modalLogout, setModalLogout] = useState(false);
+  const [modalSuccessLogout, setModalSuccessLogout] = useState(false);
+  const [modalFailedLogout, setModalFailedLogout] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
   const queryClient = useQueryClient();
 
-  const [data, setData] = useState(null);
-
   const handleLogout = () => {
-    setModalVisible(true);
+    setModalLogout(true);
   };
 
   const confirmLogout = () => {
-    setModalVisible(false);
+    setModalLogout(false);
     logout();
   };
 
+  const cancelLogout = () => {
+    setModalLogout(false);
+  };
+
   const {mutate: logout} = useMutation({
-    mutationFn: () => axios.post('/auth/logout'),
+    mutationFn: () => axios.delete('/auth/logout'),
     onSuccess: async () => {
-      await AsyncStorage.removeItem('@auth-token');
-      Toast.show({
-        type: 'success',
-        text1: 'Logout Berhasil',
-      });
-      queryClient.invalidateQueries(['auth', 'user']);
+      try {
+        await AsyncStorage.removeItem('@auth-token');
+        setModalSuccessLogout(true);
+        setTimeout(() => {
+          setModalSuccessLogout(false);
+          navigation.replace('Login');
+        }, 2000);
+      } catch (error) {
+        setErrorMessage(error.response?.data || error.message);
+        setModalFailedLogout(true);
+        setTimeout(() => {
+          setModalFailedLogout(false);
+        }, 2000);
+      }
     },
-    onError: () => {
-      Toast.show({
-        type: 'error',
-        text1: 'Gagal Logout',
-      });
+    onError: error => {
+      console.error('Logout error:', error.response?.data || error.message);
+      setErrorMessage(error.response?.data || error.message);
+      setModalFailedLogout(true);
+      setTimeout(() => {
+        setModalFailedLogout(false);
+      }, 2000);
     },
   });
 
-  useEffect(() => {
-    axios
-      .get('/auth/me')
-      .then(response => {
-        setData(response.data.user);
-        console.log(response.data.user);
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
-  }, []);
+  const {data, error, isLoading} = useQuery({
+    queryKey: ['auth', 'user'],
+    queryFn: () => axios.get('/auth/me').then(response => response.data.user),
+    onError: error => {
+      console.error('Error fetching data:', error);
+    },
+  });
 
   return (
     <View
@@ -90,9 +100,6 @@ export default function Profile({navigation}) {
       style={{
         backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
       }}>
-      {/* NAVBAR */}
-
-      {/* PROFILE */}
       <ImageBackground
         source={HeaderBG}
         style={{
@@ -101,7 +108,7 @@ export default function Profile({navigation}) {
         }}>
         <View className="w-full py-3 px-2 items-end justify-end flex-row  ">
           <TouchableOpacity className="mr-2" onPress={handleLogout}>
-            <SignOut width={24} height={24} fill={isDarkMode ? 'red' : 'red'} />
+            <SignOut width={24} height={24} />
           </TouchableOpacity>
         </View>
         <View className=" flex-col items-center justify-center  py-4 ">
@@ -111,13 +118,14 @@ export default function Profile({navigation}) {
           />
           {data && (
             <Text
-              className="text-base font-poppins-regular my-2"
-              style={{color: isDarkMode ? 'white' : 'black'}}>
+              className="text-base font-poppins-semibold my-2"
+              style={{color: isDarkMode ? 'white' : 'white'}}>
               {data.name}
             </Text>
           )}
         </View>
       </ImageBackground>
+
       <View style={{flex: 1}}>
         <TabView
           navigationState={{index, routes}}
@@ -130,27 +138,41 @@ export default function Profile({navigation}) {
               indicatorStyle={{
                 backgroundColor: isDarkMode ? BLUE_COLOR : BLUE_COLOR,
                 height: 1,
-              }} // Warna indikator tab aktif
+              }} // WARNA GARIS BAWAH
               style={{
                 backgroundColor: isDarkMode ? '#18181B' : WHITE_BACKGROUND,
-              }} // Warna background tab
-              labelStyle={{fontFamily: 'Poppins-semiBold'}}
-              activeColor={BLUE_COLOR} // Warna teks tab aktif
-              inactiveColor="gray" // Warna teks tab tidak aktif
+              }} // WARNA BACKGROUND TAB
+              labelStyle={{fontFamily: 'Poppins-SemiBold'}}
+              activeColor={BLUE_COLOR} // WARNA TAB AKTIF
+              inactiveColor="gray" // WARNA TAB TIDAK AKTIF
             />
           )}
         />
-      
       </View>
 
       <View>
         <ModalProcess
-          modalVisible={modalVisible}
+          modalVisible={modalLogout}
           title={'Apakah Anda Yakin Ingin Keluar?'}
           url={require('../../assets/lottie/logout-animation.json')}
           buttonFalseText={'Batal'}
           buttonTrueText={'Ya, Keluar'}
+          functionFalseButton={cancelLogout}
           functionTrueButton={confirmLogout}
+        />
+
+        <ModalAfterProcess
+          modalVisible={modalSuccessLogout}
+          title={'Logout Berhasil'}
+          subTitle={'Anda Akan Dikembalikan Ke Halaman Login'}
+          url={require('../../assets/lottie/success-animation.json')}
+        />
+
+        <ModalAfterProcess
+          modalVisible={modalFailedLogout}
+          title={'Logout Gagal'}
+          subTitle={errorMessage}
+          url={require('../../assets/lottie/failed-animation.json')}
         />
       </View>
     </View>

@@ -23,8 +23,7 @@ export default function FullModal({visible, onDismiss, title, children}) {
       visible={visible}
       animationType="slide"
       onRequestClose={onDismiss}
-      transparent={true}
-      >
+      transparent={true}>
       <TouchableWithoutFeedback onPress={onDismiss}>
         <View
           style={{
@@ -55,7 +54,11 @@ export default function FullModal({visible, onDismiss, title, children}) {
             justifyContent: 'center',
           }}>
           <Text
-            style={{fontFamily: BOLD_FONT, fontSize: 16, textAlign: 'center'}}>
+            style={{
+              fontFamily: 'Poppins-SemiBold',
+              fontSize: 16,
+              textAlign: 'center',
+            }}>
             {title}
           </Text>
           <TouchableOpacity

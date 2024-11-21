@@ -1,6 +1,14 @@
-import {StyleSheet, Text, View, Modal, TouchableOpacity} from 'react-native';
-import React, {useState} from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Modal,
+  TouchableOpacity,
+  useColorScheme,
+} from 'react-native';
+import React from 'react';
 import LottieView from 'lottie-react-native';
+import {WHITE_BACKGROUND} from '../utils/const';
 
 const baseRem = 16;
 const rem = size => size * baseRem;
@@ -12,15 +20,18 @@ export default function ModalProcess({
   buttonFalseText,
   buttonTrueText,
   functionTrueButton,
+  functionFalseButton,
 }) {
-  const [, setModalVisible] = useState(false);
-  const closeModal = () => {
-    setModalVisible(false);
-  };
+  const isDarkMode = useColorScheme() === 'dark';
+
   return (
     <Modal animationType="fade" transparent={true} visible={modalVisible}>
       <View style={styles.modalOverlay}>
-        <View style={styles.modalContent}>
+        <View
+          style={[
+            styles.modalContent,
+            {backgroundColor: isDarkMode ? '#27272A' : WHITE_BACKGROUND},
+          ]}>
           <LottieView source={url} autoPlay loop={true} style={styles.lottie} />
           <Text
             style={styles.successTextTitle}
@@ -31,7 +42,7 @@ export default function ModalProcess({
           <View className="flex-row justify-between  w-full ">
             <TouchableOpacity
               className="bg-red-200  px-4 py-3 rounded-md"
-              onPress={closeModal}>
+              onPress={functionFalseButton}>
               <Text className="font-poppins-semibold text-red-600">
                 {buttonFalseText}
               </Text>
@@ -55,11 +66,10 @@ const styles = StyleSheet.create({
     width: 250,
     height: 250,
   },
-  successTextTitle: {
+  successTextTitle: isDarkMode => ({
     textAlign: 'center',
-    color: 'black',
-    fontSize: rem(1.3),
-  },
+    color: isDarkMode ? 'white' : 'black',
+  }),
   successText: {
     fontSize: 14,
     textAlign: 'center',
@@ -73,7 +83,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: 'white',
     borderRadius: 20,
     padding: 20,
     alignItems: 'center',

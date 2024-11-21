@@ -73,7 +73,7 @@ export default function HomeScreen({navigation}) {
         console.error('Error fetching data:', error);
       });
   }, []);
-  
+
   return (
     <>
       <ScrollView
@@ -100,12 +100,12 @@ export default function HomeScreen({navigation}) {
               {data && (
                 <Text
                   style={{
-                    color: isDarkMode ? 'white' : 'black',
+                    color: isDarkMode ? 'white' : 'white',
                     fontWeight: '500',
                     marginBottom: 5,
                   }}
-                  className="font-poppins-regular">
-                  {greeting} , {data.name}
+                  className="font-poppins-semibold">
+                  {greeting} , {data.name || 'User'}
                 </Text>
               )}
 
@@ -280,7 +280,7 @@ export default function HomeScreen({navigation}) {
                 justifyContent: 'space-between',
               }}>
               {gameMenu.map(item => {
-                console.log(item);
+                // console.log(item);
                 return (
                   <TouchableOpacity
                     key={item.label}

@@ -11,17 +11,24 @@ import {
   SLATE_COLOR,
   WHITE_COLOR,
   LIGHT_COLOR,
-  LIGHT_BACKGROUND,
   BLUE_COLOR,
 } from '../../../utils/const';
 import axios from '../../../libs/axios';
 import Toast from 'react-native-toast-message';
+import ModalAfterProcess from '../../../components/ModalAfterProcess';
+import {Controller, useForm} from 'react-hook-form';
+import {useQueryClient} from '@tanstack/react-query';
 
 export default function ProfileForm({route}) {
   const isDarkMode = useColorScheme() === 'dark';
-
-  const {uuid} = route?.params || {};
   const [isEditing, setIsEditing] = useState(false);
+  const [modalSuccess, setModalSuccess] = useState(false);
+  const [modalFailed, setModalFailed] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const query = useQueryClient();
+
+  const {control} = useForm();
+
   const [data, setData] = useState({
     name: '',
     email: '',
@@ -68,33 +75,37 @@ export default function ProfileForm({route}) {
   const handleUpdate = async () => {
     if (isEditing) {
       try {
-        // Menggunakan route yang sesuai
-        const response = await axios.post(
-          `/auth/user/${uuid}/update`,
-          formData,
-        );
+        const response = await axios.post(`/auth/user/update`, {
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          address: formData.address,
+        });
 
         if (response.data) {
-          Toast.show({
-            type: 'success',
-            text1: 'Data berhasil diupdate',
-          });
           setIsEditing(false);
-          fetchUserData(); // Refresh data
+          fetchUserData();
+          setModalSuccess(true);
+          setTimeout(() => {
+            setModalSuccess(false);
+          }, 2000);
+          query.invalidateQueries(['auth', 'user']);
         }
       } catch (error) {
-        console.error('Error updating data:', error);
-        Toast.show({
-          type: 'error',
-          text1: error.response?.data?.message || 'Gagal mengupdate data',
-        });
+        setErrorMessage(
+          error.response?.data?.message ||
+            'Gagal Memperbarui Data, Silahkan Coba Lagi',
+        );
+        setModalFailed(true);
+        setTimeout(() => {
+          setModalFailed(false);
+        }, 2000);
       }
     } else {
       setIsEditing(true);
     }
   };
 
-  // Handle cancel edit
   const handleCancel = () => {
     setIsEditing(false);
     // Reset form data ke data asli
@@ -109,21 +120,39 @@ export default function ProfileForm({route}) {
   return (
     <View className="py-2 w-full">
       {data && (
-        <View className="">
+        <View>
           <View className="px-4 py-2">
-            <Text
-              className="font-poppins-semibold my-1"
-              style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
-              Nama Lengkap
-            </Text>
-            <TextInput
-              value={formData.name}
-              onChangeText={value => handleInputChange('name', value)}
-              editable={isEditing}
-              placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
-              className={`h-12 w-full mx-auto px-4 rounded-md border border-stone-600 font-poppins-regular ${
-                isEditing ? '' : ''
-              }`}
+            <Controller
+              control={control}
+              name="name"
+              rules={{
+                required: 'Nama Harus Diisi',
+                maxLength: {
+                  value: 20,
+                  message: 'Nama Tidak Boleh Lebih Dari 20 Karakter',
+                },
+              }}
+              render={({field: {onBlur}}) => (
+                <>
+                  <Text
+                    className="font-poppins-semibold my-1"
+                    style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
+                    Nama Lengkap
+                  </Text>
+                  <TextInput
+                    value={formData.name}
+                    onChangeText={value => handleInputChange('name', value)}
+                    onBlur={onBlur}
+                    editable={isEditing}
+                    placeholderTextColor={
+                      isDarkMode ? SLATE_COLOR : LIGHT_COLOR
+                    }
+                    className={`h-12 w-full mx-auto px-4 rounded-md border-[0.5px] border-neutral-700 font-poppins-regular ${
+                      isEditing ? '' : ''
+                    }`}
+                  />
+                </>
+              )}
             />
           </View>
 
@@ -136,45 +165,71 @@ export default function ProfileForm({route}) {
             <TextInput
               value={formData.email}
               onChangeText={value => handleInputChange('email', value)}
-              editable={isEditing}
+              editable={false}
               placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
-              className={`h-12 w-full mx-auto px-4 rounded-md border border-stone-600 font-poppins-regular ${
+              className={`h-12 w-full mx-auto px-4 rounded-md border-[0.5px] border-neutral-700  font-poppins-regular ${
                 isEditing ? '' : ''
               }`}
             />
           </View>
 
           <View className="px-4 py-2">
-            <Text
-              className="font-poppins-semibold my-1"
-              style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
-              Nomor Telepon
-            </Text>
-            <TextInput
-              value={formData.phone}
-              onChangeText={value => handleInputChange('phone', value)}
-              editable={isEditing}
-              placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
-              className={`h-12 w-full mx-auto px-4 rounded-md border border-stone-600 font-poppins-regular ${
-                isEditing ? '' : ''
-              }`}
+            <Controller
+              control={control}
+              name="phone"
+              rules={{
+                required: 'Nomor Telepon Harus Diisi',
+              }}
+              render={({field: {onBlur}}) => (
+                <>
+                  <Text
+                    className="font-poppins-semibold my-1"
+                    style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
+                    Nomor Telepon
+                  </Text>
+                  <TextInput
+                    value={formData.phone}
+                    onBlur={onBlur}
+                    onChangeText={value => handleInputChange('phone', value)}
+                    editable={isEditing}
+                    placeholderTextColor={
+                      isDarkMode ? SLATE_COLOR : LIGHT_COLOR
+                    }
+                    className={`h-12 w-full mx-auto px-4 rounded-md border-[0.5px] border-neutral-700  font-poppins-regular ${
+                      isEditing ? '' : ''
+                    }`}
+                  />
+                </>
+              )}
             />
           </View>
 
           <View className="px-4 py-2">
-            <Text
-              className="font-poppins-semibold my-1"
-              style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
-              Alamat Lengkap
-            </Text>
-            <TextInput
-              value={formData.address}
-              onChangeText={value => handleInputChange('address', value)}
-              editable={isEditing}
-              placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
-              className={`h-12 w-full mx-auto px-4 rounded-md border border-stone-600 font-poppins-regular ${
-                isEditing ? '' : ''
-              }`}
+            <Controller
+              control={control}
+              name="address"
+              rules={{required: 'Alamat Harus Diisi'}}
+              render={({field: {onBlur}}) => (
+                <>
+                  <Text
+                    className="font-poppins-semibold my-1"
+                    style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
+                    Alamat Lengkap
+                  </Text>
+                  <TextInput
+                    value={formData.address}
+                    onBlur={onBlur}
+                    onChangeText={value => handleInputChange('address', value)}
+                    editable={isEditing}
+                    placeholderTextColor={
+                      isDarkMode ? SLATE_COLOR : LIGHT_COLOR
+                    }
+                    className={`h-12 w-full mx-auto px-4 rounded-md border-[0.5px] border-neutral-700  font-poppins-regular ${
+                      isEditing ? '' : ''
+                    }`}
+                  />
+                </>
+              )}
             />
           </View>
 
@@ -192,7 +247,7 @@ export default function ProfileForm({route}) {
               })}
               editable={false}
               placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
-              className="h-12 w-full mx-auto px-4  rounded-md border border-stone-600 font-poppins-regular"
+              className="h-12 w-full mx-auto px-4  rounded-md border-[0.5px] border-neutral-700  font-poppins-regular"
             />
           </View>
 
@@ -229,6 +284,18 @@ export default function ProfileForm({route}) {
           </View>
         </View>
       )}
+      <ModalAfterProcess
+        modalVisible={modalSuccess}
+        title="Berhasil Memperbarui Data"
+        subTitle="Data anda telah diperbarui"
+        url={require('../../../assets/lottie/success-animation.json')}
+      />
+      <ModalAfterProcess
+        modalVisible={modalFailed}
+        title="Gagal Memperbarui Data"
+        subTitle={errorMessage}
+        url={require('../../../assets/lottie/success-animation.json')}
+      />
     </View>
   );
 }

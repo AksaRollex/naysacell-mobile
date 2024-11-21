@@ -1,5 +1,4 @@
 import {
-  Image,
   StyleSheet,
   Text,
   TextInput,
@@ -10,35 +9,31 @@ import {
 import React, {useState} from 'react';
 import {
   BLUE_COLOR,
-  BOLD_FONT,
   DARK_BACKGROUND,
   DARK_COLOR,
   GREY_COLOR,
-  HORIZONTAL_MARGIN,
   LIGHT_COLOR,
-  REGULAR_FONT,
   SLATE_COLOR,
   WHITE_BACKGROUND,
 } from '../../utils/const';
 import {Eye, EyeCrossed} from '../../assets';
 import {Controller, useForm} from 'react-hook-form';
 import axios from '../../libs/axios';
-import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {API_URL} from '@env';
 import {useNavigation} from '@react-navigation/native';
 import Header from '../../components/Header';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
-import ModalProcess from '../../components/ModalProcess';
 import ModalAfterProcess from '../../components/ModalAfterProcess';
 rem = multiplier => baseRem * multiplier;
 const baseRem = 16;
-export default function LoginPage({}) {
+export default function LoginPage() {
   const isDarkMode = useColorScheme() === 'dark';
 
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
-  const [isSecure, setIsSecure] = useState(false);
+  const [isSecure, setIsSecure] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
+
   const {
     control,
     handleSubmit,
@@ -47,68 +42,14 @@ export default function LoginPage({}) {
 
   const queryClient = useQueryClient();
 
-  // const onSubmit = async data => {
-  //   try {
-  //     const response = await axios.post(
-  //       `/auth/login`,
-  //       {
-  //         email: data.email,
-  //         password: data.password,
-  //         type: 'email',
-  //       },
-  //       {
-  //         timeout: 10000,
-  //       },
-  //     );
-
-  //     if (response.data.token) {
-  //       await AsyncStorage.setItem('userToken', response.data.token);
-  //       await AsyncStorage.setItem(
-  //         'userData',
-  //         JSON.stringify(response.data.user),
-  //       );
-
-  //       axios.defaults.headers.common[
-  //         'Authorization'
-  //       ] = `Bearer ${response.data.token}`;
-
-  //       Toast.show({
-  //         type: 'success',
-  //         text1: 'Success',
-  //         text2: 'Login berhasil',
-  //       });
-
-  //       navigation.replace('MyTabs', {screen: 'Profile'});
-  //     } else {
-  //       Toast.show({
-  //         type: 'error',
-  //         text1: 'Error',
-  //         text2: 'Login gagal, Password / Email Salah',
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.error('Login error:', error.response || error);
-
-  //     const errorMessage =
-  //       error.response?.data?.message ||
-  //       'Terjadi kesalahan saat login. Silakan coba lagi.';
-
-  //     Toast.show({
-  //       type: 'error',
-  //       text1: 'Error',
-  //       text2: errorMessage,
-  //     });
-  //   } finally {
-  //   }
-  // };
-
   const {
     mutate: login,
     isLoading,
     isSuccess,
-  } = useMutation( {
+  } = useMutation({
     mutationFn: data => axios.post(`/auth/login`, data),
     onSuccess: async res => {
+      console.log(res);
       await AsyncStorage.setItem('userToken', res.data.token);
       queryClient.invalidateQueries({
         queryKey: ['auth', 'user'],
@@ -116,7 +57,7 @@ export default function LoginPage({}) {
       navigation.replace('MyTabs', {screen: 'Profile'});
     },
     onError: error => {
-      // console.error(error.response.data);
+      setErrorMessage(error.response.data.message);
       setModalVisible(true);
       setTimeout(() => {
         setModalVisible(false);
@@ -176,7 +117,7 @@ export default function LoginPage({}) {
                   className="h-12 w-11/12 rounded-3xl mx-auto px-4 pr-10 border border-stone-600"
                   onBlur={onBlur}
                   value={value}
-                  keyboardType='number-pad'
+                  keyboardType="number-pad"
                   onChangeText={onChange}
                   secureTextEntry={isSecure}
                 />
@@ -188,7 +129,7 @@ export default function LoginPage({}) {
                     top: '50%',
                     transform: [{translateY: -12}],
                   }}>
-                  {isSecure ? <EyeCrossed /> : <Eye />}
+                  {isSecure ? <Eye /> : <EyeCrossed />}
                 </TouchableOpacity>
               </View>
             )}
@@ -219,7 +160,7 @@ export default function LoginPage({}) {
             disabled={isLoading}
             onPress={handleSubmit(login)}>
             <Text className="text-white text-md font-poppins-bold">
-              {isLoading ? 'LOADING...' : 'MASUK'}
+              {isLoading ? 'PROSES...' : 'MASUK'}
             </Text>
           </TouchableOpacity>
         </View>
@@ -311,7 +252,9 @@ export default function LoginPage({}) {
       <ModalAfterProcess
         modalVisible={modalVisible}
         title="Login Gagal"
-        subTitle="Email atau Password Salah, Silahkan Coba Lagi !"
+        subTitle={
+          errorMessage || 'Email atau Password Salah, Silahkan Coba Lagi !'
+        }
         url={require('../../assets/lottie/failed-animation.json')}
       />
     </View>
