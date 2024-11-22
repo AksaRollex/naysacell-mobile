@@ -22,6 +22,7 @@ import ForgotPassword from './auth/forgotPassword';
 import Credential from './auth/forgotPassword/step/credential';
 import OtpEmail from './auth/forgotPassword/step/otpEmail';
 import Password from './auth/forgotPassword/step/password';
+import SyaratDanKetentuan from './S&K';
 
 export {
   HomeScreen,
@@ -47,5 +48,6 @@ export {
   ForgotPassword,
   Credential,
   OtpEmail,
+  SyaratDanKetentuan,
   Password,
 };

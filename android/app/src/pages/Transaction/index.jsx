@@ -34,13 +34,26 @@ export default function Transaction() {
 
   const filteredTransactions = transactions.filter(transaction => {
     if (statusFilter === 'all') return true;
-    return transaction.transaction_status.toLowerCase() === statusFilter;
+    return (
+      transaction.transaction_status.toLowerCase() ===
+      statusFilter.toLowerCase()
+    );
   });
 
   useEffect(() => {
-    axios.get('/auth/histori').then(res => {
-      setTransactions(res.data.data);
-    });
+    const payload = {
+      role_id: 3,
+    };
+    axios
+      .post('/auth/histori', payload)
+      .then(res => {
+        // Ambil data dari respons
+        setTransactions(res.data.data);
+      })
+      .catch(error => {
+        console.error('Error fetching transactions:', error);
+        setTransactions([]); // Set ke array kosong jika ada error
+      });
   }, []);
 
   const transactionCard = ({item}) => {
@@ -240,6 +253,7 @@ export default function Transaction() {
         url="/auth/histori"
         renderItem={transactionCard}
         ref={paginateRef}
+        payload={{status: statusFilter}}
         data={filteredTransactions}
       />
     </View>

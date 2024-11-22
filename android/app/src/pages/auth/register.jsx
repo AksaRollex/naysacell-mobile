@@ -6,8 +6,6 @@ import {
   TouchableOpacity,
   View,
   useColorScheme,
-  Alert,
-  Modal,
   ScrollView,
 } from 'react-native';
 import React, {useState} from 'react';
@@ -16,17 +14,16 @@ import {
   DARK_BACKGROUND,
   DARK_COLOR,
   GREY_COLOR,
-  HORIZONTAL_MARGIN,
   LIGHT_COLOR,
   SLATE_COLOR,
   WHITE_BACKGROUND,
 } from '../../utils/const';
 import axios from '../../libs/axios';
 import {Controller, useForm} from 'react-hook-form';
-import {API_URL} from '@env';
 import Header from '../../components/Header';
 import ModalAfterProcess from '../../components/ModalAfterProcess';
 import {Eye, EyeCrossed} from '../../assets';
+import Checkbox from '@react-native-community/checkbox';
 
 const baseRem = 16;
 const rem = multiplier => baseRem * multiplier;
@@ -36,12 +33,15 @@ export default function RegisterPage({navigation}) {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [modalFailed, setModalFailed] = useState(false);
+  const [modalTerms, setModalTerms] = useState(false);
 
   const [showPassword, setShowPassword] = useState(true);
   const [showConfirmPassword, setShowConfirmPassword] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
   const [errorMessage, setErrorMessage] = useState('');
+
+  const [isTermsAccepted, setIsTermsAccepted] = useState(false);
 
   const {
     control,
@@ -61,6 +61,13 @@ export default function RegisterPage({navigation}) {
   const password = watch('password');
 
   const onSubmit = async data => {
+    if (!isTermsAccepted) {
+      setModalTerms(true);
+      setTimeout(() =>{
+        setModalTerms(false);
+      }, 2000);
+      return;
+    }
     try {
       setIsLoading(true);
       const formData = {
@@ -85,18 +92,9 @@ export default function RegisterPage({navigation}) {
     }
   };
 
-  const PasswordIcon = ({shown, onPress}) => (
-    <TouchableOpacity onPress={onPress} className="absolute right-8 top-3">
-      <Image
-        source={shown ? EyeCrossedIcon : EyeIcon}
-        className="w-6 h-6"
-        style={{tintColor: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}
-      />
-    </TouchableOpacity>
-  );
   return (
     <View className="flex-1 ">
-      <View
+      <ScrollView
         style={{
           backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
         }}
@@ -187,9 +185,9 @@ export default function RegisterPage({navigation}) {
                   />
                 )}
               />
-              {errors.alamat && (
+              {errors.address && (
                 <Text className="mt-1 text-red-400 ml-8 font-poppins-regular">
-                  {errors.alamat.message}
+                  {errors.address.message}
                 </Text>
               )}
             </View>
@@ -322,8 +320,45 @@ export default function RegisterPage({navigation}) {
                 </Text>
               )}
             </View>
+
             {/* Submit Button */}
-            <View className="mt-8">
+            <View className="mt-4 flex-1 justify-center items-center">
+              {/* Ubah View ini untuk konten persetujuan */}
+              <View className="items-center px-4">
+                <View className="flex-row items-center mb-4">
+                  <Checkbox
+                    value={isTermsAccepted}
+                    onValueChange={setIsTermsAccepted}
+                    tintColors={{
+                      true: BLUE_COLOR,
+                      false: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+                    }}
+                  />
+                  <View className="flex-row flex-wrap space-x-1 w-10/12 ml-2">
+                    <Text className="font-poppins-regular">
+                      Saya menyetujui
+                    </Text>
+                    <TouchableOpacity
+                      onPress={() => navigation.navigate('SyaratDanKetentuan')}>
+                      <Text
+                        className="font-poppins-regular"
+                        style={{color: BLUE_COLOR}}>
+                        Syarat dan Ketentuan
+                      </Text>
+                    </TouchableOpacity>
+                    <Text className="font-poppins-regular">serta</Text>
+                    <TouchableOpacity
+                      onPress={() => navigation.navigate('SyaratDanKetentuan')}>
+                      <Text
+                        className="font-poppins-regular"
+                        style={{color: BLUE_COLOR}}>
+                        Kebijakan Privasi
+                      </Text>
+                    </TouchableOpacity>
+                    <Text className="font-poppins-regular">yang berlaku</Text>
+                  </View>
+                </View>
+              </View>
               <TouchableOpacity
                 className="w-11/12 rounded-3xl mx-auto px-4 h-12 items-center justify-center"
                 style={{
@@ -365,7 +400,8 @@ export default function RegisterPage({navigation}) {
             </Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
+
       <ModalAfterProcess
         url={require('../../assets/lottie/success-animation.json')}
         modalVisible={modalVisible}
@@ -377,6 +413,12 @@ export default function RegisterPage({navigation}) {
         modalVisible={modalFailed}
         title="Pendaftaran Gagal"
         subTitle={errorMessage}
+      />
+      <ModalAfterProcess
+        url={require('../../assets/lottie/failed-animation.json')}
+        modalVisible={modalTerms}
+        title="Centang Syarat & Ketentuan"
+        subTitle="Harus centang syarat dan ketentuan terlebih dahulu untuk melanjutkan pendaftaran"
       />
     </View>
   );

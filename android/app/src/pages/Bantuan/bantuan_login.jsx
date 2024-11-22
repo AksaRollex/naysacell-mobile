@@ -2,8 +2,6 @@ import {StyleSheet, Text, View, useColorScheme} from 'react-native';
 import React from 'react';
 import {
   DARK_BACKGROUND,
-  DARK_COLOR,
-  GREY_COLOR,
   LIGHT_COLOR,
   WHITE_BACKGROUND,
   WHITE_COLOR,
@@ -19,14 +17,12 @@ export default function BantuanLogin() {
       style={{
         backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
       }}>
-      <View
-        className="w-10/12 h-80 mx-auto rounded-sm my-5 items-center bg-slate-400 "
-        style={{backgroundColor: isDarkMode ? '#404040' : '#e8e8e8'}}>
+      <View className=" mx-auto my-5 items-center  ">
         <Text
-          className="text-sm text-center  my-2"
+          className="text-base text-center  my-2"
           style={{
             color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR,
-            fontFamily: 'Poppins-Bold',
+            fontFamily: 'Poppins-SemiBold',
           }}>
           Cara Daftar Akun Di NAYSA CELL
         </Text>
@@ -34,9 +30,9 @@ export default function BantuanLogin() {
           <Text
             className="text-center mb-2 font-poppins-semibold"
             style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
-            Berikut cara untuk daftar {'\n'} akun di NAYSA CELL
+            Berikut cara untuk daftar akun di NAYSA CELL
           </Text>
-          <View>
+          <View className="space-y-2">
             <Text
               className="text-sm text-justify"
               style={{

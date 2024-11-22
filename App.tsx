@@ -29,6 +29,7 @@ import {
   Credential,
   OtpEmail,
   Password,
+  SyaratDanKetentuan,
 } from './android/app/src/pages';
 import {DARK_BACKGROUND, WHITE_BACKGROUND} from './android/app/src/utils/const';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
@@ -368,6 +369,22 @@ function App() {
             component={Password}
             options={{
               headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="SyaratDanKetentuan"
+            component={SyaratDanKetentuan}
+            options={{
+              title: 'Syarat Dan Ketentuan',
+              headerStyle: {
+                backgroundColor: isDarkMode
+                  ? DARK_BACKGROUND
+                  : WHITE_BACKGROUND,
+              },
+              headerTitleStyle: {
+                fontFamily: 'Poppins-SemiBold',
+              },
+              headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
             }}
           />
         </Stack.Navigator>

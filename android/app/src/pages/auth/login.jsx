@@ -42,28 +42,38 @@ export default function LoginPage() {
 
   const queryClient = useQueryClient();
 
-  const {
-    mutate: login,
-    isLoading,
-    isSuccess,
-  } = useMutation({
-    mutationFn: data => axios.post(`/auth/login`, data),
+  const loginMutation = useMutation({
+    mutationFn: async data => {
+      try {
+        const response = await axios.post(`/auth/login`, data);
+        return response;
+      } catch (error) {
+        throw error;
+      }
+    },
     onSuccess: async res => {
-      console.log(res);
-      await AsyncStorage.setItem('userToken', res.data.token);
-      queryClient.invalidateQueries({
-        queryKey: ['auth', 'user'],
-      });
-      navigation.replace('MyTabs', {screen: 'Profile'});
+      try {
+        await AsyncStorage.setItem('userToken', res.data.token);
+        queryClient.invalidateQueries(['auth', 'user']);
+        navigation.replace('MyTabs', {screen: 'Profile'});
+      } catch (error) {
+        console.error('Error saving token:', error);
+      }
     },
     onError: error => {
-      setErrorMessage(error.response.data.message);
+      const message =
+        error.response?.data?.message || 'Terjadi kesalahan saat login';
+      setErrorMessage(message);
       setModalVisible(true);
       setTimeout(() => {
         setModalVisible(false);
       }, 2000);
     },
   });
+
+  const onSubmit = data => {
+    loginMutation.mutate(data);
+  };
 
   return (
     <View
@@ -79,7 +89,13 @@ export default function LoginPage() {
           <Controller
             name="email"
             control={control}
-            rules={{required: 'Email Harus Diisi'}}
+            rules={{
+              required: 'Email Harus Diisi',
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: 'Email tidak valid',
+              },
+            }}
             render={({field: {onChange, onBlur, value}}) => (
               <TextInput
                 placeholder="Masukkan Email"
@@ -155,12 +171,12 @@ export default function LoginPage() {
             className="w-11/12 rounded-3xl mx-auto px-4 h-12 items-center justify-center"
             style={{
               backgroundColor: BLUE_COLOR,
-              opacity: isLoading ? 0.7 : 1,
+              opacity: loginMutation.isPending ? 0.7 : 1,
             }}
-            disabled={isLoading}
-            onPress={handleSubmit(login)}>
+            disabled={loginMutation.isPending}
+            onPress={handleSubmit(onSubmit)}>
             <Text className="text-white text-md font-poppins-bold">
-              {isLoading ? 'PROSES...' : 'MASUK'}
+              {loginMutation.isPending ? 'LOADING...' : 'MASUK'}
             </Text>
           </TouchableOpacity>
         </View>
@@ -185,69 +201,6 @@ export default function LoginPage() {
         </TouchableOpacity>
       </View>
       {/* CLOSE FORM */}
-
-      {/* <View>
-        <View
-        style={{
-          marginHorizontal: HORIZONTAL_MARGIN,
-          justifyContent: 'center',
-          height: '100%',
-        }}>
-        <View style={{marginBottom: 20}}>
-          <Text
-            style={{
-              fontFamily: BOLD_FONT,
-              fontSize: 24,
-              color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-            }}>
-            Login
-          </Text>
-        </View>
-        <TextInput
-          style={{
-            borderWidth: 1,
-            borderColor: isDarkMode ? SLATE_COLOR : GREY_COLOR,
-            borderRadius: 5,
-            padding: 10,
-            fontFamily: REGULAR_FONT,
-            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-          }}
-          placeholder="Masukkan email"
-          placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
-        />
-        <View
-          style={{
-            borderWidth: 1,
-            borderColor: isDarkMode ? SLATE_COLOR : GREY_COLOR,
-            borderRadius: 5,
-            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-          className="mt-4 px-2">
-          <TextInput
-            style={{
-              padding: 10,
-              fontFamily: REGULAR_FONT,
-              color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-              flex: 1,
-            }}
-            placeholder="Masukkan password"
-            placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
-            secureTextEntry={isSecure}></TextInput>
-          <TouchableOpacity onPress={() => setIsSecure(!isSecure)}>
-            {isSecure ? <Eye /> : <EyeCrossed />}
-          </TouchableOpacity>
-        </View>
-
-        <TouchableOpacity
-          className="mt-4 p-3"
-          style={{backgroundColor: BLUE_COLOR}}>
-          <Text className="text-center text-white font-bold">Login</Text>
-        </TouchableOpacity>
-      </View>
-      </View> */}
 
       <ModalAfterProcess
         modalVisible={modalVisible}

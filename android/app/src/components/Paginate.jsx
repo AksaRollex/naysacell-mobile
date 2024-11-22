@@ -43,9 +43,9 @@ const Paginate = forwardRef(
       onSuccess: res => {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         if (page === 1) {
-          setDataList(res.data);
+          setDataList(res.data || propData || []);
         } else {
-          setDataList(prevData => [...prevData, ...res.data]);
+          setDataList(prevData => [...prevData, ...(res.data || [])]);
         }
       },
     });
