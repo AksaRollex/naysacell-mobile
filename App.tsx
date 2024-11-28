@@ -3,7 +3,7 @@ import {View, Text, useColorScheme} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import MyTabBar from './android/app/src/components/BottomTab';
+import MyTabBar from './src/components/BottomTab';
 import {
   HomeScreen,
   Pulsa,
@@ -30,8 +30,8 @@ import {
   OtpEmail,
   Password,
   SyaratDanKetentuan,
-} from './android/app/src/pages';
-import {DARK_BACKGROUND, WHITE_BACKGROUND} from './android/app/src/utils/const';
+} from './src/pages';
+import {WHITE_BACKGROUND, DARK_BACKGROUND} from './src/utils/const';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 
 const Stack = createNativeStackNavigator();
