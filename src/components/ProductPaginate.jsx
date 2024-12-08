@@ -34,7 +34,7 @@ const Paginate = forwardRef(
     const [page, setPage] = useState(1);
     const [dataList, setDataList] = useState([]);
     const [isFetchingMore, setIsFetchingMore] = useState(false);
-    const cardData = [1, 2, 3];
+    const cardData = [1, 2, 3, 4, 5];
 
     const {data, isFetching, refetch} = useQuery({
       queryKey: [url, page],
@@ -103,69 +103,40 @@ const Paginate = forwardRef(
     if (isFetching && page === 1) {
       return (
         <View className="mt-5 items-center">
-          {cardData.map((item, index) => (
+        {cardData.map((item, index) => (
+          <View
+            key={index}
+            className="flex-row w-full px-4 mb-2"
+          >
             <View
-              key={index}
+              className="flex-1 mr-2"
               style={{
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginTop: 12,
-                width: '90%',
-              }}>
-              <View className="items-center">
-                <View
-                  LinearGradientComponent={LinearGradient}
-                  style={{
-                    width: '100%',
-                    alignItems: 'center',
-                  }}>
-                  <Skeleton
-                    animation="wave"
-                    width={390}
-                    LinearGradientComponent={LinearGradient}
-                    height={180}
-                  />
-
-                  <View
-                    style={{
-                      position: 'absolute',
-                      top: '5%',
-                      left: '5%',
-                    }}>
-                    <Skeleton
-                      animation="wave"
-                      width={360}
-                      height={30}
-                      LinearGradientComponent={LinearGradient}
-                    />
-                    <Skeleton
-                      animation="wave"
-                      width={100}
-                      height={28}
-                      LinearGradientComponent={LinearGradient}
-                      style={{marginTop: 10}}
-                    />
-                    <Skeleton
-                      animation="wave"
-                      width={100}
-                      height={28}
-                      LinearGradientComponent={LinearGradient}
-                      style={{marginTop: 10}}
-                    />
-                    <Skeleton
-                      animation="wave"
-                      width={100}
-                      height={28}
-                      LinearGradientComponent={LinearGradient}
-                      style={{marginTop: 10}}
-                    />
-                  </View>
-                </View>
-              </View>
+                backgroundColor: '#E6E6E6',
+              }}
+            >
+              <Skeleton
+                animation="wave"
+                width="100%"
+                height={70}
+                LinearGradientComponent={LinearGradient}
+              />
             </View>
-          ))}
-        </View>
+            <View
+              className="flex-1 ml-2"
+              style={{
+                backgroundColor: '#E6E6E6',
+              }}
+            >
+              <Skeleton
+                animation="wave"
+                width="100%"
+                height={70}
+                LinearGradientComponent={LinearGradient}
+              />
+            </View>
+          </View>
+        ))}
+      </View>
       );
     }
 
@@ -178,7 +149,6 @@ const Paginate = forwardRef(
           onScroll={handleScroll}
           onEndReached={handleLoadMore}
           onEndReachedThreshold={0.5}
-          numColumns={2}
           ListFooterComponent={ListFooter}
           ListEmptyComponent={() => (
             <View className="flex-1 justify-center items-center mt-20">

@@ -36,10 +36,6 @@ export default function DompetElektronik({navigation}) {
       label: 'GOPAY',
       path: '',
     },
-    {
-      label: 'GRAB',
-      path: '',
-    },
   ];
 
   return (

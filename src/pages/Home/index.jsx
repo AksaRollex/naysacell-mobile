@@ -10,7 +10,7 @@ import {
   View,
   useColorScheme,
 } from 'react-native';
-import {AddIkon, HeaderBG, Mail} from '../../../assets';
+import {AddIkon, BellIkon, HeaderBG, Mail} from '../../../assets';
 import mainMenu, {gameMenu} from '../../data/mainMenu';
 import axios from '../../libs/axios';
 import {rupiah} from '../../libs/utils';
@@ -112,11 +112,14 @@ export default function HomeScreen({navigation}) {
                     fill={isDarkMode ? 'white' : 'black'}
                   />
                 </TouchableOpacity>
-                {/* <BellIkon
-         width={24}
-         height={24}
-         fill={isDarkMode ? 'white' : 'black'}
-       /> */}
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Notifikasi')}>
+                  <BellIkon
+                    width={24}
+                    height={24}
+                    fill={isDarkMode ? 'white' : 'black'}
+                  />
+                </TouchableOpacity>
               </View>
             </View>
 
@@ -153,27 +156,6 @@ export default function HomeScreen({navigation}) {
                   flexDirection: 'row',
                   columnGap: 15,
                 }}>
-                {/* <TouchableOpacity
-         style={{
-           flexDirection: 'column',
-           alignItems: 'center',
-           rowGap: 10,
-         }}>
-         <SendIkon
-           width={24}
-           height={24}
-           fill={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
-         />
-
-         <Text
-           style={{
-             color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-             fontFamily: REGULAR_FONT,
-           }}
-           className="text-md">
-           Transfer
-         </Text>
-       </TouchableOpacity> */}
                 <TouchableOpacity
                   style={{
                     flexDirection: 'column',
@@ -253,7 +235,7 @@ export default function HomeScreen({navigation}) {
             </View>
           </View>
           {/* GAME */}
-          <View
+          {/* <View
             style={{
               marginHorizontal: HORIZONTAL_MARGIN,
               backgroundColor: isDarkMode ? '#262626' : '#f8f8f8',
@@ -275,7 +257,6 @@ export default function HomeScreen({navigation}) {
                 justifyContent: 'space-between',
               }}>
               {gameMenu.map(item => {
-                // console.log(item);
                 return (
                   <TouchableOpacity
                     key={item.label}
@@ -303,7 +284,7 @@ export default function HomeScreen({navigation}) {
                 );
               })}
             </View>
-          </View>
+          </View> */}
         </View>
       </ScrollView>
     </>

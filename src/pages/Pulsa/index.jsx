@@ -3,8 +3,9 @@ import {
   Text,
   View,
   TouchableOpacity,
+  Touchable,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   BLUE_COLOR,
   DARK_BACKGROUND,
@@ -23,10 +24,11 @@ import {
 import {useColorScheme} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {product_data, product_pulsa} from '../../data/product_pulsa';
-import { CheckProduct } from '../../../assets';
+import {CheckProduct} from '../../../assets';
 import BottomModal from '../../components/BottomModal';
-import { rupiah } from '../../libs/utils';
+import {rupiah} from '../../libs/utils';
 import Input from '../../components/form/input';
+import ProductPaginate from '../../components/ProductPaginate';
 
 export default function Pulsa({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
@@ -35,10 +37,29 @@ export default function Pulsa({navigation}) {
   const [nomorTujuan, setNomor] = useState(null);
   const product_type = ['Pulsa', 'Data'];
   const [showModal, setShowModal] = useState(false);
+  const paginateRef = useRef();
 
   const clearNomor = () => {
     setNomor(null);
   };
+
+  const productPulsa = ({item}) => {
+    return (
+      <TouchableOpacity className="flex-row justify-between">
+        <View className="w-1/2 flex-1 p-2 border border-gray-200 rounded-xl m-1 bg-[#d9d9d9]">
+          <View className="items-start justify-center flex-col">
+            <Text className="font-poppins-semibold text-sm">
+              {item.product_name}
+            </Text>
+            <Text className="font-poppins-regular text-sm">
+              {rupiah(item.product_buyer_price)}
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <>
       <View
@@ -60,7 +81,7 @@ export default function Pulsa({navigation}) {
                 <Text style={styles.buttonLabel}>Tampilkan Produk</Text>
               </TouchableOpacity>
             </View>
-            <View style={{flexDirection: 'row', marginTop: 15, columnGap: 15}}>
+            {/* <View style={{flexDirection: 'row', marginTop: 15, columnGap: 15}}>
               {product_type.map(t => {
                 return (
                   <TouchableOpacity
@@ -91,9 +112,9 @@ export default function Pulsa({navigation}) {
                   </TouchableOpacity>
                 );
               })}
-            </View>
+            </View> */}
             {/* PRODUK */}
-            <View
+            {/* <View
               style={{
                 flexDirection: 'row',
                 flexWrap: 'wrap',
@@ -164,10 +185,10 @@ export default function Pulsa({navigation}) {
                   })}
                 </>
               )}
-            </View>
+            </View> */}
           </View>
         </SafeAreaView>
-        {selectItem && (
+        {/* {selectItem && (
           <View style={[styles.bottom(isDarkMode)]}>
             <TouchableOpacity
               style={styles.bottomButton}
@@ -175,7 +196,13 @@ export default function Pulsa({navigation}) {
               <Text style={styles.buttonLabel}>Lanjutkan</Text>
             </TouchableOpacity>
           </View>
-        )}
+        )} */}
+        <ProductPaginate
+          url="/master/product/prepaid"
+          renderItem={productPulsa}
+          ref={paginateRef}
+          payload={{product_category: 'Pulsa'}}
+        />
         <BottomModal
           visible={showModal}
           onDismiss={() => setShowModal(showModal)}
@@ -238,7 +265,7 @@ const styles = StyleSheet.create({
   buttonTabLabel: isDarkMode => ({
     textAlign: 'center',
     color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-    fontFamily : 'Poppins-SemiBold',
+    fontFamily: 'Poppins-SemiBold',
   }),
   productWrapper: isDarkMode => ({
     borderWidth: 1,
@@ -259,7 +286,7 @@ const styles = StyleSheet.create({
   buttonLabel: {
     color: WHITE_BACKGROUND,
     textAlign: 'center',
-    fontFamily : 'Poppins-SemiBold',
+    fontFamily: 'Poppins-SemiBold',
   },
 
   bottom: isDarkMode => ({

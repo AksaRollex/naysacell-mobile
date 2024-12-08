@@ -54,7 +54,7 @@ export default function Transaction() {
     return (
       <View
         id="cardTransaction"
-        className="rounded-md p-3 flex-col mb-5"
+        className="rounded-md w-full p-3 flex-col mb-5"
         style={{
           backgroundColor: isDarkMode ? '#27272A' : WHITE_BACKGROUND,
           elevation: 3,

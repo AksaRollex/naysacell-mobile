@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   useColorScheme,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   BLUE_COLOR,
   DARK_BACKGROUND,
@@ -24,7 +24,8 @@ import {
 import Input from '../../components/form/input';
 import {product_token} from '../../data/product_pln';
 import {rupiah} from '../../libs/utils';
-import { CheckProduct } from '../../../assets';
+import {CheckProduct} from '../../../assets';
+import ProductPaginate from '../../components/ProductPaginate';
 
 export default function PLNPrabayar() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -32,10 +33,28 @@ export default function PLNPrabayar() {
 
   const [selectItem, setSelectedItem] = useState(null);
 
+  const paginateRef = useRef();
   const resetInput = () => {
     setCustomerNo('');
   };
 
+  const productPLN = ({item}) => {
+    console.log(item, 'item');
+    return (
+      <TouchableOpacity className="flex-row justify-between">
+        <View className="w-1/2 flex-1 p-2 border border-gray-200 rounded-xl m-1 bg-[#d9d9d9]">
+          <View className="items-start justify-center flex-col">
+            <Text className="font-poppins-semibold text-sm">
+              {item.product_name}
+            </Text>
+            <Text className="font-poppins-regular text-sm">
+              {rupiah(item.product_buyer_price)}
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
   return (
     <>
       <View
@@ -72,7 +91,7 @@ export default function PLNPrabayar() {
               <Text style={styles.value(isDarkMode)}> 900 kwh</Text>
             </View>
           </View>
-          <View
+          {/* <View
             style={{
               flexDirection: 'row',
               flexWrap: 'wrap',
@@ -106,8 +125,14 @@ export default function PLNPrabayar() {
                 </TouchableOpacity>
               );
             })}
-          </View>
+          </View> */}
         </View>
+        <ProductPaginate
+          renderItem={productPLN}
+          url="/master/product/prepaid"
+          ref={paginateRef}
+          payload={{product_category: 'PLN'}}
+        />
 
         {selectItem && (
           <View style={[styles.bottom(isDarkMode)]}>

@@ -23,6 +23,7 @@ import Credential from './auth/forgotPassword/step/credential';
 import OtpEmail from './auth/forgotPassword/step/otpEmail';
 import Password from './auth/forgotPassword/step/password';
 import SyaratDanKetentuan from './S&K';
+import Notifikasi from './Notifikasi/Notifikasi';
 
 export {
   HomeScreen,
@@ -50,4 +51,5 @@ export {
   OtpEmail,
   SyaratDanKetentuan,
   Password,
+  Notifikasi
 };

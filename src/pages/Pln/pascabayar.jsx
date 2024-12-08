@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   useColorScheme,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   BLUE_COLOR,
   DARK_BACKGROUND,
@@ -28,12 +28,32 @@ import Input from '../../components/form/input';
 import {product_token} from '../../data/product_pln';
 import {rupiah} from '../../libs/utils';
 import {CheckProduct} from '../../assets';
+import ProductPaginate from '../../components/ProductPaginate';
 
 export default function PLNPascaBayar() {
   const isDarkMode = useColorScheme() === 'dark';
   const [customer_no, setCustomerNo] = useState('');
 
   const [selectItem, setSelectedItem] = useState(null);
+  const paginateRef = useRef();
+
+  const productPLN = ({item}) => {
+    console.log(item, 'item', 999);
+    return (
+      <TouchableOpacity className="flex-row justify-between">
+        <View className="w-1/2 flex-1 p-2 border border-gray-200 rounded-xl m-1 bg-[#d9d9d9]">
+          <View className="items-start justify-center flex-col">
+            <Text className="font-poppins-semibold text-sm">
+              {item.product_name}
+            </Text>
+            <Text className="font-poppins-regular text-sm">
+              {rupiah(item.product_transaction_admin)}
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <>
@@ -78,6 +98,14 @@ export default function PLNPascaBayar() {
             </View>
           </View>
         </View>
+        <ProductPaginate
+          renderItem={productPLN}
+          url="/master/product/pasca"
+          ref={paginateRef}
+          payload={{
+            product_provider: 'PLN NONTAGLIS,PLN PASCABAYAR'
+          }}
+        />
         {selectItem && (
           <View style={[styles.bottom(isDarkMode)]}>
             <TouchableOpacity style={styles.bottomButton}>
@@ -125,7 +153,7 @@ const styles = StyleSheet.create({
     rowGap: 5,
   }),
   label: isDarkMode => ({
-    fontFamily : 'Poppins-SemiBold',
+    fontFamily: 'Poppins-SemiBold',
     color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
   }),
   value: isDarkMode => ({

@@ -30,6 +30,7 @@ import {
   OtpEmail,
   Password,
   SyaratDanKetentuan,
+  Notifikasi,
 } from './src/pages';
 import {WHITE_BACKGROUND, DARK_BACKGROUND} from './src/utils/const';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
@@ -376,6 +377,22 @@ function App() {
             component={SyaratDanKetentuan}
             options={{
               title: 'Syarat Dan Ketentuan',
+              headerStyle: {
+                backgroundColor: isDarkMode
+                  ? DARK_BACKGROUND
+                  : WHITE_BACKGROUND,
+              },
+              headerTitleStyle: {
+                fontFamily: 'Poppins-SemiBold',
+              },
+              headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
+            }}
+          />
+          <Stack.Screen
+            name="Notifikasi"
+            component={Notifikasi}
+            options={{
+              title: 'Notifikasi',
               headerStyle: {
                 backgroundColor: isDarkMode
                   ? DARK_BACKGROUND
