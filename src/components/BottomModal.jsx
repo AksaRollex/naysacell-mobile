@@ -55,7 +55,7 @@ export default function BottomModal({visible, onDismiss, title, children}) {
             justifyContent: 'center',
           }}>
           <Text
-            style={{fontFamily: BOLD_FONT, fontSize: 16, textAlign: 'center'}}>
+            style={{fontFamily: 'Poppins-SemiBold', fontSize: 16, textAlign: 'center'}}>
             {title}
           </Text>
           <TouchableOpacity

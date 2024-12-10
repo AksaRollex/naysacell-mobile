@@ -4,8 +4,9 @@ import {
   View,
   TouchableOpacity,
   Touchable,
+  TextInput,
 } from 'react-native';
-import React, {useRef, useState} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {
   BLUE_COLOR,
   DARK_BACKGROUND,
@@ -20,40 +21,106 @@ import {
   GREEN_COLOR,
   FONT_SEDANG,
   LIGHT_BACKGROUND,
+  WHITE_COLOR,
+  FONT_KECIL,
 } from '../../utils/const';
 import {useColorScheme} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {product_data, product_pulsa} from '../../data/product_pulsa';
-import {CheckProduct} from '../../../assets';
 import BottomModal from '../../components/BottomModal';
 import {rupiah} from '../../libs/utils';
 import Input from '../../components/form/input';
 import ProductPaginate from '../../components/ProductPaginate';
+import {Controller, useForm} from 'react-hook-form';
 
 export default function Pulsa({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
   const [type, setType] = useState('Pulsa');
-  const [selectItem, setSelectedItem] = useState(null);
+  const [selectItem, setSelectedItem] = useState('');
   const [nomorTujuan, setNomor] = useState(null);
-  const product_type = ['Pulsa', 'Data'];
   const [showModal, setShowModal] = useState(false);
-  const paginateRef = useRef();
+
+  const pulsaRef = useRef();
+  const dataRef = useRef();
+  const product_type = ['Pulsa', 'Data'];
+
+  const [isSearchEnabled, setIsSearchEnabled] = useState(false);
+  const [phoneOperator, setPhoneOperator] = useState(null);
+
+  const {control} = useForm();
+
+  const phoneOperators = [
+    {prefix: ['0857', '0856'], operator: 'INDOSAT'},
+    {
+      prefix: ['0852', '0853', '0811', '0812', '0813', '0821', '0822'],
+      operator: 'Telkomsel',
+    },
+    {prefix: ['0817', '0818', '0819', '0877', '0878'], operator: 'XL'},
+    {prefix: ['0832', '0833', '0838'], operator: 'AXIS'},
+    {prefix: ['0896', '0897', '0898', '0899'], operator: 'TRI'},
+    {prefix: ['0817', '0818', '0819', '0814'], operator: 'Indosat'},
+    {
+      prefix: [
+        '0881',
+        '0882',
+        '0883',
+        '0884',
+        '0885',
+        '0886',
+        '0887',
+        '0888',
+        '0889',
+      ],
+      operator: 'SMARTFREN',
+    },
+  ];
+
+  useEffect(() => {
+    if (nomorTujuan && nomorTujuan.length >= 4) {
+      const prefix = nomorTujuan.substring(0, 4);
+      const operatorMatch = phoneOperators.find(op =>
+        op.prefix.includes(prefix),
+      );
+
+      setPhoneOperator(operatorMatch ? operatorMatch.operator : null);
+
+      setIsSearchEnabled(nomorTujuan.length >= 4);
+    } else {
+      setIsSearchEnabled(false);
+      setPhoneOperator(null);
+    }
+  }, [nomorTujuan]);
 
   const clearNomor = () => {
-    setNomor(null);
+    setNomor('');
+    setIsSearchEnabled(false);
+    setPhoneOperator(null);
   };
 
   const productPulsa = ({item}) => {
     return (
-      <TouchableOpacity className="flex-row justify-between">
-        <View className="w-1/2 flex-1 p-2 border border-gray-200 rounded-xl m-1 bg-[#d9d9d9]">
-          <View className="items-start justify-center flex-col">
-            <Text className="font-poppins-semibold text-sm">
-              {item.product_name}
-            </Text>
-            <Text className="font-poppins-regular text-sm">
-              {rupiah(item.product_buyer_price)}
-            </Text>
+      <TouchableOpacity
+        className="p-2 border border-gray-500 rounded-xl m-1 bg-[#404040]"
+        onPress={() => {
+          setSelectedItem(item);
+          setShowModal(true);
+        }}>
+        <View className="items-start flex-col ">
+          <Text className="font-poppins-semibold text-base text-white">
+            {item.product_name}
+          </Text>
+          <View className="flex-col w-full">
+            <View className="">
+              <Text className="font-poppins-semibold text-xs">
+                Deskripsi : {item.product_desc}
+              </Text>
+            </View>
+            <View className="justify-items-end items-end">
+              <Text
+                className="font-poppins-regular text-sm text-end "
+                style={{color: WHITE_COLOR}}>
+                {rupiah(item.product_buyer_price)}
+              </Text>
+            </View>
           </View>
         </View>
       </TouchableOpacity>
@@ -70,142 +137,107 @@ export default function Pulsa({navigation}) {
         <SafeAreaView>
           <View style={{marginHorizontal: HORIZONTAL_MARGIN, marginTop: 15}}>
             <View style={{rowGap: 10}}>
-              <Input
-                value={nomorTujuan}
-                placeholder="Masukan Nomor Tujuan"
-                onChange={text => setNomor(text)}
-                onDelete={clearNomor}
-                type="numeric"
-              />
-              <TouchableOpacity style={styles.button}>
-                <Text style={styles.buttonLabel}>Tampilkan Produk</Text>
-              </TouchableOpacity>
-            </View>
-            {/* <View style={{flexDirection: 'row', marginTop: 15, columnGap: 15}}>
-              {product_type.map(t => {
-                return (
+              <View className="flex-row items-center">
+                <View className="flex-1 mr-2">
+                  <Controller
+                    control={control}
+                    name="nomor"
+                    render={({field: {}}) => (
+                      <Input
+                        value={nomorTujuan}
+                        placeholder="Masukan Nomor Tujuan"
+                        onChange={text => setNomor(text)}
+                        onDelete={clearNomor}
+                        type="numeric"
+                      />
+                    )}
+                  />
+                </View>
+                {phoneOperator && (
+                  <View className="bg-blue-500 p-4 rounded">
+                    <Text className="text-white font-poppins-semibold text-xs">
+                      {phoneOperator}
+                    </Text>
+                  </View>
+                )}
+              </View>
+
+              {/* Tab Navigation */}
+              <View className="flex-row justify-between">
+                {product_type.map(tabType => (
                   <TouchableOpacity
-                    key={t}
+                    key={tabType}
                     style={[
                       styles.buttonTab,
-                      t === type
-                        ? {
-                            borderBottomColor: BLUE_COLOR,
-                            borderBottomWidth: 2,
-                          }
-                        : '',
+                      {
+                        borderBottomColor:
+                          type === tabType ? BLUE_COLOR : GREY_COLOR,
+                        borderBottomWidth: type === tabType ? 2 : 1,
+                      },
                     ]}
-                    onPress={() => {
-                      setType(t);
-                    }}>
+                    onPress={() => setType(tabType)}>
                     <Text
                       style={[
                         styles.buttonTabLabel(isDarkMode),
-                        t === type
-                          ? {
-                              color: BLUE_COLOR,
-                            }
-                          : '',
+                        {
+                          color:
+                            type === tabType
+                              ? BLUE_COLOR
+                              : isDarkMode
+                              ? DARK_COLOR
+                              : LIGHT_COLOR,
+                        },
                       ]}>
-                      {type}
+                      {tabType}
                     </Text>
                   </TouchableOpacity>
-                );
-              })}
-            </View> */}
-            {/* PRODUK */}
-            {/* <View
-              style={{
-                flexDirection: 'row',
-                flexWrap: 'wrap',
-                justifyContent: 'space-between',
-                rowGap: 25,
-                marginTop: 20,
-              }}>
-              {type === 'Pulsa' ? (
-                <>
-                  {product_pulsa.map(p => {
-                    return (
-                      <TouchableOpacity
-                        key={p.id}
-                        style={[
-                          styles.productWrapper(isDarkMode),
-                          selectItem?.id === p.id
-                            ? {
-                                borderColor: GREEN_COLOR,
-                              }
-                            : '',
-                        ]}
-                        onPress={() => setSelectedItem(p)}>
-                        <Text style={styles.productLabel(isDarkMode)}>
-                          {p.product_name}
-                        </Text>
-                        <Text style={styles.productPrice(isDarkMode)}>
-                          {rupiah(p.product_price)}
-                        </Text>
-                        {selectItem?.id === p.id && (
-                          <CheckProduct
-                            width={20}
-                            style={{position: 'absolute', right: 7, top: 2}}
-                          />
-                        )}
-                      </TouchableOpacity>
-                    );
-                  })}
-                </>
-              ) : (
-                <>
-                  {product_data.map(d => {
-                    return (
-                      <TouchableOpacity
-                        key={d.id}
-                        style={[
-                          styles.productWrapper(isDarkMode),
-                          selectItem?.id === d.id
-                            ? {
-                                borderColor: GREEN_COLOR,
-                              }
-                            : '',
-                        ]}
-                        onPress={() => setSelectedItem(d)}>
-                        <Text style={styles.productLabel(isDarkMode)}>
-                          {d.product_name}
-                        </Text>
-                        <Text style={styles.productPrice(isDarkMode)}>
-                          {rupiah(d.product_price)}
-                        </Text>
-                        {selectItem?.id === d.id && (
-                          <CheckProduct
-                            width={20}
-                            style={{position: 'absolute', right: 7, top: 2}}
-                          />
-                        )}
-                      </TouchableOpacity>
-                    );
-                  })}
-                </>
-              )}
-            </View> */}
+                ))}
+              </View>
+            </View>
           </View>
         </SafeAreaView>
-        {/* {selectItem && (
-          <View style={[styles.bottom(isDarkMode)]}>
-            <TouchableOpacity
-              style={styles.bottomButton}
-              onPress={() => setShowModal(!showModal)}>
-              <Text style={styles.buttonLabel}>Lanjutkan</Text>
-            </TouchableOpacity>
+
+        {isSearchEnabled ? (
+          type === 'Pulsa' ? (
+            <ProductPaginate
+              url="/master/product/prepaid"
+              editUrl="/master/product/prepaid/{id}"
+              renderItem={productPulsa}
+              ref={pulsaRef}
+              payload={{
+                product_category: 'Pulsa',
+                product_provider: phoneOperator,
+              }}
+              onItemPress={selectedItem => {
+                setSelectedItem(selectedItem);
+              }}
+            />
+          ) : (
+            <ProductPaginate
+              url="/master/product/prepaid"
+              editUrl="/master/product/prepaid/{id}"
+              renderItem={productPulsa}
+              ref={dataRef}
+              payload={{
+                product_category: 'Data',
+                product_provider: phoneOperator,
+              }}
+              onItemPress={selectedItem => {
+                setSelectedItem(selectedItem);
+              }}
+            />
+          )
+        ) : (
+          <View className="flex-1 justify-center items-center">
+            <Text className="text-gray-500 font-poppins-regular capitalize">
+              Masukkan nomor minimal 4 digit untuk melihat produk
+            </Text>
           </View>
-        )} */}
-        <ProductPaginate
-          url="/master/product/prepaid"
-          renderItem={productPulsa}
-          ref={paginateRef}
-          payload={{product_category: 'Pulsa'}}
-        />
+        )}
+
         <BottomModal
           visible={showModal}
-          onDismiss={() => setShowModal(showModal)}
+          onDismiss={() => setShowModal(false)}
           title="Detail Transaksi">
           <View>
             <View style={styles.modalData(isDarkMode)}>
@@ -217,6 +249,12 @@ export default function Pulsa({navigation}) {
               </Text>
             </View>
             <View style={styles.modalData(isDarkMode)}>
+              <Text style={styles.labelModalData(isDarkMode)}>Operator</Text>
+              <Text style={styles.valueModalData(isDarkMode)}>
+                {phoneOperator || 'Tidak Dikenali'}
+              </Text>
+            </View>
+            <View style={styles.modalData(isDarkMode)}>
               <Text style={styles.labelModalData(isDarkMode)}>Produk </Text>
               <Text style={styles.valueModalData(isDarkMode)}>
                 {selectItem?.product_name}
@@ -225,7 +263,7 @@ export default function Pulsa({navigation}) {
             <View style={styles.modalData(isDarkMode)}>
               <Text style={styles.labelModalData(isDarkMode)}>Harga </Text>
               <Text style={styles.valueModalData(isDarkMode)}>
-                {rupiah(selectItem?.product_price)}
+                {rupiah(selectItem?.product_buyer_price)}
               </Text>
             </View>
           </View>
@@ -309,12 +347,12 @@ const styles = StyleSheet.create({
     rowGap: 5,
   }),
   labelModalData: isDarkMode => ({
-    fontFamily: REGULAR_FONT,
+    fontFamily: 'Poppins-SemiBold',
     color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-    fontSize: FONT_SEDANG,
+    fontSize: FONT_NORMAL,
   }),
   valueModalData: isDarkMode => ({
-    fontFamily: REGULAR_FONT,
+    fontFamily: 'Poppins-Regular',
     color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
     fontSize: FONT_NORMAL,
   }),

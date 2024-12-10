@@ -14,12 +14,12 @@ import {
   UIManager,
   Platform,
   Image,
+  TouchableOpacity
 } from 'react-native';
 import {useQuery, useQueryClient} from '@tanstack/react-query';
 import axios from '../libs/axios';
 import {Skeleton} from '@rneui/themed';
 import LinearGradient from 'react-native-linear-gradient';
-// import Icons from 'react-native-vector-icons/Feather';
 
 if (
   Platform.OS === 'android' &&
@@ -28,13 +28,13 @@ if (
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-const Paginate = forwardRef(
-  ({url, payload, renderItem, Plugin, ...props}, ref) => {
+const ProductPaginate = forwardRef(
+  ({url, payload, renderItem, Plugin, onItemPress, editUrl , ...props}, ref) => {
     const queryClient = useQueryClient();
     const [page, setPage] = useState(1);
     const [dataList, setDataList] = useState([]);
     const [isFetchingMore, setIsFetchingMore] = useState(false);
-    const cardData = [1, 2, 3, 4, 5];
+    const cardData = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
     const {data, isFetching, refetch} = useQuery({
       queryKey: [url, page],
@@ -42,7 +42,7 @@ const Paginate = forwardRef(
       placeholderData: {data: []},
       onSuccess: res => {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        console.log(res.data, 88);
+        // console.log(res.data, 888);
         if (page === 1) {
           setDataList(res.data);
         } else {
@@ -57,12 +57,14 @@ const Paginate = forwardRef(
 
     useImperativeHandle(ref, () => ({
       refetch,
+      editItem : handleEditItem
     }));
 
     useEffect(() => {
-      setPage(1);
-      refetch();
-    }, [payload]);
+      if (page === 1) {
+        refetch();
+      }
+    }, [JSON.stringify(payload)]);
 
     const handleLoadMore = () => {
       if (!isFetchingMore && page < data.last_page) {
@@ -84,6 +86,34 @@ const Paginate = forwardRef(
       }
     };
 
+     // Fungsi baru untuk menangani press item
+     const handleItemPress = (item) => {
+      // Jika onItemPress disediakan, panggil dengan item yang dipilih
+      if (onItemPress) {
+        onItemPress(item);
+      }
+    };
+
+    // Fungsi untuk mengedit item (opsional)
+    const handleEditItem = async (item) => {
+      try {
+        // Pastikan editUrl tersedia
+        if (editUrl) {
+          // Misalnya mengirim request edit ke API
+          const response = await axios.get(`${editUrl}/${item.id}`, item);
+          // Anda bisa menambahkan logika tambahan setelah edit berhasil
+          console.log('Edit response:', response.data);
+          
+          // Optional: refetch data setelah edit
+          refetch();
+        }
+      } catch (error) {
+        console.error('Error editing item:', error);
+        // Tambahkan error handling sesuai kebutuhan
+      }
+    };
+
+
     const ListFooter = () => (
       <View className="flex-row justify-center mt-4">
         {isFetchingMore && (
@@ -103,48 +133,43 @@ const Paginate = forwardRef(
     if (isFetching && page === 1) {
       return (
         <View className="mt-5 items-center">
-        {cardData.map((item, index) => (
-          <View
-            key={index}
-            className="flex-row w-full px-4 mb-2"
-          >
-            <View
-              className="flex-1 mr-2"
-              style={{
-                backgroundColor: '#E6E6E6',
-              }}
-            >
-              <Skeleton
-                animation="wave"
-                width="100%"
-                height={70}
-                LinearGradientComponent={LinearGradient}
-              />
+          {cardData.map(index => (
+            <View key={index} className="flex-row w-full px-4 mb-2">
+              <View
+                className="w-full rounded-2xl "
+                style={{
+                  backgroundColor: '#E6E6E6',
+                }}>
+                <Skeleton
+                  animation="wave"
+                  width="100%"
+                  height={70}
+                  LinearGradientComponent={LinearGradient}
+                />
+              </View>
             </View>
-            <View
-              className="flex-1 ml-2"
-              style={{
-                backgroundColor: '#E6E6E6',
-              }}
-            >
-              <Skeleton
-                animation="wave"
-                width="100%"
-                height={70}
-                LinearGradientComponent={LinearGradient}
-              />
-            </View>
-          </View>
-        ))}
-      </View>
+          ))}
+        </View>
       );
     }
+
+    const enhancedRenderItem = ({item, index}) => {
+      return (
+        <TouchableOpacity 
+          onPress={() => handleItemPress(item)}
+          // Optional: tambahkan prop untuk edit jika editUrl tersedia
+          onLongPress={editUrl ? () => handleEditItem(item) : undefined}
+        >
+          {renderItem({item, index})}
+        </TouchableOpacity>
+      );
+    };
 
     return (
       <View className="flex-1 p-4" {...props}>
         <FlatList
           data={dataList}
-          renderItem={renderItem}
+          renderItem={enhancedRenderItem}
           keyExtractor={(item, index) => index.toString()}
           onScroll={handleScroll}
           onEndReached={handleLoadMore}
@@ -167,4 +192,4 @@ const Paginate = forwardRef(
   },
 );
 
-export default memo(Paginate);
+export default memo(ProductPaginate);

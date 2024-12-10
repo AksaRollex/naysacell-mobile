@@ -16,7 +16,7 @@ import {
 import { rupiah } from '../../libs/utils';
 
 export default function SuccessNotif({route}) {
-  const {item, nomor_tujuan} = route.params;
+  const {item, nomorTujuan} = route.params;
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <View
@@ -41,7 +41,7 @@ export default function SuccessNotif({route}) {
       <View style={{marginHorizontal: HORIZONTAL_MARGIN}}>
         <View style={styles.modalData(isDarkMode)}>
           <Text style={styles.labelModalData(isDarkMode)}>Nomor Tujuan </Text>
-          <Text style={styles.valueModalData(isDarkMode)}>{nomor_tujuan}</Text>
+          <Text style={styles.valueModalData(isDarkMode)}>{nomorTujuan}</Text>
         </View>
         <View style={styles.modalData(isDarkMode)}>
           <Text style={styles.labelModalData(isDarkMode)}>Produk </Text>
@@ -52,7 +52,7 @@ export default function SuccessNotif({route}) {
         <View style={styles.modalData(isDarkMode)}>
           <Text style={styles.labelModalData(isDarkMode)}>Harga </Text>
           <Text style={styles.valueModalData(isDarkMode)}>
-            {rupiah(item?.product_price)}
+            {rupiah(item?.product_buyer_price)}
           </Text>
         </View>
         <View style={styles.modalData(isDarkMode)}>
