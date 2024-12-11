@@ -39,11 +39,11 @@ export default mainMenu = [
     ikon: PDAMIkon,
     path: 'PDAM',
   },
-  {
-    label: 'Internet',
-    ikon: InternetIkon,
-    path: 'Internet',
-  },
+  // {
+  //   label: 'Internet',
+  //   ikon: InternetIkon,
+  //   path: 'Internet',
+  // },
 ];
 
 export const gameMenu = [

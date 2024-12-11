@@ -1,11 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Touchable,
-  TextInput,
-} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React, {useRef, useState, useEffect} from 'react';
 import {
   BLUE_COLOR,
@@ -15,14 +8,10 @@ import {
   GREY_COLOR,
   HORIZONTAL_MARGIN,
   LIGHT_COLOR,
-  REGULAR_FONT,
   SLATE_COLOR,
   WHITE_BACKGROUND,
-  GREEN_COLOR,
-  FONT_SEDANG,
   LIGHT_BACKGROUND,
   WHITE_COLOR,
-  FONT_KECIL,
 } from '../../utils/const';
 import {useColorScheme} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -36,7 +25,7 @@ export default function Pulsa({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
   const [type, setType] = useState('Pulsa');
   const [selectItem, setSelectedItem] = useState('');
-  const [nomorTujuan, setNomor] = useState(null);
+  const [nomorTujuan, setNomorTujuan] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
   const pulsaRef = useRef();
@@ -91,7 +80,7 @@ export default function Pulsa({navigation}) {
   }, [nomorTujuan]);
 
   const clearNomor = () => {
-    setNomor('');
+    setNomorTujuan('');
     setIsSearchEnabled(false);
     setPhoneOperator(null);
   };
@@ -146,7 +135,8 @@ export default function Pulsa({navigation}) {
                       <Input
                         value={nomorTujuan}
                         placeholder="Masukan Nomor Tujuan"
-                        onChange={text => setNomor(text)}
+                        lebar={'100%'}
+                        onChange={text => setNomorTujuan(text)}
                         onDelete={clearNomor}
                         type="numeric"
                       />
@@ -235,6 +225,16 @@ export default function Pulsa({navigation}) {
           </View>
         )}
 
+        {selectItem && (
+          <View style={[styles.bottom(isDarkMode)]}>
+            <TouchableOpacity
+              style={styles.bottomButton}
+              onPress={() => setShowModal(true)}>
+              <Text style={styles.buttonText}>Bayar</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
         <BottomModal
           visible={showModal}
           onDismiss={() => setShowModal(false)}
@@ -288,12 +288,6 @@ export default function Pulsa({navigation}) {
 }
 
 const styles = StyleSheet.create({
-  button: {
-    backgroundColor: BLUE_COLOR,
-    borderRadius: 5,
-    padding: 10,
-  },
-
   buttonTab: {
     width: '47%',
     borderBottomColor: GREY_COLOR,
@@ -305,36 +299,26 @@ const styles = StyleSheet.create({
     color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
     fontFamily: 'Poppins-SemiBold',
   }),
-  productWrapper: isDarkMode => ({
-    borderWidth: 1,
-    borderColor: GREY_COLOR,
-    borderRadius: 10,
-    padding: 20,
-    width: '45%',
-    backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
-  }),
-  productLabel: isDarkMode => ({
-    fontFamily: 'Poppins-SemiBold',
-    color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-  }),
-  productPrice: isDarkMode => ({
-    fontFamily: 'Poppins-Regular',
-    color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-  }),
   buttonLabel: {
     color: WHITE_BACKGROUND,
     textAlign: 'center',
     fontFamily: 'Poppins-SemiBold',
   },
-
   bottom: isDarkMode => ({
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
     backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
-    padding: 10,
+    marginHorizontal: HORIZONTAL_MARGIN,
+    marginVertical : 10,
   }),
+  
+  buttonText: {
+    color: WHITE_COLOR,
+    fontFamily: 'Poppins-SemiBold',
+    textAlign: 'center',
+  },
   bottomButton: {
     backgroundColor: BLUE_COLOR,
     padding: 10,

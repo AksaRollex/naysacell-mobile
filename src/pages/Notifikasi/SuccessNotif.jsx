@@ -5,15 +5,13 @@ import {
   DARK_BACKGROUND,
   DARK_COLOR,
   FONT_NORMAL,
-  FONT_SEDANG,
   GREY_COLOR,
   HORIZONTAL_MARGIN,
   LIGHT_COLOR,
-  REGULAR_FONT,
   SLATE_COLOR,
   WHITE_BACKGROUND,
 } from '../../utils/const';
-import { rupiah } from '../../libs/utils';
+import {rupiah} from '../../libs/utils';
 
 export default function SuccessNotif({route}) {
   const {item, nomorTujuan} = route.params;
@@ -24,7 +22,7 @@ export default function SuccessNotif({route}) {
         flex: 1,
         backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
       }}>
-      <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+      <View style={{alignItems: 'center', justifyContent: 'center'}}>
         <View
           style={{
             width: 200,
@@ -39,9 +37,15 @@ export default function SuccessNotif({route}) {
         </View>
       </View>
       <View style={{marginHorizontal: HORIZONTAL_MARGIN}}>
+        {/* {nomorTujuan && (
+          <View style={styles.modalData(isDarkMode)}>
+            <Text style={styles.labelModalData(isDarkMode)}>Nomor Tujuan </Text>
+            <Text style={styles.valueModalData(isDarkMode)}>{nomorTujuan}</Text>
+          </View>
+        )} */}
         <View style={styles.modalData(isDarkMode)}>
           <Text style={styles.labelModalData(isDarkMode)}>Nomor Tujuan </Text>
-          <Text style={styles.valueModalData(isDarkMode)}>{nomorTujuan}</Text>
+          <Text style={styles.valueModalData(isDarkMode)}>{nomorTujuan || 'Kosong'}</Text>
         </View>
         <View style={styles.modalData(isDarkMode)}>
           <Text style={styles.labelModalData(isDarkMode)}>Produk </Text>
@@ -72,12 +76,12 @@ const styles = StyleSheet.create({
     rowGap: 5,
   }),
   labelModalData: isDarkMode => ({
-    fontFamily: REGULAR_FONT,
+    fontFamily: 'Poppins-SemiBold',
     color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-    fontSize: FONT_SEDANG,
+    fontSize: FONT_NORMAL,
   }),
   valueModalData: isDarkMode => ({
-    fontFamily: REGULAR_FONT,
+    fontFamily: 'Poppins-Regular',
     color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
     fontSize: FONT_NORMAL,
   }),

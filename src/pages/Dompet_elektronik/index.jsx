@@ -15,48 +15,44 @@ import {
   SLATE_COLOR,
   WHITE_BACKGROUND,
 } from '../../utils/const';
-import { ArrowRight } from '../../../assets';
+import {ArrowRight} from '../../../assets';
 export default function DompetElektronik({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
-
-  const layanans = [
-    {
-      label: 'Shopeepay',
-      path: '',
-    },
-    {
-      label: 'OVO',
-      path: '',
-    },
-    {
-      label: 'DANA',
-      path: '',
-    },
-    {
-      label: 'GOPAY',
-      path: '',
-    },
-  ];
 
   return (
     <View style={styles.wrapper(isDarkMode)}>
       <View sytle={styles.container(isDarkMode)}>
         <View>
-          {layanans.map(item => {
-            return (
-              <TouchableOpacity
-                key={item.label}
-                style={styles.layananButton(isDarkMode)}
-                onPress={() =>
-                  navigation.navigate('TopupDompet', {
-                    item: item.label,
-                  })
-                }>
-                <Text style={styles.buttonText(isDarkMode)}>{item.label}</Text>
-                <ArrowRight />
-              </TouchableOpacity>
-            );
-          })}
+          <TouchableOpacity
+            style={styles.layananButton(isDarkMode)}
+            onPress={() => navigation.navigate('Shopeepay')}>
+            <Text style={styles.buttonText(isDarkMode)}>Shopeepay</Text>
+            <ArrowRight />
+          </TouchableOpacity>
+        </View>
+        <View>
+          <TouchableOpacity
+            style={styles.layananButton(isDarkMode)}
+            onPress={() => navigation.navigate('OVO')}>
+            <Text style={styles.buttonText(isDarkMode)}>Ovo</Text>
+            <ArrowRight />
+          </TouchableOpacity>
+        </View>
+        <View>
+          <TouchableOpacity
+            style={styles.layananButton(isDarkMode)}
+            onPress={() => navigation.navigate('Dana')}>
+            <Text style={styles.buttonText(isDarkMode)}>Dana</Text>
+            <ArrowRight />
+          </TouchableOpacity>
+        </View>
+        <View>
+          <TouchableOpacity
+            style={styles.layananButton(isDarkMode)}
+            onPress={() => navigation.navigate('GoPay')}>
+            <Text style={styles.buttonText(isDarkMode)}>GOPay</Text>
+            <ArrowRight />
+          </TouchableOpacity>
         </View>
       </View>
     </View>

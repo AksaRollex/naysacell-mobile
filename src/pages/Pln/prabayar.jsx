@@ -12,25 +12,23 @@ import {
   DARK_COLOR,
   FONT_KECIL,
   FONT_NORMAL,
-  GREEN_COLOR,
   GREY_COLOR,
   HORIZONTAL_MARGIN,
   LIGHT_COLOR,
   SLATE_COLOR,
   WHITE_BACKGROUND,
   WHITE_COLOR,
-  windowWidth,
 } from '../../utils/const';
+import BottomModal from '../../components/BottomModal';
 import Input from '../../components/form/input';
-import {product_token} from '../../data/product_pln';
 import {rupiah} from '../../libs/utils';
-import {CheckProduct} from '../../../assets';
 import ProductPaginate from '../../components/ProductPaginate';
 
-export default function PLNPrabayar() {
+export default function PLNPrabayar({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
-  const [customer_no, setCustomerNo] = useState('');
+  const [nomorTujuan, setNomorTujuan] = useState('');
 
+  const [showModal, setShowModal] = useState(false);
   const [selectItem, setSelectedItem] = useState(null);
 
   const paginateRef = useRef();
@@ -39,17 +37,25 @@ export default function PLNPrabayar() {
   };
 
   const productPLN = ({item}) => {
-    console.log(item, 'item');
     return (
-      <TouchableOpacity className="flex-row justify-between">
-        <View className="w-1/2 flex-1 p-2 border border-gray-200 rounded-xl m-1 bg-[#d9d9d9]">
-          <View className="items-start justify-center flex-col">
-            <Text className="font-poppins-semibold text-sm">
-              {item.product_name}
-            </Text>
-            <Text className="font-poppins-regular text-sm">
-              {rupiah(item.product_buyer_price)}
-            </Text>
+      <TouchableOpacity
+        className="p-2 border border-gray-500 rounded-xl m-1 bg-[#404040]"
+        onPress={() => {
+          setSelectedItem(item);
+          setShowModal(true);
+        }}>
+        <View className="items-start flex-col ">
+          <Text className="font-poppins-semibold text-base text-white">
+            {item.product_name}
+          </Text>
+          <View className="w-full">
+            <View className="justify-items-end items-end">
+              <Text
+                className="font-poppins-regular text-sm text-end "
+                style={{color: WHITE_COLOR}}>
+                {rupiah(item.product_buyer_price)}
+              </Text>
+            </View>
           </View>
         </View>
       </TouchableOpacity>
@@ -65,11 +71,11 @@ export default function PLNPrabayar() {
         <View style={styles.container}>
           <View style={styles.formGroup}>
             <Input
-              value={customer_no}
-              placeholder="Masukan Nomor meter"
-              onChange={text => setCustomerNo(text)}
+              value={nomorTujuan}
+              placeholder="Masukan Nomor Meter"
+              onChange={text => setNomorTujuan(text)}
               type="numeric"
-              lebar={windowWidth * 0.7}
+              lebar={'80%'}
               onDelete={resetInput}
               style={{fontFamily: 'Poppins-Regular'}}
             />
@@ -91,41 +97,6 @@ export default function PLNPrabayar() {
               <Text style={styles.value(isDarkMode)}> 900 kwh</Text>
             </View>
           </View>
-          {/* <View
-            style={{
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-              justifyContent: 'space-between',
-              rowGap: 25,
-              marginTop: 20,
-            }}>
-            {product_token.map(p => {
-              return (
-                <TouchableOpacity
-                  key={p.id}
-                  style={[
-                    styles.productWrapper(isDarkMode),
-                    selectItem?.id === p.id
-                      ? {
-                          borderColor: GREEN_COLOR,
-                        }
-                      : '',
-                  ]}
-                  onPress={() => setSelectedItem(p)}>
-                  <Text style={styles.productLabel(isDarkMode)}>{p.label}</Text>
-                  <Text style={styles.productPrice(isDarkMode)}>
-                    {rupiah(p.price)}
-                  </Text>
-                  {selectItem?.id === p.id && (
-                    <CheckProduct
-                      width={20}
-                      style={{position: 'absolute', right: 7, top: 2}}
-                    />
-                  )}
-                </TouchableOpacity>
-              );
-            })}
-          </View> */}
         </View>
         <ProductPaginate
           renderItem={productPLN}
@@ -136,11 +107,52 @@ export default function PLNPrabayar() {
 
         {selectItem && (
           <View style={[styles.bottom(isDarkMode)]}>
-            <TouchableOpacity style={styles.bottomButton}>
+            <TouchableOpacity style={styles.bottomButton} onPress={() => setShowModal(true)}>
               <Text style={styles.buttonText}>Bayar</Text>
             </TouchableOpacity>
           </View>
         )}
+        <BottomModal
+          visible={showModal}
+          onDismiss={() => setShowModal(false)}
+          title="Detail Transaksi">
+          <View>
+            <View style={styles.modalData(isDarkMode)}>
+              <Text style={styles.labelModalData(isDarkMode)}>
+                Nomor Tujuan
+              </Text>
+              <Text style={styles.valueModalData(isDarkMode)}>
+                {nomorTujuan}
+              </Text>
+            </View>
+            <View style={styles.modalData(isDarkMode)}>
+              <Text style={styles.labelModalData(isDarkMode)}>Produk </Text>
+              <Text style={styles.valueModalData(isDarkMode)}>
+                {selectItem?.product_name}
+              </Text>
+            </View>
+            <View style={styles.modalData(isDarkMode)}>
+              <Text style={styles.labelModalData(isDarkMode)}>Harga </Text>
+              <Text style={styles.valueModalData(isDarkMode)}>
+                {rupiah(selectItem?.product_buyer_price)}
+              </Text>
+            </View>
+          </View>
+          {selectItem && (
+            <View style={[styles.bottom(isDarkMode)]}>
+              <TouchableOpacity
+                style={styles.bottomButton}
+                onPress={() =>
+                  navigation.navigate('SuccessNotif', {
+                    nomorTujuan: nomorTujuan,
+                    item: selectItem,
+                  })
+                }>
+                <Text style={styles.buttonLabel}>Bayar</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </BottomModal>
       </View>
     </>
   );
@@ -215,11 +227,33 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
-    padding: 10,
+    marginHorizontal: HORIZONTAL_MARGIN,
+    marginVertical : 10,
   }),
+  buttonLabel: {
+    color: WHITE_BACKGROUND,
+    textAlign: 'center',
+    fontFamily: 'Poppins-SemiBold',
+  },
   bottomButton: {
     backgroundColor: BLUE_COLOR,
     padding: 10,
     borderRadius: 5,
   },
+  modalData: isDarkMode => ({
+    borderBottomWidth: 1,
+    borderBottomColor: isDarkMode ? SLATE_COLOR : GREY_COLOR,
+    paddingVertical: 5,
+    rowGap: 5,
+  }),
+  labelModalData: isDarkMode => ({
+    fontFamily: 'Poppins-SemiBold',
+    color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+    fontSize: FONT_NORMAL,
+  }),
+  valueModalData: isDarkMode => ({
+    fontFamily: 'Poppins-Regular',
+    color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+    fontSize: FONT_NORMAL,
+  }),
 });

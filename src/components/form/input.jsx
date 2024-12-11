@@ -14,8 +14,16 @@ import {
   WHITE_BACKGROUND,
 } from '../../utils/const';
 import {XClose} from '../../../assets';
+import IonIcons from 'react-native-vector-icons/Ionicons';
 
-export default function Input({value, placeholder, onChange, onDelete, type, lebar}) {
+export default function Input({
+  value,
+  placeholder,
+  onChange,
+  onDelete,
+  type,
+  lebar,
+}) {
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <View
@@ -34,16 +42,19 @@ export default function Input({value, placeholder, onChange, onDelete, type, leb
         placeholderTextColor={GREY_COLOR}
         value={value}
         onChangeText={onChange}
-        style={{ width : lebar ? lebar : '', paddingHorizontal: 10}}
-        ></TextInput>
-      {value !== null ||
-        (value !== '' && (
-          <TouchableOpacity
-            style={{position: 'absolute', right: 10}}
-            onPress={onDelete}>
-            <XClose width={15} height={15} />
-          </TouchableOpacity>
-        ))}
+        style={{
+          width: lebar ? lebar : '100%',
+          paddingHorizontal: 10,
+          fontFamily: 'Poppins-Regular',
+          textTransform: 'capitalize',
+        }}></TextInput>
+       {value && value !== '' && ( // Ubah kondisi ini
+        <TouchableOpacity
+          style={{position: 'absolute', right: 10}}
+          onPress={onDelete}>
+          <IonIcons name="close" size={20} color={GREY_COLOR} />
+        </TouchableOpacity>
+      )}
     </View>
   );
 }

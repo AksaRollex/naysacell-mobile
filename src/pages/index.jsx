@@ -5,7 +5,6 @@ import LayananPLN from './Pln';
 import PLNPascaBayar from './Pln/pascabayar';
 import PLNPrabayar from './Pln/prabayar';
 import DompetElektronik from './Dompet_elektronik';
-import TopupDompet from './Dompet_elektronik/topupDompet';
 import BPJSKesehatan from './BPJS';
 import PDAM from './PDAM';
 import Internet from './Internet';
@@ -24,6 +23,10 @@ import OtpEmail from './auth/forgotPassword/step/otpEmail';
 import Password from './auth/forgotPassword/step/password';
 import SyaratDanKetentuan from './S&K';
 import Notifikasi from './Notifikasi/Notifikasi';
+import Shopeepay from './Dompet_elektronik/ShopeePay';
+import Dana from './Dompet_elektronik/Dana';
+import OVO from './Dompet_elektronik/Ovo';
+import GoPay from './Dompet_elektronik/Gopay';
 
 export {
   HomeScreen,
@@ -33,7 +36,6 @@ export {
   PLNPascaBayar,
   PLNPrabayar,
   DompetElektronik,
-  TopupDompet,
   BPJSKesehatan,
   PDAM,
   Internet,
@@ -51,5 +53,9 @@ export {
   OtpEmail,
   SyaratDanKetentuan,
   Password,
-  Notifikasi
+  Notifikasi,
+  Shopeepay,
+  Dana,
+  OVO,
+  GoPay,
 };

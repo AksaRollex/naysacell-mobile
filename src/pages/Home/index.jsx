@@ -208,13 +208,10 @@ export default function HomeScreen({navigation}) {
                     key={item.label}
                     style={{
                       width: 100,
-                      // height: 100,
                       padding: 5,
                       backgroundColor: isDarkMode ? DARK_BACKGROUND : '#FFF',
                       borderRadius: 10,
                       marginTop: 15,
-                      // borderWidth: isDarkMode ? 1 : 1,
-                      // borderColor: isDarkMode ? SLATE_COLOR : SLATE_COLOR,
                       alignItems: 'center',
                       justifyContent: 'center',
                     }}

@@ -9,7 +9,6 @@ import React from 'react';
 import {
   BLUE_COLOR,
   DARK_BACKGROUND,
-  REGULAR_FONT,
   WHITE_BACKGROUND,
   WHITE_COLOR,
 } from '../utils/const';

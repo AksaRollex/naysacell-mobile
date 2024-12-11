@@ -14,12 +14,13 @@ import {
   UIManager,
   Platform,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
 } from 'react-native';
 import {useQuery, useQueryClient} from '@tanstack/react-query';
 import axios from '../libs/axios';
 import {Skeleton} from '@rneui/themed';
 import LinearGradient from 'react-native-linear-gradient';
+import {CheckProduct} from '../../assets';
 
 if (
   Platform.OS === 'android' &&
@@ -29,11 +30,12 @@ if (
 }
 
 const ProductPaginate = forwardRef(
-  ({url, payload, renderItem, Plugin, onItemPress, editUrl , ...props}, ref) => {
+  ({url, payload, renderItem, Plugin, onItemPress, editUrl, ...props}, ref) => {
     const queryClient = useQueryClient();
     const [page, setPage] = useState(1);
     const [dataList, setDataList] = useState([]);
     const [isFetchingMore, setIsFetchingMore] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(null);
     const cardData = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
     const {data, isFetching, refetch} = useQuery({
@@ -57,7 +59,7 @@ const ProductPaginate = forwardRef(
 
     useImperativeHandle(ref, () => ({
       refetch,
-      editItem : handleEditItem
+      editItem: handleEditItem,
     }));
 
     useEffect(() => {
@@ -86,16 +88,21 @@ const ProductPaginate = forwardRef(
       }
     };
 
-     // Fungsi baru untuk menangani press item
-     const handleItemPress = (item) => {
-      // Jika onItemPress disediakan, panggil dengan item yang dipilih
+    // Fungsi baru untuk menangani press item
+    const handleItemPress = item => {
+      // Toggle selection jika item sudah dipilih
+      setSelectedItem(prevSelected =>
+        prevSelected && prevSelected.id === item.id ? null : item,
+      );
+
+      // Panggil onItemPress jika ada
       if (onItemPress) {
         onItemPress(item);
       }
     };
 
     // Fungsi untuk mengedit item (opsional)
-    const handleEditItem = async (item) => {
+    const handleEditItem = async item => {
       try {
         // Pastikan editUrl tersedia
         if (editUrl) {
@@ -103,7 +110,7 @@ const ProductPaginate = forwardRef(
           const response = await axios.get(`${editUrl}/${item.id}`, item);
           // Anda bisa menambahkan logika tambahan setelah edit berhasil
           console.log('Edit response:', response.data);
-          
+
           // Optional: refetch data setelah edit
           refetch();
         }
@@ -112,7 +119,6 @@ const ProductPaginate = forwardRef(
         // Tambahkan error handling sesuai kebutuhan
       }
     };
-
 
     const ListFooter = () => (
       <View className="flex-row justify-center mt-4">
@@ -154,13 +160,32 @@ const ProductPaginate = forwardRef(
     }
 
     const enhancedRenderItem = ({item, index}) => {
+      // Periksa apakah item saat ini adalah item yang dipilih
+      const isSelected = selectedItem && selectedItem.id === item.id;
+
       return (
-        <TouchableOpacity 
+        <TouchableOpacity
           onPress={() => handleItemPress(item)}
-          // Optional: tambahkan prop untuk edit jika editUrl tersedia
           onLongPress={editUrl ? () => handleEditItem(item) : undefined}
-        >
-          {renderItem({item, index})}
+          style={[
+            // Optional: tambahkan style khusus untuk item yang dipilih
+            isSelected && {
+              borderWidth: 2,
+              borderColor: 'green', // Warna border hijau untuk item terpilih
+              backgroundColor: 'rgba(0,255,0,0.1)', // Latar belakang transparan hijau
+            },
+          ]}>
+          {renderItem({
+            item,
+            index,
+            isSelected, // Kirim status selected ke render item
+            // Optional: tambahkan komponen centang
+            selectedComponent: isSelected ? (
+              <View>
+                <CheckProduct width={20} />
+              </View>
+            ) : null,
+          })}
         </TouchableOpacity>
       );
     };

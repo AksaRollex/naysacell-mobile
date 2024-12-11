@@ -12,7 +12,6 @@ import {
   PLNPascaBayar,
   PLNPrabayar,
   DompetElektronik,
-  TopupDompet,
   BPJSKesehatan,
   PDAM,
   Internet,
@@ -31,6 +30,10 @@ import {
   Password,
   SyaratDanKetentuan,
   Notifikasi,
+  Shopeepay,
+  Dana,
+  OVO,
+  GoPay,
 } from './src/pages';
 import {WHITE_BACKGROUND, DARK_BACKGROUND} from './src/utils/const';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
@@ -189,22 +192,6 @@ function App() {
             component={DompetElektronik}
             options={{
               title: 'Pilih Dompet Elektronik',
-              headerStyle: {
-                backgroundColor: isDarkMode
-                  ? DARK_BACKGROUND
-                  : WHITE_BACKGROUND,
-              },
-              headerTitleStyle: {
-                fontFamily: 'Poppins-SemiBold',
-              },
-              headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
-            }}
-          />
-          <Stack.Screen
-            name="TopupDompet"
-            component={TopupDompet}
-            options={{
-              title: 'Topup Dompet',
               headerStyle: {
                 backgroundColor: isDarkMode
                   ? DARK_BACKGROUND
@@ -393,6 +380,70 @@ function App() {
             component={Notifikasi}
             options={{
               title: 'Notifikasi',
+              headerStyle: {
+                backgroundColor: isDarkMode
+                  ? DARK_BACKGROUND
+                  : WHITE_BACKGROUND,
+              },
+              headerTitleStyle: {
+                fontFamily: 'Poppins-SemiBold',
+              },
+              headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
+            }}
+          />
+          <Stack.Screen
+            name="Shopeepay"
+            component={Shopeepay}
+            options={{
+              title: 'Shopeepay',
+              headerStyle: {
+                backgroundColor: isDarkMode
+                  ? DARK_BACKGROUND
+                  : WHITE_BACKGROUND,
+              },
+              headerTitleStyle: {
+                fontFamily: 'Poppins-SemiBold',
+              },
+              headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
+            }}
+          />
+          <Stack.Screen
+            name="Dana"
+            component={Dana}
+            options={{
+              title: 'Dana',
+              headerStyle: {
+                backgroundColor: isDarkMode
+                  ? DARK_BACKGROUND
+                  : WHITE_BACKGROUND,
+              },
+              headerTitleStyle: {
+                fontFamily: 'Poppins-SemiBold',
+              },
+              headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
+            }}
+          />
+          <Stack.Screen
+            name="OVO"
+            component={OVO}
+            options={{
+              title: 'OVO',
+              headerStyle: {
+                backgroundColor: isDarkMode
+                  ? DARK_BACKGROUND
+                  : WHITE_BACKGROUND,
+              },
+              headerTitleStyle: {
+                fontFamily: 'Poppins-SemiBold',
+              },
+              headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
+            }}
+          />
+          <Stack.Screen
+            name="GoPay"
+            component={GoPay}
+            options={{
+              title: 'GoPay',
               headerStyle: {
                 backgroundColor: isDarkMode
                   ? DARK_BACKGROUND

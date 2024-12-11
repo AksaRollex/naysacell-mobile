@@ -22,10 +22,13 @@ import {
   WHITE_COLOR,
 } from '../../utils/const';
 import Input from '../../components/form/input';
+import BottomModal from '../../components/BottomModal';
+import {rupiah} from '../../libs/utils';
 
 export default function BPJSKesehatan() {
   const isDarkMode = useColorScheme() === 'dark';
-  const [customer_no, setCustomerNo] = useState('');
+  const [nomorTujuan, setNomorTujuan] = useState('');
+  const [showModal, setShowModal] = useState(false);
 
   return (
     <>
@@ -37,10 +40,10 @@ export default function BPJSKesehatan() {
         <View style={styles.container}>
           <View style={styles.formGroup}>
             <Input
-              value={customer_no}
+              value={nomorTujuan}
               placeholder="Masukan Nomor VA Keluarga  "
-              onChange={text => setCustomerNo(text)}
-              onDelete={() => setCustomerNo('')}
+              onChange={text => setNomorTujuan(text)}
+              onDelete={() => setNomorTujuan('')}
               type="numeric"
             />
             <TouchableOpacity style={styles.buttonSearch}>
@@ -72,10 +75,65 @@ export default function BPJSKesehatan() {
         </View>
 
         <View style={[styles.bottom(isDarkMode)]}>
-          <TouchableOpacity style={styles.bottomButton}>
+          <TouchableOpacity
+            style={styles.bottomButton}
+            onPress={() => setShowModal(true)}>
             <Text style={styles.buttonText}>Bayar</Text>
           </TouchableOpacity>
         </View>
+        <BottomModal
+          visible={showModal}
+          onDismiss={() => setShowModal(false)}
+          title="Detail Transaksi">
+          <View>
+            <View style={styles.modalData(isDarkMode)}>
+              <Text style={styles.labelModalData(isDarkMode)}>Nama</Text>
+              <Text style={styles.valueModalData(isDarkMode)}>
+                {nomorTujuan || 'Kosong'}
+              </Text>
+            </View>
+            <View style={styles.modalData(isDarkMode)}>
+              <Text style={styles.labelModalData(isDarkMode)}>
+                ID Pelanggan
+              </Text>
+              <Text style={styles.valueModalData(isDarkMode)}>123456789</Text>
+            </View>
+            <View style={styles.modalData(isDarkMode)}>
+              <Text style={styles.labelModalData(isDarkMode)}>
+                Jumlah Peserta
+              </Text>
+              <Text style={styles.valueModalData(isDarkMode)}>2</Text>
+            </View>
+            <View style={styles.modalData(isDarkMode)}>
+              <Text style={styles.labelModalData(isDarkMode)}>
+                Lembar Tagihan
+              </Text>
+              <Text style={styles.valueModalData(isDarkMode)}>2 lbr</Text>
+            </View>
+            <View style={styles.modalData(isDarkMode)}>
+              <Text style={styles.labelModalData(isDarkMode)}>
+                Total Tagihan
+              </Text>
+              <Text style={styles.valueModalData(isDarkMode)}>
+                {rupiah(120000)}
+              </Text>
+            </View>
+          </View>
+          {/* {selectItem && (
+            <View style={[styles.bottom(isDarkMode)]}>
+              <TouchableOpacity
+                style={styles.bottomButton}
+                onPress={() =>
+                  navigation.navigate('SuccessNotif', {
+                    nomorTujuan: nomorTujuan,
+                    item: selectItem,
+                  })
+                }>
+                <Text style={styles.buttonLabel}>Bayar</Text>
+              </TouchableOpacity>
+            </View>
+          )} */}
+        </BottomModal>
       </View>
     </>
   );
@@ -146,11 +204,28 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
-    padding: 10,
+    marginHorizontal : HORIZONTAL_MARGIN,
+    marginVertical : 10,
   }),
   bottomButton: {
     backgroundColor: BLUE_COLOR,
     padding: 10,
     borderRadius: 5,
   },
+  modalData: isDarkMode => ({
+    borderBottomWidth: 1,
+    borderBottomColor: isDarkMode ? SLATE_COLOR : GREY_COLOR,
+    paddingVertical: 5,
+    rowGap: 5,
+  }),
+  labelModalData: isDarkMode => ({
+    fontFamily: 'Poppins-SemiBold',
+    color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+    fontSize: FONT_NORMAL,
+  }),
+  valueModalData: isDarkMode => ({
+    fontFamily: 'Poppins-Regular',
+    color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+    fontSize: FONT_NORMAL,
+  }),
 });
