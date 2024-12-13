@@ -7,7 +7,10 @@ import {
   TransaksiDefault,
   UserActive,
   UserDefault,
+  MasterDefault,
+  MasterActive,
 } from '../../assets';
+import React from 'react';
 function MyTabBar({state, descriptors, navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -21,6 +24,10 @@ function MyTabBar({state, descriptors, navigation}) {
     if (label === 'Profil') {
       return active ? <UserActive /> : <UserDefault />;
     }
+    if (label === 'Master') {
+      return active ? <MasterActive /> : <MasterDefault />;
+    }
+
     return <HomeDefault />;
   };
 

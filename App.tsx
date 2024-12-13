@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {View, Text, useColorScheme} from 'react-native';
+import {useColorScheme} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -34,9 +34,11 @@ import {
   Dana,
   OVO,
   GoPay,
+  Master,
 } from './src/pages';
 import {WHITE_BACKGROUND, DARK_BACKGROUND} from './src/utils/const';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
+import axios from './src/libs/axios';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -56,6 +58,24 @@ const queryClient = new QueryClient({
 });
 
 function MyTabs() {
+  const [isAdmin, setIsAdmin] = React.useState(false);
+  React.useEffect(() => {
+    axios
+      .get('/auth/me')
+      .then(res => {
+        console.log(res.data.user);
+
+        const userIsAdmin =
+          res.data.user.role.name === 'admin' ||
+          res.data.user.permissions.includes('master');
+
+        setIsAdmin(userIsAdmin);
+      })
+      .catch(err => {
+        console.error('Error fetching data:', err);
+      });
+  }, []);
+
   return (
     <Tab.Navigator tabBar={props => <MyTabBar {...props} />}>
       <Stack.Screen
@@ -74,6 +94,16 @@ function MyTabs() {
           headerTitleStyle: {fontFamily: 'Poppins-SemiBold'},
         }}
       />
+      {isAdmin && (
+        <Stack.Screen
+          name="Master"
+          component={Master}
+          options={{
+            headerShown: false,
+            headerTitleStyle: {fontFamily: 'Poppins-SemiBold'},
+          }}
+        />
+      )}
       <Stack.Screen
         name="Profil"
         component={Profile}

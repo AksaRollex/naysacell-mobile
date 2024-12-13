@@ -69,7 +69,7 @@ export default function PDAM() {
               onPress={() => setShowModalWilayah(!showModalWilayah)}>
               <Text
                 style={{
-                  color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+                  color: WHITE_COLOR,
                   fontFamily: 'Poppins-SemiBold',
                 }}>
                 {wilayahPDAM ? wilayahPDAM?.label : 'Pilih Wilayah'}

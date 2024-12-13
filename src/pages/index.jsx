@@ -27,6 +27,7 @@ import Shopeepay from './Dompet_elektronik/ShopeePay';
 import Dana from './Dompet_elektronik/Dana';
 import OVO from './Dompet_elektronik/Ovo';
 import GoPay from './Dompet_elektronik/Gopay';
+import Master from './Master';
 
 export {
   HomeScreen,
@@ -58,4 +59,5 @@ export {
   Dana,
   OVO,
   GoPay,
+  Master
 };

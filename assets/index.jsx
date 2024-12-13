@@ -32,6 +32,9 @@ import EyeCrossed from './images/svg/eye-crossed.svg';
 import Mail from './images/svg/mail.svg';
 import Pencil from './images/svg/pencil.svg';
 import SignOut from './images/svg/sign-out.svg';
+import MasterDefault from './images/svg/master-default.svg';
+import MasterActive from './images/svg/master-active.svg';
+
 
 export {
   HeaderBG,
@@ -65,5 +68,7 @@ export {
   Pencil,
   SignOut,
   CameraIcon,
-  CloseIcon
+  CloseIcon,
+  MasterDefault,
+  MasterActive,
 };

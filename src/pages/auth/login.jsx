@@ -160,7 +160,6 @@ export default function LoginPage() {
               backgroundColor: BLUE_COLOR,
               opacity: isLoading ? 0.7 : 1,
             }}
-            // disabled={loginMutation.isPending}
             disabled={isLoading}
             onPress={handleSubmit(login)}>
             <Text className="text-white text-md font-poppins-bold">
