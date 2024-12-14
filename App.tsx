@@ -35,6 +35,17 @@ import {
   OVO,
   GoPay,
   Master,
+  IndexLaporan,
+  Laporan,
+  GrafikPenjualan,
+  IndexProduk,
+  Prabayar,
+  Pascabayar,
+  IndexUsersAdmin,
+  User,
+  Admin,
+  IndexMaster,
+  Brand
 } from './src/pages';
 import {WHITE_BACKGROUND, DARK_BACKGROUND} from './src/utils/const';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
@@ -474,6 +485,182 @@ function App() {
             component={GoPay}
             options={{
               title: 'GoPay',
+              headerStyle: {
+                backgroundColor: isDarkMode
+                  ? DARK_BACKGROUND
+                  : WHITE_BACKGROUND,
+              },
+              headerTitleStyle: {
+                fontFamily: 'Poppins-SemiBold',
+              },
+              headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
+            }}
+          />
+          <Stack.Screen
+            name="IndexUsersAdmin"
+            component={IndexUsersAdmin}
+            options={{
+              title: 'User / Admin',
+              headerStyle: {
+                backgroundColor: isDarkMode
+                  ? DARK_BACKGROUND
+                  : WHITE_BACKGROUND,
+              },
+              headerTitleStyle: {
+                fontFamily: 'Poppins-SemiBold',
+              },
+              headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
+            }}
+          />
+          <Stack.Screen
+            name="User"
+            component={User}
+            options={{
+              title: 'User',
+              headerStyle: {
+                backgroundColor: isDarkMode
+                  ? DARK_BACKGROUND
+                  : WHITE_BACKGROUND,
+              },
+              headerTitleStyle: {
+                fontFamily: 'Poppins-SemiBold',
+              },
+              headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
+            }}
+          />
+          <Stack.Screen
+            name="Admin"
+            component={Admin}
+            options={{
+              title: 'Admin',
+              headerStyle: {
+                backgroundColor: isDarkMode
+                  ? DARK_BACKGROUND
+                  : WHITE_BACKGROUND,
+              },
+              headerTitleStyle: {
+                fontFamily: 'Poppins-SemiBold',
+              },
+              headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
+            }}
+          />
+          <Stack.Screen
+            name="IndexMaster"
+            component={IndexMaster}
+            options={{
+              title: 'Master',
+              headerStyle: {
+                backgroundColor: isDarkMode
+                  ? DARK_BACKGROUND
+                  : WHITE_BACKGROUND,
+              },
+              headerTitleStyle: {
+                fontFamily: 'Poppins-SemiBold',
+              },
+              headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
+            }}
+          />
+          <Stack.Screen
+            name="Brand"
+            component={Brand}
+            options={{
+              title: 'Brand',
+              headerStyle: {
+                backgroundColor: isDarkMode
+                  ? DARK_BACKGROUND
+                  : WHITE_BACKGROUND,
+              },
+              headerTitleStyle: {
+                fontFamily: 'Poppins-SemiBold',
+              },
+              headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
+            }}
+          />
+          <Stack.Screen
+            name="IndexProduk"
+            component={IndexProduk}
+            options={{
+              title: 'Produk',
+              headerStyle: {
+                backgroundColor: isDarkMode
+                  ? DARK_BACKGROUND
+                  : WHITE_BACKGROUND,
+              },
+              headerTitleStyle: {
+                fontFamily: 'Poppins-SemiBold',
+              },
+              headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
+            }}
+          />
+          <Stack.Screen
+            name="Prabayar"
+            component={Prabayar}
+            options={{
+              title: 'Prabayar',
+              headerStyle: {
+                backgroundColor: isDarkMode
+                  ? DARK_BACKGROUND
+                  : WHITE_BACKGROUND,
+              },
+              headerTitleStyle: {
+                fontFamily: 'Poppins-SemiBold',
+              },
+              headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
+            }}
+          />
+          <Stack.Screen
+            name="Pascabayar"
+            component={Pascabayar}
+            options={{
+              title: 'Pascabayar',
+              headerStyle: {
+                backgroundColor: isDarkMode
+                  ? DARK_BACKGROUND
+                  : WHITE_BACKGROUND,
+              },
+              headerTitleStyle: {
+                fontFamily: 'Poppins-SemiBold',
+              },
+              headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
+            }}
+          />
+          <Stack.Screen
+            name="IndexLaporan"
+            component={IndexLaporan}
+            options={{
+              title: 'Macam Laporan',
+              headerStyle: {
+                backgroundColor: isDarkMode
+                  ? DARK_BACKGROUND
+                  : WHITE_BACKGROUND,
+              },
+              headerTitleStyle: {
+                fontFamily: 'Poppins-SemiBold',
+              },
+              headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
+            }}
+          />
+          <Stack.Screen
+            name="Laporan"
+            component={Laporan}
+            options={{
+              title: 'Laporan',
+              headerStyle: {
+                backgroundColor: isDarkMode
+                  ? DARK_BACKGROUND
+                  : WHITE_BACKGROUND,
+              },
+              headerTitleStyle: {
+                fontFamily: 'Poppins-SemiBold',
+              },
+              headerTintColor: isDarkMode ? WHITE_BACKGROUND : 'black',
+            }}
+          />
+          <Stack.Screen
+            name="GrafikPenjualan"
+            component={GrafikPenjualan}
+            options={{
+              title: 'Grafik Penjualan',
               headerStyle: {
                 backgroundColor: isDarkMode
                   ? DARK_BACKGROUND

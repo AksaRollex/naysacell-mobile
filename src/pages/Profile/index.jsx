@@ -28,7 +28,6 @@ import { useMutation, useQuery} from '@tanstack/react-query';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from '../../libs/axios';
 import ModalAfterProcess from '../../components/ModalAfterProcess';
-import {APP_URL} from '@env';
 const {width, height} = Dimensions.get('window');
 
 const formPage = () => <ProfileForm />;

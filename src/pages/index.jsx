@@ -28,6 +28,21 @@ import Dana from './Dompet_elektronik/Dana';
 import OVO from './Dompet_elektronik/Ovo';
 import GoPay from './Dompet_elektronik/Gopay';
 import Master from './Master';
+// USERS ADMIN
+import IndexUsersAdmin from './Master/UsersAdmin';
+import Admin from './Master/UsersAdmin/Tabs/Admin';
+import User from './Master/UsersAdmin/Tabs/User';
+// MASTER
+import IndexMaster from './Master/Master';
+import Brand from './Master/Master/Tabs/Brand';
+// PRODUK
+import IndexProduk from './Master/Produk';
+import Prabayar from './Master/Produk/Tabs/Prabayar';
+import Pascabayar from './Master/Produk/Tabs/Pascabayar';
+// LAPORAN
+import IndexLaporan from './Master/Laporan';
+import Laporan from './Master/Laporan/Tabs/Laporan';  
+import GrafikPenjualan from './Master/Laporan/Tabs/GrafikPenjualan';
 
 export {
   HomeScreen,
@@ -59,5 +74,16 @@ export {
   Dana,
   OVO,
   GoPay,
-  Master
+  Master,
+  IndexUsersAdmin,
+  Admin,
+  User,
+  IndexMaster,
+  Brand,
+  IndexProduk,
+  Prabayar,
+  Pascabayar,
+  IndexLaporan,
+  Laporan,
+  GrafikPenjualan
 };
