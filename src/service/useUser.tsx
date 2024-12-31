@@ -7,7 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export function useUser() {
   return useQuery({
     queryKey: ['auth', 'user'],
-    queryFn: () => axios.get('/auth').then(res => res.data.user),
+    queryFn: () => axios.get('/auth/me').then(res => res.data.user),
     staleTime: 0,
     cacheTime: 0,
     onSettled: () => {

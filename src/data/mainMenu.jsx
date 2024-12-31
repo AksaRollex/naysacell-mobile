@@ -16,29 +16,39 @@ import {
 export default mainMenu = [
   {
     label: 'Pulsa & Data',
-    ikon: HandphoneIkon,
     path: 'Pulsa',
   },
+  // {
+  //   label: 'PLN',
+  //   ikon: PLNIkon,
+  //   path: 'LayananPLN',
+  // },
   {
-    label: 'PLN',
-    ikon: PLNIkon,
-    path: 'LayananPLN',
+    label: 'Shopeepay',
+    path: 'Shopeepay',
   },
   {
-    label: 'Dompet Elektronik',
-    ikon: DompetIkon,
-    path: 'DompetElektronik',
+    label: 'Dana',
+    path: 'Dana',
   },
   {
-    label: 'BPJS Kesehatan',
-    ikon: BPJSIkon,
-    path: 'BPJSKesehatan',
+    label: 'GoPay',
+    path: 'GoPay',
   },
   {
-    label: 'PDAM',
-    ikon: PDAMIkon,
-    path: 'PDAM',
+    label: 'OVO',
+    path: 'OVO',
   },
+  // {
+  //   label: 'BPJS Kesehatan',
+  //   ikon: BPJSIkon,
+  //   path: 'BPJSKesehatan',
+  // },
+  // {
+  //   label: 'PDAM',
+  //   ikon: PDAMIkon,
+  //   path: 'PDAM',
+  // },
   // {
   //   label: 'Internet',
   //   ikon: InternetIkon,
@@ -49,32 +59,27 @@ export default mainMenu = [
 export const gameMenu = [
   {
     label: 'Mobile Legends',
-    ikon: InternetIkon,
+    ikon: MobileLegendsIcon,
     path: '',
   },
-  {
-    label: 'FreeFire',
-    ikon: InternetIkon,
-    path: '',
-  },
-  {
-    label: 'PUBG',
-    ikon: InternetIkon,
-    path: '',
-  },
+  // {
+  //   label: 'FreeFire',
+  //   ikon: FreeFireIcon,
+  //   path: '',
+  // },
+  // {
+  //   label: 'PUBG',
+  //   ikon: PUBGIcon,
+  //   path: '',
+  // },
   {
     label: 'Valorant',
-    ikon: InternetIkon,
+    ikon: ValorantIcon,
     path: '',
   },
   {
     label: 'Point Blank',
-    ikon: InternetIkon,
-    path: '',
-  },
-  {
-    label: 'Growtopia',
-    ikon: InternetIkon,
+    ikon: PointBlankIcon,
     path: '',
   },
 ];

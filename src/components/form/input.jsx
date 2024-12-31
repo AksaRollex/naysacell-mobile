@@ -8,10 +8,13 @@ import {
 import React from 'react';
 import {
   DARK_BACKGROUND,
+  DARK_COLOR,
   GREY_COLOR,
+  LIGHT_COLOR,
   REGULAR_FONT,
   SLATE_COLOR,
   WHITE_BACKGROUND,
+  WHITE_COLOR,
 } from '../../utils/const';
 import {XClose} from '../../../assets';
 import IonIcons from 'react-native-vector-icons/Ionicons';
@@ -29,8 +32,8 @@ export default function Input({
     <View
       style={{
         borderWidth: 1,
-        borderRadius: 5,
-        borderColor: isDarkMode ? SLATE_COLOR : GREY_COLOR,
+        borderRadius: 12,
+        borderColor: isDarkMode ? SLATE_COLOR : LIGHT_COLOR,
         backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
         fontFamily: REGULAR_FONT,
         flexDirection: 'row',
@@ -39,7 +42,7 @@ export default function Input({
       <TextInput
         keyboardType={type ? type : 'default'}
         placeholder={placeholder}
-        placeholderTextColor={GREY_COLOR}
+        placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
         value={value}
         onChangeText={onChange}
         style={{
@@ -48,11 +51,11 @@ export default function Input({
           fontFamily: 'Poppins-Regular',
           textTransform: 'capitalize',
         }}></TextInput>
-       {value && value !== '' && ( // Ubah kondisi ini
+       {value && value !== '' && ( 
         <TouchableOpacity
           style={{position: 'absolute', right: 10}}
           onPress={onDelete}>
-          <IonIcons name="close" size={20} color={GREY_COLOR} />
+          <IonIcons name="close" size={20} color={LIGHT_COLOR} />
         </TouchableOpacity>
       )}
     </View>

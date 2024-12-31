@@ -89,7 +89,7 @@ const Paginate = forwardRef(
         {isFetchingMore && (
           <ActivityIndicator
             size="large"
-            color="#312e81"
+            color="#138EE9"
             style={{
               transform: [{scale: 1.1}],
               opacity: isFetchingMore ? 1 : 0.5,

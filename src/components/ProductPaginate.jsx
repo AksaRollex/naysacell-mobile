@@ -90,12 +90,9 @@ const ProductPaginate = forwardRef(
 
     // Fungsi baru untuk menangani press item
     const handleItemPress = item => {
-      // Toggle selection jika item sudah dipilih
       setSelectedItem(prevSelected =>
         prevSelected && prevSelected.id === item.id ? null : item,
       );
-
-      // Panggil onItemPress jika ada
       if (onItemPress) {
         onItemPress(item);
       }
@@ -104,19 +101,13 @@ const ProductPaginate = forwardRef(
     // Fungsi untuk mengedit item (opsional)
     const handleEditItem = async item => {
       try {
-        // Pastikan editUrl tersedia
         if (editUrl) {
-          // Misalnya mengirim request edit ke API
           const response = await axios.get(`${editUrl}/${item.id}`, item);
-          // Anda bisa menambahkan logika tambahan setelah edit berhasil
           console.log('Edit response:', response.data);
-
-          // Optional: refetch data setelah edit
           refetch();
         }
       } catch (error) {
         console.error('Error editing item:', error);
-        // Tambahkan error handling sesuai kebutuhan
       }
     };
 
@@ -160,31 +151,15 @@ const ProductPaginate = forwardRef(
     }
 
     const enhancedRenderItem = ({item, index}) => {
-      // Periksa apakah item saat ini adalah item yang dipilih
       const isSelected = selectedItem && selectedItem.id === item.id;
-
       return (
         <TouchableOpacity
           onPress={() => handleItemPress(item)}
-          onLongPress={editUrl ? () => handleEditItem(item) : undefined}
-          style={[
-            // Optional: tambahkan style khusus untuk item yang dipilih
-            isSelected && {
-              borderWidth: 2,
-              borderColor: 'green', // Warna border hijau untuk item terpilih
-              backgroundColor: 'rgba(0,255,0,0.1)', // Latar belakang transparan hijau
-            },
-          ]}>
+          onLongPress={editUrl ? () => handleEditItem(item) : undefined}>
           {renderItem({
             item,
             index,
-            isSelected, // Kirim status selected ke render item
-            // Optional: tambahkan komponen centang
-            selectedComponent: isSelected ? (
-              <View>
-                <CheckProduct width={20} />
-              </View>
-            ) : null,
+            isSelected,
           })}
         </TouchableOpacity>
       );

@@ -8,7 +8,6 @@ import BPJSIkon from './images/bpjs-icon.png';
 import FreeFireIcon from './images/freefire-icon.png';
 import PUBGIcon from './images/pubg-icon.png';
 import ValorantIcon from './images/valorant-icon.png';
-import GrowtopiaIcon from './images/growtopia-icon.png';
 import PointBlankIcon from './images/pointblank-icon.png';
 import MobileLegendsIcon from './images/mobilelegends-icon.png';
 import CameraIcon from './images/camera-icon.png';
@@ -62,7 +61,6 @@ export {
   FreeFireIcon,
   PUBGIcon,
   ValorantIcon,
-  GrowtopiaIcon,
   PointBlankIcon,
   MobileLegendsIcon,
   Pencil,
