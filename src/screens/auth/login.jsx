@@ -49,7 +49,6 @@ export default function LoginPage() {
       queryClient.invalidateQueries({
         queryKey: ['auth', 'user'],
       });
-      navigation.navigate('HomeScreen');
     },
     onError: error => {
       const message =
@@ -146,7 +145,7 @@ export default function LoginPage() {
           )}
         </View>
 
-        <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+        <TouchableOpacity onPress={() => navigation.navigate('forgotPassword')}>
           <Text
             className="text-right mx-6 my-8 text-black text-md"
             style={{color: BLUE_COLOR, fontFamily: 'Poppins-Regular'}}>
@@ -173,13 +172,13 @@ export default function LoginPage() {
             className="mx-1 font-poppins-regular">
             Belum punya akun ?
           </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+          <TouchableOpacity onPress={() => navigation.navigate('registerPage')}>
             <Text style={{color: BLUE_COLOR, fontFamily: 'Poppins-Regular'}}>
               Daftar
             </Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={() => navigation.navigate('BantuanLogin')}>
+        <TouchableOpacity onPress={() => navigation.navigate('bantuanLogin')}>
           <Text
             className="text-center  text-md font-poppins-regular"
             style={{color: BLUE_COLOR}}>

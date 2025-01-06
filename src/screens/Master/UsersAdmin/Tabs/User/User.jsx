@@ -11,9 +11,26 @@ import IonIcons from 'react-native-vector-icons/Ionicons';
 import {MenuView} from '@react-native-menu/menu';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import {useDelete} from '../../../../../hooks/useDelete';
+import { useQueryClient } from '@tanstack/react-query';
 export default function User({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
   const paginateRef = useRef();
+  const queryClient = useQueryClient();
+  const {
+    delete: deleteUser,
+    DeleteConfirmationModal,
+    SuccessOverlayModal,
+    FailedOverlayModal,
+  } = useDelete({
+    onSuccess: () => {
+      queryClient.invalidateQueries('/master/users/admin');
+      navigation.navigate('User');
+    },
+    onError: error => {
+      console.log('delete error', error);
+    },
+  });
 
   const usersCard = ({item}) => {
     const dropdownOptions = [
@@ -21,6 +38,11 @@ export default function User({navigation}) {
         id: 'Edit',
         title: 'Edit',
         action: item => navigation.navigate('FormUser', {id: item.id}),
+      },
+      {
+        id: 'Hapus',
+        title: 'Hapus',
+        action: item => deleteUser(`/master/users/delete/${item.id}`),
       },
     ];
     return (
@@ -138,6 +160,9 @@ export default function User({navigation}) {
         style={styles.plusIcon}
         onPress={() => navigation.navigate('FormUser')}
       />
+      <DeleteConfirmationModal />
+      <SuccessOverlayModal />
+      <FailedOverlayModal />
     </View>
   );
 }

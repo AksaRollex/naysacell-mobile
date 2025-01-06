@@ -66,7 +66,7 @@ export default function Profile({navigation}) {
         setModalSuccessLogout(true);
         setTimeout(() => {
           setModalSuccessLogout(false);
-          navigation.navigate('Login');
+          navigation.navigate('loginPage');
         }, 2000);
       } catch (error) {
         setErrorMessage(error.response?.data || error.message);

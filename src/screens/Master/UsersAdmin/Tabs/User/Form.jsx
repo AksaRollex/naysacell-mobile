@@ -20,12 +20,14 @@ import {
 import Toast from 'react-native-toast-message';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import axios from '../../../../../libs/axios';
+import {Eye, EyeCrossed} from '../../../../../../assets';
 import BackButton from '../../../../../components/BackButton';
 import ModalAfterProcess from '../../../../../components/ModalAfterProcess';
 export default function FormUser({route, navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
   const queryClient = useQueryClient();
   const {id} = route.params || {};
+  const [showPassword, setShowPassword] = useState(true);
   const [modalSuccess, setModalSuccess] = useState(false);
   const [modalFailed, setModalFailed] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -38,7 +40,7 @@ export default function FormUser({route, navigation}) {
 
   const {data, isFetching: isLoadingData} = useQuery(
     ['users', id],
-    () => axios.get(`/master/users/${id}`).then(res => res.data.data),
+    () => axios.get(`/master/users/get/${id}`).then(res => res.data.data),
     {
       enabled: !!id,
       onSuccess: data => {
@@ -46,6 +48,7 @@ export default function FormUser({route, navigation}) {
         setValue('email', data.email);
         setValue('phone', data.phone);
         setValue('address', data.address);
+        setValue('role_id', data.role_id);
       },
       onError: error => {
         setModalFailed(true);
@@ -62,6 +65,8 @@ export default function FormUser({route, navigation}) {
     async data => {
       const requestData = {
         ...data,
+        role_id: 2,
+        password_confirmation: data.password,
       };
 
       Object.keys(requestData).forEach(
@@ -69,7 +74,12 @@ export default function FormUser({route, navigation}) {
           (requestData[key] === undefined || requestData[key] === null) &&
           delete requestData[key],
       );
-
+      if (!id) {
+        requestData.password_confirmation = data.password;
+      } else {
+        delete requestData.password;
+        delete requestData.password_confirmation;
+      }
       if (id) {
         const response = await axios.put(
           `/master/users/update/${id}`,
@@ -91,6 +101,11 @@ export default function FormUser({route, navigation}) {
             id: data?.id || null,
           });
         }, 2000);
+        Toast.show({
+          type: 'success',
+          text1: 'Success',
+          text2: 'Data berhasil disimpan',
+        });
       },
       onError: error => {
         setModalFailed(true);
@@ -176,6 +191,10 @@ export default function FormUser({route, navigation}) {
               name="email"
               rules={{
                 required: 'Email Harus Diisi',
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: 'Email tidak valid',
+                },
               }}
               render={({field: {onChange, value, onBlur}}) => (
                 <>
@@ -197,9 +216,9 @@ export default function FormUser({route, navigation}) {
                     }`}
                     placeholder="Harap Lengkapi Email"
                   />
-                  {errors.name && (
+                  {errors.email && (
                     <Text className="text-red-500 text-sm mt-1">
-                      {errors.name.message}
+                      {errors.email.message}
                     </Text>
                   )}
                 </>
@@ -210,6 +229,10 @@ export default function FormUser({route, navigation}) {
               name="phone"
               rules={{
                 required: 'Nomor Telepon Harus Diisi',
+                pattern: {
+                  value: /^[0-9]{10,13}$/,
+                  message: 'Nomor telepon tidak valid',
+                },
               }}
               render={({field: {onChange, value, onBlur}}) => (
                 <>
@@ -231,9 +254,9 @@ export default function FormUser({route, navigation}) {
                     }`}
                     placeholder="Harap Lengkapi Nomor Telepon"
                   />
-                  {errors.name && (
+                  {errors.phone && (
                     <Text className="text-red-500 text-sm mt-1">
-                      {errors.name.message}
+                      {errors.phone.message}
                     </Text>
                   )}
                 </>
@@ -243,7 +266,7 @@ export default function FormUser({route, navigation}) {
               control={control}
               name="address"
               rules={{
-                required: 'Nama Harus Diisi',
+                required: 'Alamat Harus Diisi',
               }}
               render={({field: {onChange, value, onBlur}}) => (
                 <>
@@ -265,24 +288,78 @@ export default function FormUser({route, navigation}) {
                     }`}
                     placeholder="Harap Lengkapi Alamat"
                   />
-                  {errors.name && (
+                  {errors.address && (
                     <Text className="text-red-500 text-sm mt-1">
-                      {errors.name.message}
+                      {errors.address.message}
                     </Text>
                   )}
                 </>
               )}
             />
+            {!id && (
+              <Controller
+                name="password"
+                control={control}
+                rules={{
+                  required: 'Password Harus Diisi',
+                  minLength: {
+                    value: 8,
+                    message: 'Password minimal 8 karakter',
+                  },
+                }}
+                render={({field: {onChange, onBlur, value}}) => (
+                  <View className="relative">
+                    <Text
+                      className="font-poppins-semibold my-1"
+                      style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
+                      Password
+                    </Text>
+                    <TextInput
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                      style={{fontFamily: 'Poppins-Regular'}}
+                      placeholder="Password"
+                      placeholderTextColor={
+                        isDarkMode ? SLATE_COLOR : GREY_COLOR
+                      }
+                      keyboardType="numeric"
+                      className={`h-12 w-full mx-auto px-4 rounded-md border-[0.5px] border-neutral-700 font-poppins-regular ${
+                        !isLoadingData ? '' : 'bg-gray-100'
+                      }`}
+                      secureTextEntry={showPassword}
+                    />
+
+                    <TouchableOpacity
+                      onPress={() => setShowPassword(!showPassword)}
+                      style={{
+                        position: 'absolute',
+                        top: '70%',
+                        right: 10,
+                        transform: [{translateY: -12}],
+                      }}>
+                      {showPassword ? <Eye /> : <EyeCrossed />}
+                    </TouchableOpacity>
+                    {errors.password && (
+                      <Text className="text-red-500 text-sm mt-1">
+                        {errors.password.message}
+                      </Text>
+                    )}
+                  </View>
+                )}
+              />
+            )}
           </View>
-          <View style={[styles.bottom]} className="p-3">
-            <TouchableOpacity
-              style={[styles.bottomButton, {opacity: isLoadingData ? 0.5 : 1}]}
-              onPress={onSubmit}>
-              <Text style={styles.buttonLabel}>
-                {isLoadingData ? 'Loading...' : 'Simpan'}
-              </Text>
-            </TouchableOpacity>
-          </View>
+        </View>
+        <View style={[styles.bottom]} className="p-3">
+          <TouchableOpacity
+            style={[styles.bottomButton, {opacity: isLoadingData ? 0.5 : 1}]}
+            className="m-3"
+            onPress={onSubmit}>
+            <Text style={styles.buttonLabel}>
+              {isLoadingData ? 'Loading...' : 'Simpan'}
+            </Text>
+          </TouchableOpacity>
         </View>
         {/* <ModalAfterProcess
           url={require('../../../../../../assets/lottie/success-animation.json')}

@@ -1,33 +1,58 @@
 import {Image, StyleSheet, Text, View, useColorScheme} from 'react-native';
 import React, {useRef} from 'react';
-import {DARK_BACKGROUND, DARK_COLOR, LIGHT_BACKGROUND, LIGHT_COLOR} from '../../../../../utils/const';
+import {
+  DARK_BACKGROUND,
+  DARK_COLOR,
+  LIGHT_BACKGROUND,
+  LIGHT_COLOR,
+} from '../../../../../utils/const';
 import Paginate from '../../../../../components/Paginate';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import {MenuView} from '@react-native-menu/menu';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import {useDelete} from '../../../../../hooks/useDelete';
 export default function Admin({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
   const paginateRef = useRef();
 
+  const {
+    delete: deleteAdmin,
+    DeleteConfirmationModal,
+    SuccessOverlayModal,
+    FailedOverlayModal,
+  } = useDelete({
+    onSuccess: () => {
+      queryClient.invalidateQueries('/master/users/admin');
+      navigation.navigate('Admin');
+    },
+    onError: error => {
+      console.log('delete error', error);
+    },
+  });
   const AdminCards = ({item}) => {
     const dropdownOptions = [
       {
         id: 'Edit',
         title: 'Edit',
-        action: item => navigation.navigate('FormUser', {id: item.id}),
+        action: item => navigation.navigate('FormAdmin', {id: item.id}),
+      },
+      {
+        id: 'Hapus',
+        title: 'Hapus',
+        action: item => deleteAdmin(`/master/users/delete/${item.id}`),
       },
     ];
     return (
       <View
-        className="w-full p-2 flex-col mt-4 rounded-lg" 
+        className="w-full p-2 flex-col mt-4 rounded-lg"
         style={{
           elevation: 4,
           shadowColor: '#000',
           shadowOffset: {width: 0, height: 2},
           shadowOpacity: 0.2,
           shadowRadius: 3,
-          backgroundColor : isDarkMode ? '#262626' : '#f8f8f8'
+          backgroundColor: isDarkMode ? '#262626' : '#f8f8f8',
         }}>
         <View className="flex-row w-full  my-2 justify-center ">
           <View className="w-full flex-row justify-between items-start">
@@ -37,10 +62,14 @@ export default function Admin({navigation}) {
                 className="w-12 h-12 rounded-full"
               />
               <View className="flex-col items-start justify-start ">
-                <Text className="font-poppins-medium text-base " style={{  color : isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                <Text
+                  className="font-poppins-medium text-base "
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                   {item.name}
                 </Text>
-                <Text className="font-poppins-regular text-sm " style={{  color : isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                <Text
+                  className="font-poppins-regular text-sm "
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                   {item.email}
                 </Text>
                 <View className="bg-blue-100 rounded-md pl-2   mt-1 justify-center  items-center flex-row  py-1 max-w-[120px]">
@@ -75,18 +104,34 @@ export default function Admin({navigation}) {
             </MenuView>
           </View>
         </View>
-        <View className="border-[0.5px] w-full my-2 opacity-40 rounded-es-xl" style={{  borderColor : isDarkMode ? DARK_COLOR : LIGHT_COLOR}}></View>
+        <View
+          className="border-[0.5px] w-full my-2 opacity-40 rounded-es-xl"
+          style={{borderColor: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}></View>
         <View className="flex-row w-full justify-between items-center my-2">
           <View className="w-1/2 gap-x-2 flex-row items-center justify-start">
-            <IonIcons name="location" color={isDarkMode ? DARK_COLOR : LIGHT_COLOR} size={17} />
-            <Text className="font-poppins-regular text-sm " style={{  color : isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+            <IonIcons
+              name="location"
+              color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+              size={17}
+            />
+            <Text
+              className="font-poppins-regular text-sm "
+              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
               {item.address}
             </Text>
           </View>
-          <View className="border-[0.5px] h-7 w-[0.3px] opacity-40" style={{  borderColor : isDarkMode ? DARK_COLOR : LIGHT_COLOR}}></View>
+          <View
+            className="border-[0.5px] h-7 w-[0.3px] opacity-40"
+            style={{borderColor: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}></View>
           <View className="w-1/2  gap-x-2 flex-row items-center justify-start">
-            <IonIcons name="call" color={isDarkMode ? DARK_COLOR : LIGHT_COLOR} size={17} />
-            <Text className="font-poppins-regular text-sm " style={{  color : isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+            <IonIcons
+              name="call"
+              color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+              size={17}
+            />
+            <Text
+              className="font-poppins-regular text-sm "
+              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
               {item.phone}
             </Text>
           </View>
@@ -111,8 +156,11 @@ export default function Admin({navigation}) {
         size={28}
         color="#fff"
         style={styles.plusIcon}
-        onPress={() => navigation.navigate('FormUser')}
+        onPress={() => navigation.navigate('FormAdmin')}
       />
+      <DeleteConfirmationModal />
+      <SuccessOverlayModal />
+      <FailedOverlayModal />
     </View>
   );
 }

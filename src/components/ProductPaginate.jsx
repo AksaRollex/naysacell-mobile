@@ -20,7 +20,6 @@ import {useQuery, useQueryClient} from '@tanstack/react-query';
 import axios from '../libs/axios';
 import {Skeleton} from '@rneui/themed';
 import LinearGradient from 'react-native-linear-gradient';
-import {CheckProduct} from '../../assets';
 
 if (
   Platform.OS === 'android' &&
@@ -116,7 +115,7 @@ const ProductPaginate = forwardRef(
         {isFetchingMore && (
           <ActivityIndicator
             size="large"
-            color="#312e81"
+            color="#138EE9"
             style={{
               transform: [{scale: 1.1}],
               opacity: isFetchingMore ? 1 : 0.5,

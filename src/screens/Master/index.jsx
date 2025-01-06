@@ -42,6 +42,11 @@ const Master = () => {
   const Laporan = () => {
     navigation.navigate('IndexLaporan');
   };
+
+  const Pesanan = () => {
+    navigation.navigate('Order');
+  };
+
   return (
     <View
       className="w-full h-full"
@@ -275,7 +280,7 @@ const Master = () => {
               />
             )}
             className="bg-[#ffffff] border-black p-2 ml-3 mr-3"
-            onPress={Laporan}
+            onPress={Pesanan}
           />
           <View
             style={{

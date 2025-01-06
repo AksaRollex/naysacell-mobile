@@ -1,5 +1,11 @@
 import React from 'react';
-import {Text, View, StyleSheet, TouchableOpacity, useColorScheme} from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  useColorScheme,
+} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {
   NavigationContainer,
@@ -41,13 +47,18 @@ import IndexMaster from '../Master/Master';
 import Brand from '../Master/Master/Tabs/Brand';
 // PRODUK
 import IndexProduk from '../Master/Produk';
-import Prabayar from '../Master/Produk/Tabs/Prabayar';
+import Prabayar from '../Master/Produk/Tabs/Prabayar/Prabayar';
 import Pascabayar from '../Master/Produk/Tabs/Pascabayar';
 // LAPORAN
 import IndexLaporan from '../Master/Laporan';
 import Laporan from '../Master/Laporan/Tabs/Laporan';
 import GrafikPenjualan from '../Master/Laporan/Tabs/GrafikPenjualan';
 import {BLUE_COLOR} from '../../utils/const';
+import FormPrabayar from '../Master/Produk/Tabs/Prabayar/Form';
+import axios from '../../libs/axios';
+import LoginPage from '../auth/login';
+import Order from '../Master/Order';
+import FormOrder from '../Master/Order/Form';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -58,17 +69,19 @@ const CustomTabBar = ({state, descriptors, navigation}) => {
   const routeName = getFocusedRouteNameFromRoute(route) ?? '';
 
   const hideOnScreens = [
-    "IndexUsersAdmin",
-    "User",
-    "Admin",
-    "IndexMaster",
-    "Brand",
-    "IndexProduk",
-    "Prabayar",
-    "Pascabayar",
-    "IndexLaporan",
-    "Laporan",
-    "GrafikPenjualan",
+    'IndexUsersAdmin',
+    'User',
+    'FormUser',
+    'FormAdmin',
+    'Admin',
+    'IndexMaster',
+    'Brand',
+    'IndexProduk',
+    'Prabayar',
+    'Pascabayar',
+    'IndexLaporan',
+    'Laporan',
+    'GrafikPenjualan',
   ];
 
   if (hideOnScreens.includes(routeName)) {
@@ -76,7 +89,11 @@ const CustomTabBar = ({state, descriptors, navigation}) => {
   }
 
   return (
-    <View style={[styles.tabBar, { backgroundColor : isDarkMode  ? '#262626' : 'fff'}]}>
+    <View
+      style={[
+        styles.tabBar,
+        {backgroundColor: isDarkMode ? '#262626' : 'fff'},
+      ]}>
       {state.routes.map((route, index) => {
         const {options} = descriptors[route.key];
         const isFocused = state.index === index;
@@ -182,15 +199,42 @@ const MasterNavigation = () => {
       <Stack.Screen name="Brand" component={Brand} />
       <Stack.Screen name="IndexProduk" component={IndexProduk} />
       <Stack.Screen name="Prabayar" component={Prabayar} />
+      <Stack.Screen name="FormPrabayar" component={FormPrabayar} />
       <Stack.Screen name="Pascabayar" component={Pascabayar} />
       <Stack.Screen name="IndexLaporan" component={IndexLaporan} />
       <Stack.Screen name="Laporan" component={Laporan} />
       <Stack.Screen name="GrafikPenjualan" component={GrafikPenjualan} />
+      <Stack.Screen name="Order" component={Order} />
+      <Stack.Screen name="FormOrder" component={FormOrder} />
     </Stack.Navigator>
   );
 };
 
+const ProfileNavigation = () => {
+  return (
+    <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen name="loginPage" component={LoginPage} />
+    </Stack.Navigator>
+  )
+}
+
 export default function MainScreen() {
+  const [isAdmin, setIsAdmin] = React.useState(false);
+  React.useEffect(() => {
+    axios
+      .get('/auth/me')
+      .then(res => {
+        const userIsAdmin =
+          res.data.user.role.name === 'admin' ||
+          res.data.user.permissions.includes('master');
+
+        setIsAdmin(userIsAdmin);
+      })
+      .catch(err => {
+        console.error('Error fetching data:', err);
+      });
+  }, []);
   return (
     <>
       <NavigationContainer independent={true}>
@@ -202,17 +246,19 @@ export default function MainScreen() {
             tabBarStyle: (() => {
               const routeName = getFocusedRouteNameFromRoute(route);
               const hideOnScreens = [
-                "IndexUsersAdmin",
-                "User",
-                "Admin",
-                "IndexMaster",
-                "Brand",
-                "IndexProduk",
-                "Prabayar",
-                "Pascabayar",
-                "IndexLaporan",
-                "Laporan",
-                "GrafikPenjualan",
+                'IndexUsersAdmin',
+                'User',
+                'FormUser',
+                'Admin',
+                'FormAdmin',
+                'IndexMaster',
+                'Brand',
+                'IndexProduk',
+                'Prabayar',
+                'Pascabayar',
+                'IndexLaporan',
+                'Laporan',
+                'GrafikPenjualan',
               ];
 
               if (hideOnScreens.includes(routeName)) {
@@ -243,14 +289,22 @@ export default function MainScreen() {
                 getFocusedRouteNameFromRoute(route) === 'Transaksi',
             })}
           />
+          {isAdmin && (
+            <Tab.Screen
+              name="Master"
+              component={MasterNavigation}
+              options={({route}) => ({
+                tabBarVisible: getFocusedRouteNameFromRoute(route) === 'Master',
+              })}
+            />
+          )}
           <Tab.Screen
-            name="Master"
-            component={MasterNavigation}
+            name="Profile"
+            component={ProfileNavigation}
             options={({route}) => ({
-              tabBarVisible: getFocusedRouteNameFromRoute(route) === 'Master',
+              tabBarVisible: getFocusedRouteNameFromRoute(route) === 'Profile',
             })}
           />
-          <Tab.Screen name="Profile" component={Profile} />
         </Tab.Navigator>
       </NavigationContainer>
     </>
@@ -283,7 +337,7 @@ const styles = StyleSheet.create({
     color: 'grey',
   },
   labelFocused: {
-    color  : '#138EE9'
+    color: '#138EE9',
   },
   tabBar: {
     flexDirection: 'row',
@@ -315,7 +369,7 @@ const styles = StyleSheet.create({
   },
   dropdownText: {
     fontSize: 12,
-    color : '#138EE9',
+    color: '#138EE9',
     textAlign: 'center',
   },
 });

@@ -2,24 +2,35 @@ import React, {
   memo,
   useState,
   useEffect,
+  useCallback,
   forwardRef,
+  useMemo,
   useImperativeHandle,
 } from 'react';
 import {
   View,
   Text,
+  TextInput,
   FlatList,
   ActivityIndicator,
+  TouchableOpacity,
   LayoutAnimation,
   UIManager,
   Platform,
   Image,
+  Dimensions,
+  useColorScheme,
 } from 'react-native';
+import {useForm, Controller} from 'react-hook-form';
 import {useQuery, useQueryClient} from '@tanstack/react-query';
 import axios from '../libs/axios';
 import {Skeleton} from '@rneui/themed';
 import LinearGradient from 'react-native-linear-gradient';
-// import Icons from 'react-native-vector-icons/Feather';
+import {debounce} from 'lodash';
+import Icons from 'react-native-vector-icons/Feather';
+import {DARK_COLOR, LIGHT_COLOR} from '../utils/const';
+
+const windowWidth = Dimensions.get('window').width;
 
 if (
   Platform.OS === 'android' &&
@@ -29,43 +40,114 @@ if (
 }
 
 const Paginate = forwardRef(
-  ({url, payload, renderItem, Plugin, ...props}, ref) => {
+  (
+    {url, payload, renderItem, Plugin, isExternalLoading = false, ...props},
+    ref,
+  ) => {
     const queryClient = useQueryClient();
+    const [search, setSearch] = useState('');
     const [page, setPage] = useState(1);
     const [dataList, setDataList] = useState([]);
     const [isFetchingMore, setIsFetchingMore] = useState(false);
-    const cardData = [1, 2, 3];
+    const {control, handleSubmit} = useForm();
+    const cardData = [1, 2, 3, 4];
+    const isDarkMode = useColorScheme() === 'dark';
 
     const {data, isFetching, refetch} = useQuery({
-      queryKey: [url, page],
-      queryFn: () => axios.post(url, {...payload, page}).then(res => res.data),
+      queryKey: [url, page, search],
+      queryFn: () =>
+        axios
+          .post(url, {
+            page,
+            search,
+            ...(payload || {}),
+          })
+          .then(res => res.data),
       placeholderData: {data: []},
       onSuccess: res => {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        console.log(res.data, 88);
-        if (page === 1) {
-          setDataList(res.data);
-        } else {
-          setDataList(prevData => [...prevData, ...(res.data || [])]);
-        }
+        setDataList(res.data);
+        // if (page === 1) {
+        //   setDataList(res.data);
+        // } else {
+        //   setDataList(prevData => {
+        //     const newData = [];
+        //     for (let i = 0; i < prevData.length; i++) {
+        //       newData[i] = prevData[i];
+        //     }
+        //     for (let i = 0; i < res.data.length; i++) {
+        //       newData[prevData.length + i] = res.data[i];
+        //     }
+        //     return newData;
+        //   });
+        // }
       },
     });
 
+    const PaginationInfo = () => {
+      const startIndex = (page - 1) * (data?.per_page || 10) + 1;
+      const endIndex = Math.min(
+        page * (data?.per_page || 10),
+        data?.total || 0,
+      );
+      const totalItems = data?.total || 0;
+
+      return (
+        <View className="mt-2 mb-1">
+          <Text className=" text-sm text-start text-gray-500 font-poppins-regular capitalize">
+            Menampilkan {startIndex} sampai {endIndex} dari {totalItems} data
+          </Text>
+        </View>
+      );
+    };
+
+    const pagination = useMemo(() => {
+      const totalPages = data.last_page || 1;
+      const currentPage = data.current_page || 1;
+      const pagesToShow = 5;
+
+      let startPage = Math.max(1, currentPage - Math.floor(pagesToShow / 2));
+      let endPage = Math.min(totalPages, startPage + pagesToShow - 1);
+
+      if (endPage - startPage + 1 < pagesToShow) {
+        startPage = Math.max(1, endPage - pagesToShow + 1);
+      }
+
+      return Array.from(
+        {length: endPage - startPage + 1},
+        (_, i) => startPage + i,
+      );
+    }, [data?.current_page, data?.last_page]);
+
     useEffect(() => {
-      if (!data?.data?.length) queryClient.invalidateQueries([url]);
+      if (data && !data.data?.length) {
+        queryClient.invalidateQueries([url]);
+      }
+      console.log(payload);
     }, [data]);
+
+    useEffect(() => {
+      console.log('Payload changed:', payload);
+      refetch();
+    }, [JSON.stringify(payload)]);
 
     useImperativeHandle(ref, () => ({
       refetch,
     }));
 
-    useEffect(() => {
-      setPage(1);
-      refetch();
-    }, [payload]);
+    // useEffect(() => {
+    //   if (page === 1) {
+    //     refetch();
+    //   }
+    // }, [JSON.stringify(payload)]);
 
     const handleLoadMore = () => {
-      if (!isFetchingMore && page < data.last_page) {
+      if (
+        !isFetchingMore &&
+        data?.last_page &&
+        page < data?.last_page &&
+        dataList.length < data?.per_page * page
+      ) {
         setIsFetchingMore(true);
         setPage(prevPage => prevPage + 1);
       }
@@ -84,23 +166,109 @@ const Paginate = forwardRef(
       }
     };
 
-    const ListFooter = () => (
-      <View className="flex-row justify-center mt-4">
-        {isFetchingMore && (
-          <ActivityIndicator
-            size="large"
-            color="#138EE9"
-            style={{
-              transform: [{scale: 1.1}],
-              opacity: isFetchingMore ? 1 : 0.5,
-              transition: 'opacity 0.3s ease',
-            }}
+    const handleSearch = query => {
+      setSearch(query);
+      setPage(1);
+      refetch();
+    };
+
+    const ListHeader = () => (
+      <>
+        <View className=" mb-1 ">
+          <Controller
+            control={control}
+            name="search"
+            render={({field: {onChange, value}}) => (
+              <View
+                className={`relative ${
+                  Boolean(props.Plugin)
+                    ? 'flex-col justify-center'
+                    : 'flex-row items-center'
+                }`}>
+                <View className={props.Plugin ? '' : 'flex-1 relative'}>
+                  <TextInput
+                    className="w-full text-base   pr-12  rounded-lg px-4 "
+                    style={{
+                      backgroundColor: isDarkMode ? '#262626' : '#f8f8f8',
+                      color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+                    }}
+                    value={value}
+                    placeholderTextColor={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+                    placeholder="Cari..."
+                    onChangeText={text => {
+                      onChange(text);
+                    }}
+                    onSubmitEditing={() => {
+                      handleSearch(value);
+                    }}
+                  />
+                  <TouchableOpacity
+                    className="absolute right-2 top-2 -translate-y-1/2 p-2 rounded-md"
+                    activeOpacity={0.7}
+                    onPress={() => handleSearch(value)}>
+                    <Icons
+                      name="search"
+                      size={18}
+                      color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+                    />
+                  </TouchableOpacity>
+                </View>
+                <View style={Plugin ? {marginLeft: 10} : {}}>
+                  {Plugin && <Plugin />}
+                </View>
+              </View>
+            )}
           />
+        </View>
+      </>
+    );
+
+    const ListFooter = () => (
+      <View className="flex-row justify-start mt-6 space-x-2 items-center">
+        {page > 1 && (
+          <>
+            <TouchableOpacity
+              className="px-3  py-2 rounded-lg border "
+              style={{borderColor: '#138EE9'}}
+              onPress={() => setPage(1)}>
+              <Icons name="chevrons-left" size={18} color="#138EE9" />
+            </TouchableOpacity>
+          </>
+        )}
+
+        {pagination.map(i => (
+          <TouchableOpacity
+            key={i}
+            className={`px-3 py-2 rounded-md border ${
+              i == data?.current_page
+                ? 'bg-[#138EE9] border-[#138EE9] border'
+                : 'border-[#138EE9] border'
+            }`}
+            onPress={() => setPage(i)}>
+            <Text
+              className={`${
+                i == data?.current_page ? 'text-white' : 'text-[#138EE9]'
+              } font-semibold`}>
+              {i}
+            </Text>
+          </TouchableOpacity>
+        ))}
+
+        {page < data.last_page && (
+          <>
+            <TouchableOpacity
+              className="px-3 py-2 mx-2 rounded-md border border-[#138EE9]"
+              onPress={() => setPage(data.last_page)}>
+              <Icons name="chevrons-right" size={18} color="#138EE9" />
+            </TouchableOpacity>
+          </>
         )}
       </View>
     );
 
-    if (isFetching && page === 1) {
+    const shouldShowLoading = isExternalLoading || (isFetching && page === 1);
+
+    if (shouldShowLoading) {
       return (
         <View className="mt-5 items-center">
           {cardData.map((item, index) => (
@@ -126,7 +294,6 @@ const Paginate = forwardRef(
                     LinearGradientComponent={LinearGradient}
                     height={180}
                   />
-
                   <View
                     style={{
                       position: 'absolute',
@@ -171,15 +338,21 @@ const Paginate = forwardRef(
 
     return (
       <View className="flex-1 p-4" {...props}>
+        <ListHeader />
         <FlatList
           data={dataList}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
           onScroll={handleScroll}
-          onEndReached={handleLoadMore}
-          onEndReachedThreshold={0.5}
-          numColumns={2}
-          ListFooterComponent={ListFooter}
+          // onEndReached={handleLoadMore}
+          // onEndReachedThreshold={0.5}
+          showsVerticalScrollIndicator={false}
+          ListFooterComponent={() => (
+            <View className="justify-end items-start">
+              <ListFooter />
+              <PaginationInfo />
+            </View>
+          )}
           ListEmptyComponent={() => (
             <View className="flex-1 justify-center items-center mt-20">
               <Image
@@ -187,7 +360,7 @@ const Paginate = forwardRef(
                 className="w-60 h-60 opacity-60 "
               />
               <Text className="text-gray-500 font-poppins-regular ">
-                Data Tidak Ditemukan
+                Data Tidak Tersedia
               </Text>
             </View>
           )}

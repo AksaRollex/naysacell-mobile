@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, Alert} from 'react-native';
 import React, {useRef, useState, useEffect} from 'react';
 import {
   BLUE_COLOR,
@@ -22,7 +22,7 @@ import ProductPaginate from '../../components/ProductPaginate';
 import {Controller, useForm} from 'react-hook-form';
 import {CheckProduct} from '../../../assets';
 import axios from '../../libs/axios';
-import { useMutation } from '@tanstack/react-query';
+import {useMutation} from '@tanstack/react-query';
 
 export default function Pulsa({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
@@ -109,28 +109,72 @@ export default function Pulsa({navigation}) {
     setPhoneOperator(null);
   };
 
+  const [userId, setUserId] = useState(null);
+  const [nameCustomer, setNameCustomer] = useState('');
+
+  useEffect(() => {
+    axios
+      .get('auth/me')
+      .then(res => {
+        setNameCustomer(res.data.user?.name);
+        setUserId(res.data.user?.id); // Tambahkan ini untuk menyimpan user_id
+        console.log('User data:', res.data.user);
+      })
+      .catch(err => {
+        console.error('Error fetching data:', err);
+      });
+  }, []);
+
   const handleTopup = async () => {
     try {
-      const response = await axios.post('/digiflazz/topup', {
+      if (!userId) {
+        Alert.alert('Error', 'User data tidak ditemukan');
+        return;
+      }
+
+      console.log('Sending data:', {
+        product_id: selectItem?.id,
+        product_name: selectItem?.product_name,
+        product_price: selectItem?.product_price,
         customer_no: nomorTujuan,
-        sku: selectItem?.product_sku,
+        quantity: 1,
+        customer_name: nameCustomer,
+        user_id: userId, // Tambahkan user_id
       });
+
+      const response = await axios.post('/auth/submit-product', {
+        product_id: selectItem?.id,
+        customer_no: nomorTujuan,
+        quantity: 1,
+        product_name: selectItem?.product_name,
+        product_price: selectItem?.product_price,
+        customer_name: nameCustomer,
+        user_id: userId, // Tambahkan user_id ke request
+      });
+
       navigation.navigate('SuccessNotif', {
         item: selectItem,
         customer_no: nomorTujuan,
-        transaction_data  : response.data.data.data
+        transaction_data: response.data.data,
       });
-      console.log('response topup', response.data.data.data);
     } catch (error) {
-      console.log('response error', error);
+      console.log('Full error:', error);
+      console.log('Error response:', error.response?.data);
+      console.log('Error status:', error.response?.status);
+      console.log('Error headers:', error.response?.headers);
+
+      Alert.alert(
+        'Error',
+        error.response?.data?.message || 'Terjadi kesalahan pada server',
+      );
     }
   };
-  
-  const { mutate : topup, isLoading } = useMutation(handleTopup);
+
+  const {mutate: topup, isLoading} = useMutation(handleTopup);
 
   const productPulsa = ({item}) => {
     const isSelected = selectItem && selectItem.id === item.id;
-
+    console.log(item);
     return (
       <TouchableOpacity
         className={`p-2 border rounded-xl m-1 relative ${
@@ -155,7 +199,7 @@ export default function Pulsa({navigation}) {
               <Text
                 className="font-poppins-regular text-sm text-end "
                 style={{color: WHITE_COLOR}}>
-                {rupiah(item.product_buyer_price)}
+                {rupiah(item.product_price)}
               </Text>
             </View>
           </View>
@@ -319,7 +363,7 @@ export default function Pulsa({navigation}) {
             <View style={styles.modalData(isDarkMode)}>
               <Text style={styles.labelModalData(isDarkMode)}>Harga </Text>
               <Text style={styles.valueModalData(isDarkMode)}>
-                {rupiah(selectItem?.product_buyer_price)}
+                {rupiah(selectItem?.product_price)}
               </Text>
             </View>
           </View>
@@ -328,7 +372,9 @@ export default function Pulsa({navigation}) {
               <TouchableOpacity
                 style={[styles.bottomButton, {opacity: isLoading ? 0.5 : 1}]}
                 onPress={() => topup()}>
-                <Text style={styles.buttonLabel}>{isLoading ? 'Loading...' : 'Bayar'}</Text>
+                <Text style={styles.buttonLabel}>
+                  {isLoading ? 'Loading...' : 'Bayar'}
+                </Text>
               </TouchableOpacity>
             </View>
           )}

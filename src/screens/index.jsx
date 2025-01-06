@@ -37,7 +37,7 @@ import IndexMaster from './Master/Master';
 import Brand from './Master/Master/Tabs/Brand';
 // PRODUK
 import IndexProduk from './Master/Produk';
-import Prabayar from './Master/Produk/Tabs/Prabayar';
+import Prabayar from './Master/Produk/Tabs/Prabayar/Prabayar';
 import Pascabayar from './Master/Produk/Tabs/Pascabayar';
 // LAPORAN
 import IndexLaporan from './Master/Laporan';

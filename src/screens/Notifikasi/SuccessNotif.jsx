@@ -16,6 +16,7 @@ import {color} from '@rneui/themed/dist/config';
 
 export default function SuccessNotif({route}) {
   const {item, transaction_data} = route.params;
+  console.log(transaction_data);
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <View
@@ -61,7 +62,7 @@ export default function SuccessNotif({route}) {
         <View style={styles.modalData(isDarkMode)}>
           <Text style={styles.labelModalData(isDarkMode)}>Harga </Text>
           <Text style={styles.valueModalData(isDarkMode)}>
-            {rupiah(item?.product_buyer_price)}
+            {rupiah(item?.product_price)}
           </Text>
         </View>
         <View style={styles.modalData(isDarkMode)}>

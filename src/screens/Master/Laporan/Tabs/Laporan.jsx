@@ -10,9 +10,13 @@ import Paginate from '../../../../components/Paginate';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {rupiah} from '../../../../libs/utils';
 import {MenuView} from '@react-native-menu/menu';
-export default function Laporan() {
+import {useDelete} from '../../../../hooks/useDelete';
+import {useQueryClient} from '@tanstack/react-query';
+export default function Laporan({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
   const paginateRef = useRef();
+
+  const queryClient = useQueryClient();
 
   const backgroundColor = transaction_status => {
     if (transaction_status === 'Success') {
@@ -37,12 +41,26 @@ export default function Laporan() {
     }
   };
 
+  const {
+    delete: deleteLaporan,
+    DeleteConfirmationModal,
+    SuccessOverlayModal,
+    FailedOverlayModal,
+  } = useDelete({
+    onSuccess: () => {
+      queryClient.invalidateQueries('/master/laporan');
+      navigation.navigate('Laporan');
+    },
+    onError: error => {
+      console.log('delete error', error);
+    },
+  });
   const LaporanCards = ({item}) => {
     const dropdownOptions = [
       {
-        id: 'Edit',
-        title: 'Edit',
-        action: item => navigation.navigate('FormUser', {id: item.id}),
+        id: 'Hapus',
+        title: 'Hapus',
+        action: item => deleteLaporan(`/master/delete-laporan/${item.id}`),
       },
     ];
     return (
@@ -67,23 +85,24 @@ export default function Laporan() {
                 <Text
                   className="font-poppins-medium text-base "
                   style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  {item?.user.name}
+                </Text>
+                <Text
+                  className="font-poppins-regular text-sm "
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                   {item?.transaction_code}
                 </Text>
-                <Text
-                  className="font-poppins-regular text-sm "
-                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                  {item?.transaction_message}
-                </Text>
-                <Text
-                  className="font-poppins-regular text-sm "
-                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                  {item?.transaction_sku}
-                </Text>
-                <Text
-                  className="font-poppins-regular text-sm "
-                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                  {item?.transaction_number}
-                </Text>
+                <View
+                  className={`rounded-md  justify-center items-center flex-col mt-1 py-1 max-w-[120px] ${backgroundColor(
+                    item?.transaction_status,
+                  )}`}>
+                  <Text
+                    className={`font-poppins-medium text-xs mx-2 ${textColor(
+                      item?.transaction_status,
+                    )}`}>
+                    {item?.transaction_status}
+                  </Text>
+                </View>
               </View>
             </View>
             <MenuView
@@ -114,28 +133,39 @@ export default function Laporan() {
           className="border-[0.5px] w-full my-2 opacity-40 rounded-es-xl"
           style={{borderColor: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}></View>
         <View className="flex-row w-full justify-between items-center ">
-          <View className="w-1/2 gap-x-2 flex-row items-center justify-start">
-            <View
-              className={`rounded-md mt-1 justify-center items-center flex-row py-1 max-w-[120px] ${backgroundColor(
-                item?.transaction_status,
-              )}`}>
+          <View className="w-1/2 gap-x-2 flex-col items-start justify-start space-y-1">
+            <View className="flex-row justify-between space-x-1">
               <Text
-                className={`font-poppins-medium text-xs mx-2 ${textColor(
-                  item?.transaction_status,
-                )}`}>
-                {item?.transaction_status}
+                className="font-poppins-regular text-sm "
+                style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                {item?.transaction_time}
+              </Text>
+              <Text
+                className="font-poppins-regular text-sm "
+                style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                :
+              </Text>
+              <Text
+                className="font-poppins-regular text-sm "
+                style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                {item?.transaction_date}
               </Text>
             </View>
+            <Text
+              className="font-poppins-regular text-sm "
+              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+              {item?.transaction_message}
+            </Text>
           </View>
           <View
             className="border-[0.5px] h-7 w-[0.3px] opacity-40"
             style={{borderColor: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}></View>
-          <View className="w-1/2  gap-x-2 flex-row items-center justify-start">
-            {/* <IonIcons
-              name="pricetag"
-              color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
-              size={17}
-            /> */}
+          <View className="w-1/2  gap-x-2 flex-col items-start justify-start">
+            <Text
+              className="font-poppins-regular text-sm "
+              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+              {item?.transaction_number}
+            </Text>
             <Text
               className="font-poppins-regular text-sm "
               style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
@@ -158,6 +188,9 @@ export default function Laporan() {
         ref={paginateRef}
         renderItem={LaporanCards}
       />
+      <DeleteConfirmationModal />
+      <SuccessOverlayModal />
+      <FailedOverlayModal />
     </View>
   );
 }

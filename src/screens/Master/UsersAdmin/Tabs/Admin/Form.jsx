@@ -1,120 +1,135 @@
 import {
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    useColorScheme,
-    View,
-  } from 'react-native';
-  import React from 'react';
-  import {Controller, useForm} from 'react-hook-form';
-  import {
-    BLUE_COLOR,
-    DARK_BACKGROUND,
-    LIGHT_BACKGROUND,
-    SLATE_COLOR,
-    WHITE_BACKGROUND,
-    WHITE_COLOR,
-    LIGHT_COLOR,
-  } from '../../../../../utils/const';
-  import Toast from 'react-native-toast-message';
-  import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-  import axios from '../../../../../libs/axios';
-  import BackButton from '../../../../../components/BackButton';
-  export default function FormAdmin({route, navigation}) {
-    const isDarkMode = useColorScheme() === 'dark';
-    const queryClient = useQueryClient();
-    const {id} = route.params || {};
-  
-    const {
-      control,
-      handleSubmit,
-      formState: {errors},
-      setValue,
-    } = useForm();
-  
-    const {data, isFetching: isLoadingData} = useQuery(
-      ['users', id],
-      () => axios.get(`/master/users/${id}`).then(res => res.data.data),
-      {
-        enabled: !!id,
-        onSuccess: data => {
-          setValue('name', data.name);
-          setValue('email', data.email);
-          setValue('phone', data.phone);
-          setValue('address', data.address);
-        },
-        onError: error => {
-          Toast.show({
-            type: 'error',
-            text1: 'Error',
-            text2: 'Failed to load data',
-          });
-          console.error(error);
-        },
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from 'react-native';
+import React, {useState} from 'react';
+import {Controller, useForm} from 'react-hook-form';
+import {
+  BLUE_COLOR,
+  DARK_BACKGROUND,
+  LIGHT_BACKGROUND,
+  SLATE_COLOR,
+  WHITE_BACKGROUND,
+  WHITE_COLOR,
+  LIGHT_COLOR,
+} from '../../../../../utils/const';
+import Toast from 'react-native-toast-message';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import axios from '../../../../../libs/axios';
+import {Eye, EyeCrossed} from '../../../../../../assets';
+import BackButton from '../../../../../components/BackButton';
+import ModalAfterProcess from '../../../../../components/ModalAfterProcess';
+export default function FormAdmin({route, navigation}) {
+  const isDarkMode = useColorScheme() === 'dark';
+  const queryClient = useQueryClient();
+  const {id} = route.params || {};
+  const [showPassword, setShowPassword] = useState(true);
+  const [modalSuccess, setModalSuccess] = useState(false);
+  const [modalFailed, setModalFailed] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const {
+    control,
+    handleSubmit,
+    formState: {errors},
+    setValue,
+  } = useForm();
+
+  const {data, isFetching: isLoadingData} = useQuery(
+    ['users', id],
+    () => axios.get(`/master/users/get/${id}`).then(res => res.data.data),
+    {
+      enabled: !!id,
+      onSuccess: data => {
+        setValue('name', data.name);
+        setValue('email', data.email);
+        setValue('phone', data.phone);
+        setValue('address', data.address);
       },
-    );
-  
-    const {mutate: createOrUpdate} = useMutation(
-      async data => {
-        const requestData = {
-          ...data,
-        };
-  
-        Object.keys(requestData).forEach(
-          key =>
-            (requestData[key] === undefined || requestData[key] === null) &&
-            delete requestData[key],
+      onError: error => {
+        setModalFailed(true);
+        setTimeout(() => {
+          setModalFailed(false);
+        }, 2000);
+        setErrorMessage(error.response?.data || error.message);
+      },
+      retry: false,
+    },
+  );
+
+  const {mutate: createOrUpdate} = useMutation(
+    async data => {
+      const requestData = {
+        ...data,
+        role_id: 1,
+        password_confirmation: data.password,
+      };
+
+      Object.keys(requestData).forEach(
+        key =>
+          (requestData[key] === undefined || requestData[key] === null) &&
+          delete requestData[key],
+      );
+      if (!id) {
+        requestData.password_confirmation = data.password;
+      } else {
+        delete requestData.password;
+        delete requestData.password_confirmation;
+      }
+      if (id) {
+        const response = await axios.put(
+          `/master/users/update/${id}`,
+          requestData,
         );
-  
-        if (id) {
-          const response = await axios.put(
-            `/master/users/update/${id}`,
-            requestData,
-          );
-          return response.data.data;
-        } else {
-          const response = await axios.post(`/master/users/store`, requestData);
-          return response.data.data;
-        }
-      },
-      {
-        onSuccess: data => {
-          navigation.navigate('User', {
+        return response.data.data;
+      } else {
+        const response = await axios.post(`/master/users/store`, requestData);
+        return response.data.data;
+      }
+    },
+    {
+      onSuccess: data => {
+        queryClient.invalidateQueries(['/master/users/admin']);
+        setModalSuccess(true);
+        setTimeout(() => {
+          setModalSuccess(false);
+          navigation.navigate('Admin', {
             id: data?.id || null,
           });
-          queryClient.invalidateQueries(['/master/users/admin']);
-  
-          Toast.show({
-            type: 'success',
-            text1: 'Success',
-            text2: id ? 'User updated successfully' : 'User created successfully',
-          });
-        },
-        onError: error => {
-          Toast.show({
-            type: 'error',
-            text1: 'Error',
-            text2: 'Failed to create user',
-          });
-          console.error(error);
-        },
-      },
-    );
-  
-    const onSubmit = handleSubmit(data => {
-      if (!data) {
+        }, 2000);
         Toast.show({
-          type: 'error',
-          text1: 'Error',
-          text2: 'Please fill all required fields',
+          type: 'success',
+          text1: 'Success',
+          text2: 'Data berhasil disimpan',
         });
-        return;
-      }
-      createOrUpdate(data);
-    });
-  
-    return (
+      },
+      onError: error => {
+        setModalFailed(true);
+        setTimeout(() => {
+          setModalFailed(false);
+        }, 2000);
+        setErrorMessage(error.response?.data || error.message);
+      },
+    },
+  );
+
+  const onSubmit = handleSubmit(data => {
+    if (!data) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Please fill all required fields',
+      });
+      return;
+    }
+    createOrUpdate(data);
+  });
+
+  return (
+    <>
       <View
         className="w-full h-full p-3 "
         style={{
@@ -132,7 +147,7 @@ import {
             <Text
               className="font-poppins-semibold text-lg text-end  "
               style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
-              {id ? 'Edit' : 'Tambah'} User
+              {id ? 'Edit' : 'Tambah'} Admin
             </Text>
           </View>
           <View className="p-3">
@@ -154,7 +169,9 @@ import {
                     onChangeText={onChange}
                     onBlur={onBlur}
                     editable={!isLoadingData}
-                    placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
+                    placeholderTextColor={
+                      isDarkMode ? SLATE_COLOR : LIGHT_COLOR
+                    }
                     className={`h-12 w-full mx-auto px-4 rounded-md border-[0.5px] border-neutral-700 font-poppins-regular ${
                       !isLoadingData ? '' : 'bg-gray-100'
                     }`}
@@ -173,6 +190,10 @@ import {
               name="email"
               rules={{
                 required: 'Email Harus Diisi',
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: 'Email tidak valid',
+                },
               }}
               render={({field: {onChange, value, onBlur}}) => (
                 <>
@@ -186,7 +207,9 @@ import {
                     onChangeText={onChange}
                     onBlur={onBlur}
                     editable={!isLoadingData}
-                    placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
+                    placeholderTextColor={
+                      isDarkMode ? SLATE_COLOR : LIGHT_COLOR
+                    }
                     className={`h-12 w-full mx-auto px-4 rounded-md border-[0.5px] border-neutral-700 font-poppins-regular ${
                       !isLoadingData ? '' : 'bg-gray-100'
                     }`}
@@ -205,6 +228,10 @@ import {
               name="phone"
               rules={{
                 required: 'Nomor Telepon Harus Diisi',
+                pattern: {
+                  value: /^[0-9]{10,13}$/,
+                  message: 'Nomor telepon tidak valid',
+                },
               }}
               render={({field: {onChange, value, onBlur}}) => (
                 <>
@@ -218,15 +245,17 @@ import {
                     onChangeText={onChange}
                     onBlur={onBlur}
                     editable={!isLoadingData}
-                    placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
+                    placeholderTextColor={
+                      isDarkMode ? SLATE_COLOR : LIGHT_COLOR
+                    }
                     className={`h-12 w-full mx-auto px-4 rounded-md border-[0.5px] border-neutral-700 font-poppins-regular ${
                       !isLoadingData ? '' : 'bg-gray-100'
                     }`}
                     placeholder="Harap Lengkapi Nomor Telepon"
                   />
-                  {errors.name && (
+                  {errors.phone && (
                     <Text className="text-red-500 text-sm mt-1">
-                      {errors.name.message}
+                      {errors.phone.message}
                     </Text>
                   )}
                 </>
@@ -236,7 +265,7 @@ import {
               control={control}
               name="address"
               rules={{
-                required: 'Nama Harus Diisi',
+                required: 'Alamat Harus Diisi',
               }}
               render={({field: {onChange, value, onBlur}}) => (
                 <>
@@ -250,51 +279,118 @@ import {
                     onChangeText={onChange}
                     onBlur={onBlur}
                     editable={!isLoadingData}
-                    placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
+                    placeholderTextColor={
+                      isDarkMode ? SLATE_COLOR : LIGHT_COLOR
+                    }
                     className={`h-12 w-full mx-auto px-4 rounded-md border-[0.5px] border-neutral-700 font-poppins-regular ${
                       !isLoadingData ? '' : 'bg-gray-100'
                     }`}
                     placeholder="Harap Lengkapi Alamat"
                   />
-                  {errors.name && (
+                  {errors.address && (
                     <Text className="text-red-500 text-sm mt-1">
-                      {errors.name.message}
+                      {errors.address.message}
                     </Text>
                   )}
                 </>
               )}
             />
-          </View>
-          <View style={[styles.bottom]} className="p-3">
-            <TouchableOpacity
-              style={[styles.bottomButton, {opacity: isLoadingData ? 0.5 : 1}]}
-              onPress={onSubmit}>
-              <Text style={styles.buttonLabel}>
-                {isLoadingData ? 'Loading...' : 'Simpan'}
+            {!id && (
+              <Controller
+                name="password"
+                control={control}
+                rules={{
+                  required: 'Password Harus Diisi',
+                  minLength: {
+                    value: 8,
+                    message: 'Password minimal 8 karakter',
+                  },
+                }}
+                render={({field: {onChange, onBlur, value}}) => (
+                  <View className="relative">
+                    <Text
+                      className="font-poppins-semibold my-1"
+                      style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
+                      Password
+                    </Text>
+                    <TextInput
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                      style={{fontFamily: 'Poppins-Regular'}}
+                      placeholder="Password"
+                      placeholderTextColor={
+                        isDarkMode ? SLATE_COLOR : GREY_COLOR
+                      }
+                      keyboardType="numeric"
+                      className={`h-12 w-full mx-auto px-4 rounded-md border-[0.5px] border-neutral-700 font-poppins-regular ${
+                        !isLoadingData ? '' : 'bg-gray-100'
+                      }`}
+                      secureTextEntry={showPassword}
+                    />
+                    <TouchableOpacity
+                      onPress={() => setShowPassword(!showPassword)}
+                      style={{
+                        position: 'absolute',
+                        top: '70%',
+                        right: 10,
+                        transform: [{translateY: -12}],
+                      }}>
+                      {showPassword ? <Eye /> : <EyeCrossed />}
+                    </TouchableOpacity>
+                  </View>
+                )}
+              />
+            )}
+            {errors.password && (
+              <Text className="text-red-500 text-sm mt-1">
+                {errors.password.message}
               </Text>
-            </TouchableOpacity>
+            )}
           </View>
         </View>
+        <View style={[styles.bottom]} className="p-3">
+          <TouchableOpacity
+            style={[styles.bottomButton, {opacity: isLoadingData ? 0.5 : 1}]}
+            className="m-3"
+            onPress={onSubmit}>
+            <Text style={styles.buttonLabel}>
+              {isLoadingData ? 'Loading...' : 'Simpan'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+        {/* <ModalAfterProcess
+          url={require('../../../../../../assets/lottie/success-animation.json')}
+          visible={modalSuccess}
+          title={'Berhasil Menyimpan Data'}
+          subTitle={'Pastikan Data Sudah Benar'}
+        />
+        <ModalAfterProcess
+          url={require('../../../../../../assets/lottie/failed-animation.json')}
+          visible={modalFailed}
+          title={'Gagal Menyimpan Data'}
+          subTitle={errorMessage || 'Pastikan Data Sudah Benar'}
+        /> */}
       </View>
-    );
-  }
-  
-  const styles = StyleSheet.create({
-    bottom: {
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      right: 0,
-    },
-    bottomButton: {
-      backgroundColor: BLUE_COLOR,
-      padding: 10,
-      borderRadius: 5,
-    },
-    buttonLabel: {
-      color: WHITE_BACKGROUND,
-      textAlign: 'center',
-      fontFamily: 'Poppins-SemiBold',
-    },
-  });
-  
+    </>
+  );
+}
+
+const styles = StyleSheet.create({
+  bottom: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+  bottomButton: {
+    backgroundColor: BLUE_COLOR,
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonLabel: {
+    color: WHITE_BACKGROUND,
+    textAlign: 'center',
+    fontFamily: 'Poppins-SemiBold',
+  },
+});

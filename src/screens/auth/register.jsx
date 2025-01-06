@@ -77,7 +77,7 @@ export default function RegisterPage({navigation}) {
       setModalVisible(true);
       setTimeout(() => {
         setModalVisible(false);
-        navigation.navigate('Login');
+        navigation.navigate('loginPage');
       }, 2000);
     } catch (error) {
       const message =
@@ -343,7 +343,7 @@ export default function RegisterPage({navigation}) {
                       Saya menyetujui
                     </Text>
                     <TouchableOpacity
-                      onPress={() => navigation.navigate('SyaratDanKetentuan')}>
+                      onPress={() => navigation.navigate('S&K')}>
                       <Text
                         className="font-poppins-regular"
                         style={{color: BLUE_COLOR}}>
@@ -356,7 +356,7 @@ export default function RegisterPage({navigation}) {
                       serta
                     </Text>
                     <TouchableOpacity
-                      onPress={() => navigation.navigate('SyaratDanKetentuan')}>
+                      onPress={() => navigation.navigate('S&K')}>
                       <Text
                         className="font-poppins-regular"
                         style={{color: BLUE_COLOR}}>
@@ -394,7 +394,7 @@ export default function RegisterPage({navigation}) {
               className="font-poppins-regular">
               Sudah punya akun ?
             </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            <TouchableOpacity onPress={() => navigation.navigate('loginPage')}>
               <Text
                 style={{color: BLUE_COLOR, fontFamily: 'Poppins-Regular'}}
                 className="mx-1">
@@ -406,7 +406,7 @@ export default function RegisterPage({navigation}) {
 
           <View className="mb-8">
             <TouchableOpacity
-              onPress={() => navigation.navigate('BantuanLogin')}>
+              onPress={() => navigation.navigate('bantuanLogin')}>
               <Text
                 className="text-center  text-md font-poppins-regular "
                 style={{color: BLUE_COLOR}}>
