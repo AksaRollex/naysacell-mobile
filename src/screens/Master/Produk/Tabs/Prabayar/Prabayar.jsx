@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   DARK_BACKGROUND,
   DARK_COLOR,
@@ -37,31 +37,46 @@ export default function Prabayar({navigation}) {
   const [tempCategory, setTempCategory] = useState('');
   const [tempProvider, setTempProvider] = useState('');
 
+  const [payload, setPayload] = useState({});
+
   const Plugs = () => {
     return (
-      <View className="flex-row justify-center  gap-2">
-        <TouchableOpacity
-          onPress={() => {
-            setModalTypeVisible(true);
-            setTempCategory(selectedCategory);
-            setTempProvider(selectedProvider);
-          }}
-          className="flex-1 flex-row items-center bg-[#ececec] rounded-md justify-between p-3">
-          <IonIcons name="apps" size={24} color="black" />
-          <Text className="text-black font-poppins-regular mx-2">
+      <TouchableOpacity
+        onPress={() => {
+          setModalTypeVisible(true);
+          setTempCategory(selectedCategory);
+          setTempProvider(selectedProvider);
+        }}
+        className=" flex-row items-center rounded-md justify-between p-[14px] min-w-[70px]"
+        style={{backgroundColor: isDarkMode ? '#262626' : '#f8f8f8'}}>
+        <View className="flex-row items-center">
+          <IonIcons name="apps" size={20} color={isDarkMode ? DARK_COLOR : LIGHT_COLOR} />
+          <Text
+            className=" font-poppins-regular mx-2 text-sm"
+            style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
             {selectedCategory || 'Kategori'}
           </Text>
-          <MaterialIcons name="keyboard-arrow-down" size={24} color="black" />
-        </TouchableOpacity>
-      </View>
+        </View>
+        <MaterialIcons
+          name="keyboard-arrow-down"
+          size={20}
+          color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+        />
+      </TouchableOpacity>
     );
   };
+
+  useEffect(() => {
+    setPayload({
+      product_category: selectedCategory,
+      product_provider: selectedProvider,
+    });
+  }, [selectedCategory, setSelectedProvider]);
 
   const TypePicker = ({visible, onClose}) => {
     const categories = ['Pulsa', 'Data', 'E-Money'];
     const providers = ['Telkomsel', 'XL', 'Indosat'];
 
-    // Cek apakah ada perubahan dari nilai awal
     const hasChanges = () => {
       return tempCategory !== '' || tempProvider !== '';
     };
@@ -69,12 +84,12 @@ export default function Prabayar({navigation}) {
     const handleConfirm = () => {
       setSelectedCategory(tempCategory);
       setSelectedProvider(tempProvider);
+      setPayload({
+        product_provider: tempProvider,
+        product_category: tempCategory,
+      });
       onClose();
     };
-
-    console.log('tempCategory', tempCategory);
-    console.log('tempProvider', tempProvider);
-    const canConfirm = tempCategory || tempProvider;
 
     return (
       <Modal
@@ -97,7 +112,6 @@ export default function Prabayar({navigation}) {
             </View>
 
             <View className="flex-row justify-between px-4">
-              {/* Kolom Kategori */}
               <View className="flex-1 mr-2">
                 <Text className="text-black font-poppins-semibold mb-2">
                   Kategori
@@ -125,7 +139,6 @@ export default function Prabayar({navigation}) {
                 </ScrollView>
               </View>
 
-              {/* Kolom Provider */}
               <View className="flex-1 ml-2">
                 <Text className="text-black font-poppins-semibold mb-2">
                   Provider
@@ -285,8 +298,9 @@ export default function Prabayar({navigation}) {
       <Paginate
         url="/master/product/prepaid"
         ref={paginateRef}
-        // Plugin={Plugs}
+        Plugin={Plugs}
         renderItem={prabayarCards}
+        payload={payload}
       />
       <TypePicker
         visible={modalTypeVisible}

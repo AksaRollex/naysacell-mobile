@@ -54,7 +54,7 @@ const Paginate = forwardRef(
     const isDarkMode = useColorScheme() === 'dark';
 
     const {data, isFetching, refetch} = useQuery({
-      queryKey: [url, page, search],
+      queryKey: [url, page, search, JSON.stringify(payload)],
       queryFn: () =>
         axios
           .post(url, {
@@ -135,11 +135,11 @@ const Paginate = forwardRef(
       refetch,
     }));
 
-    // useEffect(() => {
-    //   if (page === 1) {
-    //     refetch();
-    //   }
-    // }, [JSON.stringify(payload)]);
+    useEffect(() => {
+      if (page === 1) {
+        refetch();
+      }
+    }, [JSON.stringify(payload)]);
 
     const handleLoadMore = () => {
       if (

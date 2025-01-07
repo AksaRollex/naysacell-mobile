@@ -71,8 +71,6 @@ const CustomTabBar = ({state, descriptors, navigation}) => {
   const hideOnScreens = [
     'IndexUsersAdmin',
     'User',
-    'FormUser',
-    'FormAdmin',
     'Admin',
     'IndexMaster',
     'Brand',
@@ -82,6 +80,11 @@ const CustomTabBar = ({state, descriptors, navigation}) => {
     'IndexLaporan',
     'Laporan',
     'GrafikPenjualan',
+    'Order',
+    'FormUser',
+    'FormAdmin',
+    'FormPrabayar',
+    'FormOrder',
   ];
 
   if (hideOnScreens.includes(routeName)) {
@@ -216,8 +219,8 @@ const ProfileNavigation = () => {
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="loginPage" component={LoginPage} />
     </Stack.Navigator>
-  )
-}
+  );
+};
 
 export default function MainScreen() {
   const [isAdmin, setIsAdmin] = React.useState(false);
@@ -248,9 +251,7 @@ export default function MainScreen() {
               const hideOnScreens = [
                 'IndexUsersAdmin',
                 'User',
-                'FormUser',
                 'Admin',
-                'FormAdmin',
                 'IndexMaster',
                 'Brand',
                 'IndexProduk',
@@ -259,6 +260,11 @@ export default function MainScreen() {
                 'IndexLaporan',
                 'Laporan',
                 'GrafikPenjualan',
+                'FormUser',
+                'FormAdmin',
+                'FormPrabayar',
+                'FormOrder',
+                'Order'
               ];
 
               if (hideOnScreens.includes(routeName)) {

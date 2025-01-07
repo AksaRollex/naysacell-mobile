@@ -1,5 +1,5 @@
 import {StyleSheet, Text, View, useColorScheme} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import LottieView from 'lottie-react-native';
 import {
   DARK_BACKGROUND,
@@ -13,9 +13,23 @@ import {
 } from '../../utils/const';
 import {rupiah} from '../../libs/utils';
 import {color} from '@rneui/themed/dist/config';
+import axios from '../../libs/axios';
 
 export default function SuccessNotif({route}) {
   const {item, transaction_data} = route.params;
+  const [orderStatus, setOrderStatus] = useState('');
+
+  useEffect (( ) => {
+    axios
+    .get(`/master/order/get/${route.params.id}`)
+    .then(res => {
+      console.log(res.data.data);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+  })
+  
   console.log(transaction_data);
   const isDarkMode = useColorScheme() === 'dark';
   return (

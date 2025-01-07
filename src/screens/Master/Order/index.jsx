@@ -11,6 +11,8 @@ import {MenuView} from '@react-native-menu/menu';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {rupiah} from '../../../libs/utils';
 import IonIcons from 'react-native-vector-icons/Ionicons';
+import {useQueryClient} from '@tanstack/react-query';
+import {useDelete} from '../../../hooks/useDelete';
 
 export default function Order({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
@@ -72,12 +74,34 @@ export default function Order({navigation}) {
     }
   };
 
+  const queryClient = useQueryClient();
+
+  const {
+    delete: deleteOrder,
+    DeleteConfirmationModal,
+    SuccessOverlayModal,
+    FailedOverlayModal,
+  } = useDelete({
+    onSuccess: () => {
+      queryClient.invalidateQueries('/master/order');
+      navigation.navigate('Order');
+    },
+    onError: error => {
+      console.log(error);
+    },
+  });
+
   const orderCards = ({item}) => {
     const dropdownOptions = [
       {
         id: 'Edit',
         title: 'Edit',
         action: item => navigation.navigate('FormOrder', {id: item.id}),
+      },
+      {
+        id: 'Hapus',
+        title: 'Hapus',
+        action: item => deleteOrder(`/master/order/delete/${item.id}`),
       },
     ];
     return (
@@ -172,14 +196,22 @@ export default function Order({navigation}) {
   };
   return (
     <View
-      className="w-full h-full p-3"
+      className="w-full h-full"
       style={{
         backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
       }}>
       <View
         className="rounded-lg "
         style={{backgroundColor: isDarkMode ? '#262626' : '#f8f8f8'}}></View>
-      <Paginate url="/master/order" ref={paginateRef} renderItem={orderCards} />
+      <Paginate
+        url="/master/order"
+        ref={paginateRef}
+        renderItem={orderCards}
+      />
+
+      <DeleteConfirmationModal />
+      <SuccessOverlayModal />
+      <FailedOverlayModal />
     </View>
   );
 }

@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import React from 'react';
 import {
-  QueryClient,
   useMutation,
   useQuery,
   useQueryClient,

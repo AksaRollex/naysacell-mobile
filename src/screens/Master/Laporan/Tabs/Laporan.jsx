@@ -1,5 +1,14 @@
-import {StyleSheet, Text, View, useColorScheme, Image} from 'react-native';
-import React, {useRef} from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  useColorScheme,
+  Image,
+  Modal,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
+import React, {useEffect, useRef} from 'react';
 import {
   DARK_BACKGROUND,
   DARK_COLOR,
@@ -12,6 +21,9 @@ import {rupiah} from '../../../../libs/utils';
 import {MenuView} from '@react-native-menu/menu';
 import {useDelete} from '../../../../hooks/useDelete';
 import {useQueryClient} from '@tanstack/react-query';
+import IonIcons from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
 export default function Laporan({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
   const paginateRef = useRef();
@@ -55,6 +67,125 @@ export default function Laporan({navigation}) {
       console.log('delete error', error);
     },
   });
+
+  const [transactionStatus, setTransactionStatus] = React.useState('');
+  const [selectedTransactionStatus, setSelectedTransactionStatus] =
+    React.useState('');
+  const [modalTransactionStatus, setModalTransactionStatus] =
+    React.useState(false);
+  const [payload, setPayload] = React.useState({});
+
+  const Plugs = () => {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          setModalTransactionStatus(true);
+          setTransactionStatus(selectedTransactionStatus);
+        }}
+        className=" flex-row items-center rounded-md justify-between p-[14px] min-w-[70px]"
+        style={{backgroundColor: isDarkMode ? '#262626' : '#f8f8f8'}}>
+        <View className="flex-row items-center">
+          <IonIcons
+            name="apps"
+            size={20}
+            color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+          />
+          <Text
+            className=" font-poppins-regular mx-2 text-sm"
+            style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+            {selectedTransactionStatus || 'Status'}
+          </Text>
+        </View>
+        <MaterialIcons
+          name="keyboard-arrow-down"
+          size={20}
+          color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+        />
+      </TouchableOpacity>
+    );
+  };
+
+  const TypePicker = ({onClose}) => {
+    const status = ['Pending', 'Success', 'Failed'];
+
+    const hasChanges = () => {
+      return transactionStatus !== '';
+    };
+
+    const handleConfirm = () => {
+      setSelectedTransactionStatus(transactionStatus);
+      setPayload({
+        transaction_status: transactionStatus,
+      });
+      onClose();
+    };
+
+    return (
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalTransactionStatus}
+        onRequestClose={onClose}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Pilih Filter</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  setTransactionStatus('');
+                  onClose();
+                }}>
+                <MaterialIcons name="close" size={24} color="#000" />
+              </TouchableOpacity>
+            </View>
+
+            <View className="flex-row justify-between px-4">
+              <View className="flex-1 mr-2">
+                <Text className="text-black font-poppins-semibold mb-2">
+                  Status Transaksi
+                </Text>
+                <ScrollView className="max-h-64">
+                  {status.map(statusTransaksi => (
+                    <TouchableOpacity
+                      key={statusTransaksi}
+                      className={`p-3 rounded-md mb-2 ${
+                        transactionStatus === statusTransaksi
+                          ? 'bg-blue-100'
+                          : 'bg-[#ececec]'
+                      }`}
+                      onPress={() => setTransactionStatus(statusTransaksi)}>
+                      <Text
+                        className={`${
+                          transactionStatus === statusTransaksi
+                            ? 'text-blue-500 font-poppins-semibold'
+                            : 'text-black font-poppins-regular'
+                        }`}>
+                        {statusTransaksi}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </View>
+            </View>
+
+            <View className="mt-4 px-4">
+              <TouchableOpacity
+                className={`py-3 rounded-md ${
+                  hasChanges() ? 'bg-blue-500' : 'bg-gray-300'
+                }`}
+                disabled={!hasChanges()}
+                onPress={handleConfirm}>
+                <Text className="text-white text-center font-poppins-semibold">
+                  Terapkan Filter
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
   const LaporanCards = ({item}) => {
     const dropdownOptions = [
       {
@@ -185,8 +316,14 @@ export default function Laporan({navigation}) {
       }}>
       <Paginate
         url="/master/laporan"
+        Plugin={Plugs}
+        payload={payload}
         ref={paginateRef}
         renderItem={LaporanCards}
+      />
+      <TypePicker
+        visible={modalTransactionStatus}
+        onClose={() => setModalTransactionStatus(false)}
       />
       <DeleteConfirmationModal />
       <SuccessOverlayModal />
@@ -195,4 +332,28 @@ export default function Laporan({navigation}) {
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingVertical: 20,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    marginBottom: 15,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#000',
+  },
+});

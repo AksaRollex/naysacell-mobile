@@ -117,7 +117,7 @@ export default function Pulsa({navigation}) {
       .get('auth/me')
       .then(res => {
         setNameCustomer(res.data.user?.name);
-        setUserId(res.data.user?.id); // Tambahkan ini untuk menyimpan user_id
+        setUserId(res.data.user?.id);
         console.log('User data:', res.data.user);
       })
       .catch(err => {
@@ -139,7 +139,7 @@ export default function Pulsa({navigation}) {
         customer_no: nomorTujuan,
         quantity: 1,
         customer_name: nameCustomer,
-        user_id: userId, // Tambahkan user_id
+        user_id: userId, 
       });
 
       const response = await axios.post('/auth/submit-product', {
@@ -149,7 +149,7 @@ export default function Pulsa({navigation}) {
         product_name: selectItem?.product_name,
         product_price: selectItem?.product_price,
         customer_name: nameCustomer,
-        user_id: userId, // Tambahkan user_id ke request
+        user_id: userId,
       });
 
       navigation.navigate('SuccessNotif', {
