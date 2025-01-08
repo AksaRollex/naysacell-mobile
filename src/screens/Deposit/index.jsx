@@ -5,6 +5,7 @@ import {
   useColorScheme,
   TextInput,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import React, {useState} from 'react';
 import {
@@ -14,19 +15,55 @@ import {
   LIGHT_BACKGROUND,
   SLATE_COLOR,
   WHITE_BACKGROUND,
+  WHITE_COLOR,
   windowWidth,
 } from '../../utils/const';
 import {rupiah} from '../../libs/utils';
 import HistoryDeposit from './HistoryDeposit';
+import {useMutation, useQueryClient} from '@tanstack/react-query';
+import axios from '../../libs/axios';
+import Toast from 'react-native-toast-message';
+import BackButton from '../../components/BackButton';
 export default function Deposit({navigation}) {
-
   const isDarkMode = useColorScheme() === 'dark';
-  
+
   const [depositAmount, setDepositAmount] = useState('');
 
-  const handlePresetAmount = (amount) => {
+  const handlePresetAmount = amount => {
     setDepositAmount(amount.toString());
   };
+
+  const queryClient = useQueryClient();
+
+  const {mutate: handleTopup} = useMutation(
+    async () => {
+      const requestData = {
+        amount: parseInt(depositAmount.replace(/\D/g, '')), // Hapus karakter non-digit
+      };
+
+      const response = await axios.post('/auth/topup', requestData);
+      return response.data.data;
+    },
+    {
+      onSuccess: data => {
+        Toast.show({
+          type: 'success',
+          text1: 'Berhasil',
+          text2: 'Deposit Saldo Berhasil',
+        });
+        navigation.navigate('HomeScreen', {refresh: true});
+        queryClient.invalidateQueries('/auth/check-saldo');
+      },
+      onError: error => {
+        console.error('Full error:', error.response);
+        Toast.show({
+          type: 'error',
+          text1: 'Gagal',
+          text2: error.response?.data?.message || 'Deposit Saldo Gagal',
+        });
+      },
+    },
+  );
 
   return (
     <View
@@ -49,23 +86,25 @@ export default function Deposit({navigation}) {
         <View
           id="referensi_nominal"
           className="px-4 py-2 flex flex-row flex-wrap justify-between items-center">
-          {[10000, 25000, 50000, 100000, 150000, 200000].map((amount, index) => (
-            <TouchableOpacity
-              key={index}
-              className="px-1 py-4 rounded-md justify-center items-center"
-              style={{
-                backgroundColor: isDarkMode ? '#27272A' : WHITE_BACKGROUND,
-                width: windowWidth * 0.3,
-              }}
-              onPress={() => handlePresetAmount(amount)}>
-              <Text className="font-poppins-regular">{rupiah(amount)}</Text>
-            </TouchableOpacity>
-          ))}
+          {[10000, 25000, 50000, 100000, 150000, 200000].map(
+            (amount, index) => (
+              <TouchableOpacity
+                key={index}
+                className="px-1 py-4 my-1 rounded-md justify-center items-center"
+                style={{
+                  backgroundColor: isDarkMode ? '#27272A' : WHITE_BACKGROUND,
+                  width: windowWidth * 0.3,
+                }}
+                onPress={() => handlePresetAmount(amount)}>
+                <Text className="font-poppins-regular">{rupiah(amount)}</Text>
+              </TouchableOpacity>
+            ),
+          )}
         </View>
         <View className="px-4 py-2 ">
           <TouchableOpacity
             style={styles.bottomButton}
-            onPress={() => navigation.navigate('SuccessNotifDeposit')}>
+            onPress={() => handleTopup()}>
             <Text className="font-poppins-semibold" style={styles.buttonLabel}>
               Deposit
             </Text>
@@ -73,12 +112,12 @@ export default function Deposit({navigation}) {
         </View>
       </View>
       {/* HISTORI */}
-      <View className="px-4 py-2 mt-11">
-        <View className="my-2">
+      <ScrollView className=" py-2 mt-11">
+        <View className="my-2 mx-4">
           <Text className="font-poppins-semibold">Histori Deposit</Text>
         </View>
         <HistoryDeposit />
-      </View>
+      </ScrollView>
     </View>
   );
 }

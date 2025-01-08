@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {
-  Image,
   ImageBackground,
   Linking,
   ScrollView,
@@ -24,7 +23,7 @@ import {
   windowWidth,
 } from '../../utils/const';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
-
+import {useQueryClient} from '@tanstack/react-query';
 const getGreeting = () => {
   const hour = new Date().getHours();
   if (hour >= 5 && hour < 12) return 'Selamat Pagi';
@@ -37,6 +36,9 @@ export default function HomeScreen({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
   const [greeting, setGreeting] = useState(getGreeting());
   const [data, setData] = useState([]);
+  const [saldo, setSaldo] = useState('');
+
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -46,7 +48,7 @@ export default function HomeScreen({navigation}) {
     return () => clearInterval(timer);
   }, []);
 
-  const openWhatsApp = () => {
+  const openWhatsApp = ({route}) => {
     const phoneNumber = '+6285336970707';
     const message = 'Halo Admin NAYSA CELL !';
     const url = `whatsapp://send?phone=${phoneNumber}&text=${encodeURIComponent(
@@ -69,6 +71,22 @@ export default function HomeScreen({navigation}) {
         console.error('Error fetching data:', error);
       });
   }, []);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      axios
+        .get('/auth/check-saldo')
+        .then(response => {
+          setSaldo(response.data);
+          console.log(response.data);
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+    });
+
+    return unsubscribe; 
+  }, [navigation]);
 
   return (
     <>
@@ -145,13 +163,15 @@ export default function HomeScreen({navigation}) {
                 borderBottomColor: '#404040',
                 elevation: 0.5,
               }}>
-              <Text
-                style={{
-                  color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-                }}
-                className="font-poppins-regular">
-                {rupiah(15000)}
-              </Text>
+              {setSaldo && (
+                <Text
+                  style={{
+                    color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+                  }}
+                  className="font-poppins-regular">
+                  {rupiah(saldo?.balance)}
+                </Text>
+              )}
               <View
                 style={{
                   flexDirection: 'row',
