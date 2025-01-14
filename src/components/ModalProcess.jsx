@@ -43,10 +43,12 @@ export default function ModalProcess({
           {/* <LottieView source={url} autoPlay loop={true} style={styles.lottie} /> */}
           <Text
             style={styles.successTextTitle}
-            className="text-base my-1  capitalize font-poppins-semibold text-black">
+            className="text-base my-1  capitalize font-poppins-semibold ">
             {title}
           </Text>
-          <Text className="text-sm text-start capitalize text-gray-500 mb-4 font-poppins-regular">
+          <Text
+            className="text-sm text-start capitalize mb-4 font-poppins-regular"
+            style={{color: isDarkMode ? WHITE_COLOR : DARK_COLOR}}>
             {subTitle}
           </Text>
           <View className="flex-col justify-center items-center gap-y-2 w-full ">
@@ -84,7 +86,7 @@ const styles = StyleSheet.create({
   },
   successTextTitle: isDarkMode => ({
     textAlign: 'center',
-    color: isDarkMode ? 'white' : 'black',
+    color: isDarkMode ? WHITE_COLOR : DARK_COLOR,
   }),
   successText: {
     fontSize: 14,
