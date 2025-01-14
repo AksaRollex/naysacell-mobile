@@ -1,83 +1,218 @@
 import React, {useState} from 'react';
-import {Modal, View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {
+  Modal,
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  useColorScheme,
+} from 'react-native';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import axios from '../libs/axios';
+import {DARK_COLOR, WHITE_BACKGROUND, WHITE_COLOR} from '../utils/const';
 
-const ConfirmationModal = ({visible, onConfirm, onCancel, title, message}) => (
-  <Modal
-    animationType="fade"
-    transparent={true}
-    visible={visible}
-    onRequestClose={onCancel}>
-    <View className="flex-1 justify-center items-center bg-black/50">
-      <View className="w-80 bg-white rounded-2xl p-6 items-center shadow-2xl">
-        <View className="w-20 h-20 rounded-full bg-red-50 justify-center items-center mb-4">
-          <IonIcons size={40} color="#f43f5e" name="trash-outline" />
-        </View>
-        <Text className="text-xl font-poppins-semibold text-black mb-3">
-          {title}
-        </Text>
-
-        <View className="w-full h-px bg-gray-200 mb-4" />
-
-        <Text className="text-md text-center text-gray-600 mb-6 font-poppins-regular">
-          {message}
-        </Text>
-        <View className="flex-row w-full justify-between">
-          <TouchableOpacity
-            className="flex-1 mr-3 bg-gray-100 py-3 rounded-xl items-center"
-            onPress={onCancel}>
-            <Text style={styles.cancelButtonText}>Batalkan</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            className="flex-1 ml-3 bg-red-500 py-3 rounded-xl items-center"
-            onPress={onConfirm}>
-            <Text style={styles.confirmButtonText}>Ya, Hapus</Text>
-          </TouchableOpacity>
+const ConfirmationModal = ({visible, onConfirm, onCancel, title, message}) => {
+  const isDarkMode = useColorScheme() === 'dark'; // Pindahkan ke dalam body fungsi
+  return (
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={visible}
+      onRequestClose={onCancel}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'rgba(0, 0, 0, 0.1)',
+        }}>
+        <View
+          style={{
+            width: 320,
+            backgroundColor: isDarkMode ? '#27272A' : WHITE_BACKGROUND,
+            borderRadius: 16,
+            padding: 16,
+            shadowColor: '#000',
+            shadowOpacity: 0.2,
+            shadowOffset: {width: 0, height: 2},
+            shadowRadius: 4,
+            alignItems: 'flex-start',
+          }}>
+          <View
+            style={{
+              width: 48,
+              height: 48,
+              borderRadius: 24,
+              backgroundColor: '#fdecef',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <IonIcons size={22} color="#f43f5e" name="trash-outline" />
+          </View>
+          <Text
+            style={{
+              fontSize: 16,
+              marginVertical: 4,
+              fontWeight: '600',
+              color: isDarkMode ? '#fff' : '#000',
+            }}>
+            {title}
+          </Text>
+          <Text
+            style={{
+              fontSize: 14,
+              marginBottom: 16,
+              fontWeight: '400',
+              color: isDarkMode ? '#d1d1d1' : '#6b6b6b',
+            }}>
+            {message}
+          </Text>
+          <View style={{width: '100%', gap: 8}}>
+            <TouchableOpacity
+              style={{
+                width: '100%',
+                backgroundColor: '#f43f5e',
+                paddingVertical: 12,
+                borderRadius: 12,
+                alignItems: 'center',
+              }}
+              onPress={onConfirm}>
+              <Text style={{color: '#fff', fontWeight: '600'}}>Hapus</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                width: '100%',
+                backgroundColor: '#f0f0f0',
+                paddingVertical: 12,
+                borderRadius: 12,
+                alignItems: 'center',
+              }}
+              onPress={onCancel}>
+              <Text style={{color: '#4f4f4f', fontWeight: '600'}}>
+                Batalkan
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </View>
-  </Modal>
-);
+    </Modal>
+  );
+};
 
-const SuccessOverlay = ({visible}) => (
-  <Modal animationType="fade" transparent={true} visible={visible}>
-    <View className="flex-1 justify-center items-center bg-black/50">
-      <View className="w-80 bg-white rounded-2xl p-6 items-center shadow-2xl">
-        <View className="w-20 h-20 rounded-full bg-green-50 justify-center items-center mb-4">
-          <IonIcons size={40} color="#95bb72" name="checkmark-done-sharp" />
+const SuccessOverlay = ({visible}) => {
+  const isDarkMode = useColorScheme() === 'dark';
+  return (
+    <Modal animationType="fade" transparent={true} visible={visible}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'rgba(0, 0, 0, 0.1)',
+        }}>
+        <View
+          style={{
+            backgroundColor: isDarkMode ? '#27272A' : WHITE_BACKGROUND,
+            width: 320,
+            borderRadius: 16,
+            padding: 16,
+            shadowColor: '#000',
+            shadowOpacity: 0.2,
+            shadowOffset: {width: 0, height: 2},
+            shadowRadius: 4,
+            alignItems: 'flex-start',
+          }}>
+          <View
+            style={{
+              width: 48,
+              height: 48,
+              borderRadius: 24,
+              backgroundColor: '#e6f7e6',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <IonIcons size={22} color="#95bb72" name="checkmark-done-sharp" />
+          </View>
+          <Text
+            style={{
+              fontSize: 16,
+              marginVertical: 4,
+              fontWeight: '600',
+              color: isDarkMode ? WHITE_COLOR : DARK_COLOR,
+            }}>
+            Berhasil Di Hapus!
+          </Text>
+          <Text
+            style={{
+              fontSize: 14,
+              fontWeight: '400',
+              color: isDarkMode ? WHITE_COLOR : '#6b6b6b',
+            }}>
+            Data yang telah dihapus tidak dapat dikembalikan!
+          </Text>
         </View>
-        <Text className="text-xl font-poppins-semibold text-black mb-3">
-          Berhasil Di Hapus !
-        </Text>
-        <View className="w-full h-px bg-gray-200 mb-4" />
-        <Text className="text-md text-center text-gray-600  font-poppins-regular">
-          Data yang telah dihapus tidak dapat dikembalikan !
-        </Text>
       </View>
-    </View>
-  </Modal>
-);
-const FailedOverlay = ({visible, message}) => (
-  <Modal animationType="fade" transparent={true} visible={visible}>
-    <View className="flex-1 justify-center items-center bg-black/50">
-      <View className="w-80 bg-white rounded-2xl p-6 items-center shadow-2xl">
-        <View className="w-20 h-20 rounded-full bg-red-50 justify-center items-center mb-4">
-          <IonIcons size={40} color="#f43f5e" name="close-sharp" />
+    </Modal>
+  );
+};
+
+const FailedOverlay = ({visible, message}) => {
+  const isDarkMode = useColorScheme() === 'dark';
+
+  return (
+    <Modal animationType="fade" transparent={true} visible={visible}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'rgba(0, 0, 0, 0.1)',
+        }}>
+        <View
+          style={{
+            width: 320,
+            backgroundColor: isDarkMode ? '#27272A' : WHITE_BACKGROUND,
+            borderRadius: 16,
+            padding: 16,
+            shadowColor: '#000',
+            shadowOpacity: 0.2,
+            shadowOffset: {width: 0, height: 2},
+            shadowRadius: 4,
+            alignItems: 'flex-start',
+          }}>
+          <View
+            style={{
+              width: 48,
+              height: 48,
+              borderRadius: 24,
+              backgroundColor: '#fdecef',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <IonIcons size={22} color="#f43f5e" name="close-sharp" />
+          </View>
+          <Text
+            style={{
+              fontSize: 16,
+              marginVertical: 4,
+              fontWeight: '600',
+              color: isDarkMode ? WHITE_COLOR : DARK_COLOR,
+            }}>
+            Data Gagal Dihapus!
+          </Text>
+          <Text
+            style={{
+              fontSize: 14,
+              fontWeight: '400',
+              color: isDarkMode ? WHITE_COLOR : '#6b6b6b',
+            }}>
+            {message || 'Coba untuk menghapus kembali!'}
+          </Text>
         </View>
-        <Text className="text-xl font-poppins-semibold text-black mb-3">
-          Data Gagal Dihapus !
-        </Text>
-
-        <View className="w-full h-px bg-gray-200 mb-4" />
-
-        <Text className="text-md text-center text-gray-600 font-poppins-regular">
-          {message || 'Coba untuk menghapus kembali!'}
-        </Text>
       </View>
-    </View>
-  </Modal>
-);
+    </Modal>
+  );
+};
 
 export const useDelete = callback => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -114,7 +249,6 @@ export const useDelete = callback => {
         setErrorMessage(message);
         onError(error);
       }
-
       onError && onError(error);
     } finally {
       onSettled && onSettled();
@@ -126,7 +260,7 @@ export const useDelete = callback => {
       visible={modalVisible}
       onConfirm={handleConfirm}
       onCancel={hideConfirmationModal}
-      title="Apakah anda yakin?"
+      title="Menghapus Data"
       message="Data yang telah dihapus tidak dapat dikembalikan!"
     />
   );

@@ -20,8 +20,9 @@ import {
 } from '../../utils/const';
 import BottomModal from '../../components/BottomModal';
 import Input from '../../components/form/input';
-import { rupiah } from '../../libs/utils';
+import {rupiah} from '../../libs/utils';
 import ProductPaginate from '../../components/ProductPaginate';
+import {CheckProduct} from '../../../assets';
 
 export default function Shopeepay({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
@@ -36,29 +37,43 @@ export default function Shopeepay({navigation}) {
   };
 
   const productShopeepay = ({item}) => {
+    const isSelected = selectItem && selectItem.id === item.id;
     return (
-      <TouchableOpacity
-        className="p-2 border border-gray-500 rounded-xl m-1 "
-        style={{  backgroundColor : isDarkMode ? '#404040' : '#f8f8f8' }}
-        onPress={() => {
-          setSelectedItem(item);
-          setShowModal(true);
-        }}>
-        <View className="items-start flex-col ">
-          <Text className="font-poppins-semibold text-base " style={{ color : isDarkMode ? DARK_COLOR : LIGHT_COLOR }}>
-            {item.product_name}
-          </Text>
-          <View className="w-full">
-            <View className="justify-items-end items-end">
-              <Text
-                className="font-poppins-regular text-sm text-end "
-                style={{color: BLUE_COLOR}}>
-                {rupiah(item.product_price)}
-              </Text>
+      <View className="flex-row">
+        <TouchableOpacity
+          className={`p-2 border  rounded-xl m-1 w-full relative ${
+            isSelected
+              ? 'border-green-500 bg-[#2a2a2a]'
+              : 'border-gray-500 bg-[#404040]'
+          }`}
+          style={{backgroundColor: isDarkMode ? '#404040' : '#f8f8f8'}}
+          onPress={() => {
+            setSelectedItem(item);
+          }}>
+          <View className="items-start flex-col ">
+            <Text
+              className="font-poppins-semibold text-base "
+              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+              {item.product_name}
+            </Text>
+            <View className="w-full">
+              <View className="justify-items-end items-end">
+                <Text
+                  className="font-poppins-regular text-sm text-end "
+                  style={{color: BLUE_COLOR}}>
+                  {rupiah(item.product_price)}
+                </Text>
+              </View>
             </View>
           </View>
-        </View>
-      </TouchableOpacity>
+          {isSelected && (
+            <CheckProduct
+              width={20}
+              style={{position: 'absolute', right: 7, bottom: 2}}
+            />
+          )}
+        </TouchableOpacity>
+      </View>
     );
   };
   return (
@@ -92,7 +107,9 @@ export default function Shopeepay({navigation}) {
 
         {selectItem && (
           <View style={[styles.bottom(isDarkMode)]}>
-            <TouchableOpacity style={styles.bottomButton} onPress={() => setShowModal(true)}>
+            <TouchableOpacity
+              style={styles.bottomButton}
+              onPress={() => setShowModal(true)}>
               <Text style={styles.buttonText}>Bayar</Text>
             </TouchableOpacity>
           </View>
@@ -162,9 +179,9 @@ const styles = StyleSheet.create({
     right: 0,
     backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
     marginHorizontal: HORIZONTAL_MARGIN,
-    marginVertical : 10,
+    marginVertical: 10,
   }),
-  
+
   buttonText: {
     color: WHITE_COLOR,
     fontFamily: 'Poppins-SemiBold',

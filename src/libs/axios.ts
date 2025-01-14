@@ -5,7 +5,7 @@ import {API_URL} from '@env';
 console.log({API_URL});
 const axios = Axios.create({
   baseURL: API_URL,
-  mode: 'no-cors',
+  // mode: 'no-cors',
   headers: {
     'Content-Type': 'application/json',
     // "Content-Type": "multipart/form-data",

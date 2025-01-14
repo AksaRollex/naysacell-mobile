@@ -8,12 +8,10 @@ import {
 } from 'react-native';
 import React from 'react';
 import LottieView from 'lottie-react-native';
-import {WHITE_BACKGROUND} from '../utils/const';
+import {DARK_COLOR, WHITE_BACKGROUND, WHITE_COLOR} from '../utils/const';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-const baseRem = 16;
-const rem = size => size * baseRem;
 export default function ModalProcess({
-  url,
   modalVisible,
   title,
   subTitle,
@@ -21,6 +19,11 @@ export default function ModalProcess({
   buttonTrueText,
   functionTrueButton,
   functionFalseButton,
+  iconColor,
+  iconName,
+  iconSize,
+  bgIcon,
+  bgTrueText,
 }) {
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -28,30 +31,43 @@ export default function ModalProcess({
     <Modal animationType="fade" transparent={true} visible={modalVisible}>
       <View style={styles.modalOverlay}>
         <View
+          className="w-80 p-4"
           style={[
             styles.modalContent,
             {backgroundColor: isDarkMode ? '#27272A' : WHITE_BACKGROUND},
           ]}>
-          <LottieView source={url} autoPlay loop={true} style={styles.lottie} />
+          <View
+            className={`w-12 h-12 rounded-full  justify-center items-center bg-${bgIcon}`}>
+            <Icon name={iconName} size={iconSize} color={iconColor} />
+          </View>
+          {/* <LottieView source={url} autoPlay loop={true} style={styles.lottie} /> */}
           <Text
             style={styles.successTextTitle}
-            className="font-poppins-semibold my-2">
+            className="text-base my-1  capitalize font-poppins-semibold text-black">
             {title}
           </Text>
-          <Text style={styles.successText}>{subTitle}</Text>
-          <View className="flex-row justify-between  w-full ">
+          <Text className="text-sm text-start capitalize text-gray-500 mb-4 font-poppins-regular">
+            {subTitle}
+          </Text>
+          <View className="flex-col justify-center items-center gap-y-2 w-full ">
             <TouchableOpacity
-              className="bg-red-200  px-4 py-3 rounded-md"
-              onPress={functionFalseButton}>
-              <Text className="font-poppins-semibold text-red-600">
-                {buttonFalseText}
+              className={`px-4 py-3 w-full rounded-md
+              `}
+              style={{backgroundColor: bgTrueText || '#F43F5E'}}
+              onPress={functionTrueButton}>
+              <Text
+                className="font-poppins-semibold capitalize text-center"
+                style={{color: isDarkMode ? WHITE_COLOR : DARK_COLOR}}>
+                {buttonTrueText}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              className="bg-green-200  px-4 py-3 rounded-md"
-              onPress={functionTrueButton}>
-              <Text className="font-poppins-semibold text-green-600">
-                {buttonTrueText}
+              className="w-full  bg-gray-100 border-gray-200 border py-3 rounded-xl items-center"
+              onPress={functionFalseButton}>
+              <Text
+                className="font-poppins-semibold capitalize text-center"
+                style={{color: isDarkMode ? WHITE_COLOR : DARK_COLOR}}>
+                {buttonFalseText}
               </Text>
             </TouchableOpacity>
           </View>
@@ -84,8 +100,7 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     borderRadius: 20,
-    padding: 20,
-    alignItems: 'center',
+    alignItems: 'start',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

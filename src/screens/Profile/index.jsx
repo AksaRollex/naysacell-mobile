@@ -24,7 +24,7 @@ import {HeaderBG, SignOut} from '../../../assets';
 import ProfileForm from './tab/profileForm';
 import {useState} from 'react';
 import ModalProcess from '../../components/ModalProcess';
-import { useMutation, useQuery} from '@tanstack/react-query';
+import {useMutation, useQuery} from '@tanstack/react-query';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from '../../libs/axios';
 import ModalAfterProcess from '../../components/ModalAfterProcess';
@@ -66,7 +66,7 @@ export default function Profile({navigation}) {
         setModalSuccessLogout(true);
         setTimeout(() => {
           setModalSuccessLogout(false);
-          navigation.navigate('loginPage');
+          navigation.navigate('LoginPage');
         }, 2000);
       } catch (error) {
         setErrorMessage(error.response?.data || error.message);
@@ -186,7 +186,9 @@ export default function Profile({navigation}) {
                 height: 1,
               }} // WARNA GARIS BAWAH
               style={{
-                backgroundColor: isDarkMode ? '#18181B' : WHITE_BACKGROUND,
+                backgroundColor: isDarkMode
+                  ? DARK_BACKGROUND
+                  : WHITE_BACKGROUND,
               }} // WARNA BACKGROUND TAB
               labelStyle={{fontFamily: 'Poppins-SemiBold'}}
               activeColor={BLUE_COLOR} // WARNA TAB AKTIF
@@ -220,9 +222,13 @@ export default function Profile({navigation}) {
         <ModalProcess
           modalVisible={modalLogout}
           title={'Apakah Anda Yakin Ingin Keluar?'}
-          url={require('../../../assets/lottie/logout-animation.json')}
+          iconName={'footsteps'}
+          iconColor={'#f43f5e'}
+          iconSize={24}
+          subTitle={'setelah logout, anda akan diarahkan ke halaman login'}
+          bgIcon={'red-50'}
           buttonFalseText={'Batal'}
-          buttonTrueText={'Ya, Keluar'}
+          buttonTrueText={'Keluar'}
           functionFalseButton={cancelLogout}
           functionTrueButton={confirmLogout}
         />
@@ -231,14 +237,20 @@ export default function Profile({navigation}) {
           modalVisible={modalSuccessLogout}
           title={'Logout Berhasil'}
           subTitle={'Anda Akan Dikembalikan Ke Halaman Login'}
-          url={require('../../../assets/lottie/success-animation.json')}
+          icon={'checkmark-done-sharp'}
+          iconColor={'#95bb72'}
+          iconSize={24}
+          bgIcon={'#f0fdf4'}
         />
 
         <ModalAfterProcess
           modalVisible={modalFailedLogout}
           title={'Logout Gagal'}
           subTitle={errorMessage}
-          url={require('../../../assets/lottie/failed-animation.json')}
+          icon={'close-sharp'}
+          iconColor={'#f43f5e'}
+          iconSize={24}
+          bgIcon={'#fef2f2'}
         />
       </View>
     </View>

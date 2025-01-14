@@ -95,12 +95,12 @@ export default function FormUser({route, navigation}) {
       onSuccess: data => {
         queryClient.invalidateQueries(['/master/users/admin']);
         setModalSuccess(true);
-        setTimeout(() => {
-          setModalSuccess(false);
-          navigation.navigate('User', {
-            id: data?.id || null,
-          });
-        }, 2000);
+        // setTimeout(() => {
+        //   setModalSuccess(false);
+        //   navigation.navigate('User', {
+        //     id: data?.id || null,
+        //   });
+        // }, 2000);
         Toast.show({
           type: 'success',
           text1: 'Success',
@@ -245,6 +245,7 @@ export default function FormUser({route, navigation}) {
                     value={value}
                     onChangeText={onChange}
                     onBlur={onBlur}
+                    keyboardType="numeric"
                     editable={!isLoadingData}
                     placeholderTextColor={
                       isDarkMode ? SLATE_COLOR : LIGHT_COLOR
@@ -361,19 +362,19 @@ export default function FormUser({route, navigation}) {
             </Text>
           </TouchableOpacity>
         </View>
-        {/* <ModalAfterProcess
-          url={require('../../../../../../assets/lottie/success-animation.json')}
-          visible={modalSuccess}
-          title={'Berhasil Menyimpan Data'}
-          subTitle={'Pastikan Data Sudah Benar'}
-        />
-        <ModalAfterProcess
-          url={require('../../../../../../assets/lottie/failed-animation.json')}
-          visible={modalFailed}
-          title={'Gagal Menyimpan Data'}
-          subTitle={errorMessage || 'Pastikan Data Sudah Benar'}
-        /> */}
       </View>
+      <ModalAfterProcess
+        url={require('../../../../../../assets/lottie/success-animation.json')}
+        visible={modalSuccess}
+        title={'Berhasil Menyimpan Data'}
+        subTitle={'Pastikan Data Sudah Benar'}
+      />
+      <ModalAfterProcess
+        url={require('../../../../../../assets/lottie/failed-animation.json')}
+        visible={modalFailed}
+        title={'Gagal Menyimpan Data'}
+        subTitle={errorMessage || 'Pastikan Data Sudah Benar'}
+      />
     </>
   );
 }

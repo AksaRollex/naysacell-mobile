@@ -118,16 +118,20 @@ export default function RegisterPage({navigation}) {
                 control={control}
                 rules={{required: 'Nama Harus Diisi'}}
                 render={({field: {onChange, onBlur, value}}) => (
-                  <TextInput
-                    placeholder="Username"
-                    label="name"
-                    style={{fontFamily: 'Poppins-Regular'}}
-                    value={value}
-                    onChangeText={onChange}
-                    onBlur={onBlur}
-                    keyboardType="default"
-                    placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
-                    className="h-12 w-11/12 rounded-3xl mx-auto  px-4  border border-stone-600"></TextInput>
+                  <View className="mx-3">
+                    <TextInput
+                      placeholder="Username"
+                      label="name"
+                      style={{fontFamily: 'Poppins-Regular'}}
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                      keyboardType="default"
+                      placeholderTextColor={
+                        isDarkMode ? SLATE_COLOR : GREY_COLOR
+                      }
+                      className="h-12 w-full rounded-xl mx-auto  px-4  border border-stone-600"></TextInput>
+                  </View>
                 )}
               />
               {errors.name && (
@@ -151,17 +155,21 @@ export default function RegisterPage({navigation}) {
                   },
                 }}
                 render={({field: {onChange, onBlur, value}}) => (
-                  <TextInput
-                    value={value}
-                    onChangeText={onChange}
-                    onBlur={onBlur}
-                    placeholder="email@example.com"
-                    keyboardType="email-address"
-                    style={{fontFamily: 'Poppins-Regular'}}
-                    autoCapitalize="none"
-                    placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
-                    className="h-12 w-11/12 rounded-3xl mx-auto px-4 border border-stone-600"
-                  />
+                  <View className="mx-3">
+                    <TextInput
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                      placeholder="email@example.com"
+                      keyboardType="email-address"
+                      style={{fontFamily: 'Poppins-Regular'}}
+                      autoCapitalize="none"
+                      placeholderTextColor={
+                        isDarkMode ? SLATE_COLOR : GREY_COLOR
+                      }
+                      className="h-12 w-full rounded-xl mx-auto px-4 border border-stone-600"
+                    />
+                  </View>
                 )}
               />
               {errors.email && (
@@ -179,17 +187,21 @@ export default function RegisterPage({navigation}) {
                   required: 'Alamat Harus Diisi',
                 }}
                 render={({field: {onChange, onBlur, value}}) => (
-                  <TextInput
-                    value={value}
-                    onChangeText={onChange}
-                    onBlur={onBlur}
-                    placeholder="Alamat"
-                    keyboardType="default"
-                    style={{fontFamily: 'Poppins-Regular'}}
-                    autoCapitalize="none"
-                    placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
-                    className="h-12 w-11/12 rounded-3xl mx-auto px-4 border border-stone-600"
-                  />
+                  <View className="mx-3">
+                    <TextInput
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                      placeholder="Alamat"
+                      keyboardType="default"
+                      style={{fontFamily: 'Poppins-Regular'}}
+                      autoCapitalize="none"
+                      placeholderTextColor={
+                        isDarkMode ? SLATE_COLOR : GREY_COLOR
+                      }
+                      className="h-12 w-full rounded-xl mx-auto px-4 border border-stone-600"
+                    />
+                  </View>
                 )}
               />
               {errors.address && (
@@ -211,16 +223,20 @@ export default function RegisterPage({navigation}) {
                   },
                 }}
                 render={({field: {onChange, onBlur, value}}) => (
-                  <TextInput
-                    value={value}
-                    onChangeText={onChange}
-                    onBlur={onBlur}
-                    placeholder="Nomor Telepon"
-                    style={{fontFamily: 'Poppins-Regular'}}
-                    keyboardType="numeric"
-                    placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
-                    className="h-12 w-11/12 rounded-3xl mx-auto px-4 border border-stone-600"
-                  />
+                  <View className="mx-3">
+                    <TextInput
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                      placeholder="Nomor Telepon"
+                      style={{fontFamily: 'Poppins-Regular'}}
+                      keyboardType="numeric"
+                      placeholderTextColor={
+                        isDarkMode ? SLATE_COLOR : GREY_COLOR
+                      }
+                      className="h-12 w-full rounded-xl px-4 border border-stone-600"
+                    />
+                  </View>
                 )}
               />
               {errors.phone && (
@@ -242,7 +258,7 @@ export default function RegisterPage({navigation}) {
                   },
                 }}
                 render={({field: {onChange, onBlur, value}}) => (
-                  <View className="relative">
+                  <View className="relative mx-3">
                     <TextInput
                       value={value}
                       onChangeText={onChange}
@@ -253,7 +269,7 @@ export default function RegisterPage({navigation}) {
                         isDarkMode ? SLATE_COLOR : GREY_COLOR
                       }
                       keyboardType="numeric"
-                      className="h-12 w-11/12 rounded-3xl mx-auto px-4 border border-stone-600"
+                      className="h-12 w-full rounded-xl mx-auto px-4 border border-stone-600"
                       secureTextEntry={showPassword}
                     />
                     <TouchableOpacity
@@ -261,7 +277,7 @@ export default function RegisterPage({navigation}) {
                       style={{
                         position: 'absolute',
                         top: '50%',
-                        right: 30,
+                        right: 10,
                         transform: [{translateY: -12}],
                       }}>
                       {showPassword ? <Eye /> : <EyeCrossed />}
@@ -287,7 +303,7 @@ export default function RegisterPage({navigation}) {
                       value === password || 'Password tidak cocok',
                   }}
                   render={({field: {onChange, onBlur, value}}) => (
-                    <View className="relative">
+                    <View className="relative mx-3">
                       <TextInput
                         value={value}
                         onChangeText={onChange}
@@ -299,7 +315,7 @@ export default function RegisterPage({navigation}) {
                           isDarkMode ? SLATE_COLOR : GREY_COLOR
                         }
                         secureTextEntry={showConfirmPassword}
-                        className="h-12 w-11/12 rounded-3xl mx-auto px-4 border border-stone-600"
+                        className="h-12 w-full rounded-xl mx-auto px-4 border border-stone-600"
                       />
                       <TouchableOpacity
                         onPress={() =>
@@ -308,7 +324,7 @@ export default function RegisterPage({navigation}) {
                         style={{
                           position: 'absolute',
                           top: '50%',
-                          right: 30,
+                          right: 10,
                           transform: [{translateY: -12}],
                         }}>
                         {showConfirmPassword ? <Eye /> : <EyeCrossed />}
@@ -371,19 +387,21 @@ export default function RegisterPage({navigation}) {
                   </View>
                 </View>
               </View>
-              <TouchableOpacity
-                className="w-11/12 rounded-3xl mx-auto px-4 h-12 items-center justify-center"
-                style={{
-                  backgroundColor: BLUE_COLOR,
-                  opacity: isLoading ? 0.7 : 1,
-                }}
-                onPress={handleSubmit(onSubmit)}
-                disabled={isLoading}>
-                <Text className="text-white text-md font-poppins-bold">
-                  {isLoading ? 'MENDAFTAR...' : 'DAFTAR'}
-                </Text>
-              </TouchableOpacity>
             </View>
+              <View className="mx-3">
+                <TouchableOpacity
+                  className="w-full rounded-xl px-4 h-12 items-center justify-center"
+                  style={{
+                    backgroundColor: BLUE_COLOR,
+                    opacity: isLoading ? 0.7 : 1,
+                  }}
+                  onPress={handleSubmit(onSubmit)}
+                  disabled={isLoading}>
+                  <Text className="text-white text-md font-poppins-bold">
+                    {isLoading ? 'MENDAFTAR...' : 'DAFTAR'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
           </View>
           {/* CLOSE FORM */}
 
@@ -391,7 +409,7 @@ export default function RegisterPage({navigation}) {
           <View className="flex-row items-center justify-center my-8 ">
             <Text
               style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}
-              className="font-poppins-regular">
+              className="font-poppins-regular capitalize">
               Sudah punya akun ?
             </Text>
             <TouchableOpacity onPress={() => navigation.navigate('loginPage')}>
@@ -432,6 +450,10 @@ export default function RegisterPage({navigation}) {
       <ModalAfterProcess
         url={require('../../../assets/lottie/failed-animation.json')}
         modalVisible={modalTerms}
+        icon={'close-sharp'}
+        iconColor={'#F44336'}
+        iconSize={30}
+        bgIcon={'#fef2f2'}
         title="Centang Syarat & Ketentuan"
         subTitle="Harus centang syarat dan ketentuan terlebih dahulu untuk melanjutkan pendaftaran"
       />

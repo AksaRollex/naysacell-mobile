@@ -17,7 +17,7 @@ export default function Header({title, subtitle}) {
         <Text className=" text-white font-poppins-semibold text-base  my-1 ">
           {title}
         </Text>
-        <Text className="text-white text-sm font-poppins-regular">
+        <Text className="text-white text-sm font-poppins-regular text-end  items-end">
           {subtitle}
         </Text>
       </View>

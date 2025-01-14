@@ -235,7 +235,7 @@ export default function ProfileForm({route}) {
       <ScrollView refreshControl={<RefreshControl onRefresh={onRefresh} />}>
         {data && (
           <View>
-            <View className="px-4 py-2">
+            {/* <View className="px-4 py-2">
               <Text
                 className="font-poppins-semibold my-1"
                 style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
@@ -287,7 +287,7 @@ export default function ProfileForm({route}) {
                   </Text>
                 </View>
               </View>
-            </View>
+            </View> */}
 
             <View className="px-4 py-2">
               <Controller
@@ -341,6 +341,7 @@ export default function ProfileForm({route}) {
                     <TextInput
                       value={formData.phone}
                       onBlur={onBlur}
+                      keyboardType='phone-pad'
                       onChangeText={value => handleInputChange('phone', value)}
                       editable={isEditing}
                       placeholderTextColor={

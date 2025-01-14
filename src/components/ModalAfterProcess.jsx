@@ -1,74 +1,38 @@
-import {StyleSheet, Text, View, Modal} from 'react-native';
+import {Text, View, Modal, useColorScheme} from 'react-native';
 import React from 'react';
-import LottieView from 'lottie-react-native';
-
-const baseRem = 16;
-const rem = size => size * baseRem;
+import IonIcons from 'react-native-vector-icons/Ionicons';
+import { DARK_COLOR, WHITE_COLOR } from '../utils/const';
 export default function ModalAfterProcess({
-  url,
   modalVisible,
   title,
   subTitle,
+  icon,
+  iconColor,
+  iconSize,
+  bgIcon,
 }) {
+  const isDarkMode = useColorScheme() === 'dark';
   return (
     <Modal animationType="fade" transparent={true} visible={modalVisible}>
-      <View style={styles.modalOverlay}>
-        <View style={styles.modalContent}>
-          <LottieView source={url} autoPlay loop={true} style={styles.lottie} />
-          <Text
-            style={styles.successTextTitle}
-            className="font-poppins-semibold my-2">
+      <View
+        className="flex-1 justify-center items-center "
+        style={{backgroundColor: 'rgba(0, 0, 0, 0.1)'}}>
+        <View
+          className="w-80 rounded-2xl p-4 items-start shadow-2xl"
+          style={{backgroundColor : isDarkMode ? '#262626' : '#f8f8f8'}}>
+          <View
+            className={`w-12 h-12 rounded-full justify-center items-center`}
+            style={{backgroundColor: bgIcon || '#fef2f2'}}>
+            <IonIcons size={iconSize} color={iconColor} name={icon} />
+          </View>
+          <Text className="text-base my-1 capitalize font-poppins-semibold" style={{ color : isDarkMode ? WHITE_COLOR : DARK_COLOR }}>
             {title}
           </Text>
-          <Text style={styles.successText}>{subTitle}</Text>
+          <Text className="text-sm text-start capitalize font-poppins-regular" style={{ color : isDarkMode ? WHITE_COLOR : DARK_COLOR }}>
+            {subTitle}
+          </Text>
         </View>
       </View>
     </Modal>
   );
 }
-
-const styles = StyleSheet.create({
-  lottie: {
-    width: 250,
-    height: 250,
-  },
-  successTextTitle: {
-    textAlign: 'center',
-    color: 'black',
-    fontSize: rem(1.3),
-  },
-  successText: {
-    fontSize: 14,
-    textAlign: 'center',
-    fontFamily: 'Poppins-Regular',
-    color: 'black',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 20,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-    width: '80%',
-    maxWidth: 400,
-  },
-  successText: {
-    fontSize: 14,
-    textAlign: 'center',
-    fontFamily: 'Poppins-Regular',
-    color: 'black',
-  },
-});

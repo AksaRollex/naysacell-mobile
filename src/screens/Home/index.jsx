@@ -23,7 +23,9 @@ import {
   windowWidth,
 } from '../../utils/const';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
-import {useQueryClient} from '@tanstack/react-query';
+import {useQueryClient, useMutation} from '@tanstack/react-query';
+import IonIcons from 'react-native-vector-icons/Ionicons';
+
 const getGreeting = () => {
   const hour = new Date().getHours();
   if (hour >= 5 && hour < 12) return 'Selamat Pagi';
@@ -37,6 +39,7 @@ export default function HomeScreen({navigation}) {
   const [greeting, setGreeting] = useState(getGreeting());
   const [data, setData] = useState([]);
   const [saldo, setSaldo] = useState('');
+  const [idUser, setIdUser] = useState('');
 
   const queryClient = useQueryClient();
 
@@ -85,7 +88,7 @@ export default function HomeScreen({navigation}) {
         });
     });
 
-    return unsubscribe; 
+    return unsubscribe;
   }, [navigation]);
 
   return (
@@ -163,15 +166,31 @@ export default function HomeScreen({navigation}) {
                 borderBottomColor: '#404040',
                 elevation: 0.5,
               }}>
-              {setSaldo && (
-                <Text
-                  style={{
-                    color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-                  }}
-                  className="font-poppins-regular">
-                  {rupiah(saldo?.balance)}
-                </Text>
-              )}
+              <View className="flex-row gap-x-2 h-full justify-center items-center">
+                <IonIcons
+                  name="wallet"
+                  size={30}
+                  color={isDarkMode ? '#138EE9' : '#138EE9'}
+                />
+                <View className="flex-col h-full">
+                  <Text
+                    style={{
+                      color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+                    }}
+                    className="font-poppins-regular">
+                    Saldo Anda
+                  </Text>
+                  {setSaldo && (
+                    <Text
+                      style={{
+                        color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+                      }}
+                      className="font-poppins-regular text-base">
+                      {rupiah(saldo?.balance)}
+                    </Text>
+                  )}
+                </View>
+              </View>
               <View
                 style={{
                   flexDirection: 'row',
@@ -181,19 +200,19 @@ export default function HomeScreen({navigation}) {
                   style={{
                     flexDirection: 'column',
                     alignItems: 'center',
-                    rowGap: 10,
+                    rowGap: 3,
                   }}
                   onPress={() => navigation.navigate('Deposit')}>
                   <AddIkon
-                    width={24}
-                    height={24}
+                    width={26}
+                    height={26}
                     fill={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
                   />
                   <Text
                     style={{
                       color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
                     }}
-                    className="font-poppins-semibold">
+                    className="font-poppins-medium">
                     Deposit
                   </Text>
                 </TouchableOpacity>
@@ -258,7 +277,7 @@ export default function HomeScreen({navigation}) {
             </View>
           </View>
           {/* GAME */}
-          <View
+          {/* <View
             style={{
               marginHorizontal: HORIZONTAL_MARGIN,
               backgroundColor: isDarkMode ? '#262626' : '#f8f8f8',
@@ -311,7 +330,7 @@ export default function HomeScreen({navigation}) {
                 );
               })}
             </View>
-          </View>
+          </View> */}
         </View>
       </ScrollView>
     </>

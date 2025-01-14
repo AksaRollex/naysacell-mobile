@@ -4,7 +4,9 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Image,
   useColorScheme,
+  ImageBackground,
 } from 'react-native';
 import React, {useState} from 'react';
 import {
@@ -26,9 +28,9 @@ import {useMutation, useQueryClient} from '@tanstack/react-query';
 import ModalAfterProcess from '../../components/ModalAfterProcess';
 rem = multiplier => baseRem * multiplier;
 const baseRem = 16;
+
 export default function LoginPage() {
   const isDarkMode = useColorScheme() === 'dark';
-
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
   const [isSecure, setIsSecure] = useState(true);
@@ -60,142 +62,182 @@ export default function LoginPage() {
       }, 2000);
     },
   });
-
   return (
-    <View
-      style={{
-        backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
-      }}
-      className="h-full">
-      <Header title="Masuk" subtitle="Silahkan Login Ke NAYSA CELL" />
-
-      {/* OPEN FORM */}
-      <View>
-        <View className="mt-6">
-          <Controller
-            name="email"
-            control={control}
-            rules={{
-              required: 'Email Harus Diisi',
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: 'Email tidak valid',
-              },
-            }}
-            render={({field: {onChange, onBlur, value}}) => (
-              <TextInput
-                placeholder="Masukkan Email"
-                label="Email"
-                color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
-                placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
-                style={{fontFamily: 'Poppins-Regular'}}
-                className="h-12 w-11/12 rounded-3xl mx-auto  px-4 bg-[#f8f8f8 ] border border-stone-600"
-                onBlur={onBlur}
-                value={value}
-                onChangeText={onChange}></TextInput>
-            )}
-          />
-          {errors.email && (
-            <Text
-              className="mt-1 text-red-400 font-poppins-regular"
-              style={{marginLeft: rem(2)}}>
-              {errors.email.message}
+    <View>
+      <ImageBackground
+        source={require('../../../assets/images/headerBg.jpg')}
+        className="w-full h-[200px] items-start justify-start ">
+        <View className="p-4">
+          <View className="flex-row justify-start items-center ">
+            <Image
+              source={require('../../../assets/images/logo.png')}
+              className="w-10 h-10 "
+            />
+            <Text className="text-xl mx-2 font-poppins-bold text-white">
+              NAYSA CELL
             </Text>
-          )}
-        </View>
-        <View className="mt-6">
-          <Controller
-            name="password"
-            control={control}
-            rules={{required: 'Password Harus Diisi'}}
-            render={({field: {onChange, onBlur, value}}) => (
-              <View className="relative">
-                <TextInput
-                  placeholder="Masukkan Password"
-                  label="Password"
-                  style={{fontFamily: 'Poppins-Regular'}}
-                  color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
-                  placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
-                  className="h-12 w-11/12 rounded-3xl mx-auto px-4 pr-10 border border-stone-600"
-                  onBlur={onBlur}
-                  value={value}
-                  keyboardType="number-pad"
-                  onChangeText={onChange}
-                  secureTextEntry={isSecure}
-                />
-                <TouchableOpacity
-                  onPress={() => setIsSecure(!isSecure)}
-                  style={{
-                    position: 'absolute',
-                    right: 30,
-                    top: '50%',
-                    transform: [{translateY: -12}],
-                  }}>
-                  {isSecure ? <Eye /> : <EyeCrossed />}
-                </TouchableOpacity>
-              </View>
-            )}
-          />
-          {errors.password && (
-            <Text
-              className="mt-1 text-red-400 font-poppins-regular"
-              style={{marginLeft: rem(2)}}>
-              {errors.password.message}
+          </View>
+          <View className="justify-start flex-col items-start my-5 ">
+            <Text className="capitalize text-2xl font-poppins-semibold text-white">
+              Selamat Datang
             </Text>
-          )}
-        </View>
+            <Text className="capitalize text-xs font-poppins-medium text-white">
+              Aplikasi naysa cell menyediakan layanan topup pulsa & paket data
+              dan uang elektronik
+            </Text>
+          </View>
 
-        <TouchableOpacity onPress={() => navigation.navigate('forgotPassword')}>
-          <Text
-            className="text-right mx-6 my-8 text-black text-md"
-            style={{color: BLUE_COLOR, fontFamily: 'Poppins-Regular'}}>
-            Lupa Kata Sandi?
-          </Text>
-        </TouchableOpacity>
-        <View className="flex">
+          <View className="flex-row items-start justify-start">
+            <Text className="font-poppins-semibold text-white">Belum punya akun ?</Text>
+            <TouchableOpacity
+              className="rounded-md"
+              onPress={() => navigation.navigate('registerPage')}>
+              <Text className="text-white underline font-poppins-semibold mx-1">
+                Daftar
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ImageBackground>
+      <View
+        style={{
+          backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
+        }}
+        className="h-full">
+        {/* OPEN FORM */}
+        <View>
+          <View className="mt-6">
+            <Controller
+              name="email"
+              control={control}
+              rules={{
+                required: 'Email Harus Diisi',
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: 'Email tidak valid',
+                },
+              }}
+              render={({field: {onChange, onBlur, value}}) => (
+                <View className="mx-3 justify-center flex-col items-start">
+                  <Text
+                    className="font-poppins-regular"
+                    style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                    Email
+                  </Text>
+                  <TextInput
+                    placeholder="Masukkan Email"
+                    label="Email"
+                    color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+                    placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
+                    style={{fontFamily: 'Poppins-Regular'}}
+                    className="h-12 w-full rounded-xl   px-4 bg-[#f8f8f8 ] border border-stone-600"
+                    onBlur={onBlur}
+                    value={value}
+                    onChangeText={onChange}></TextInput>
+                </View>
+              )}
+            />
+            {errors.email && (
+              <Text
+                className="mt-1 text-red-400 font-poppins-regular"
+                style={{marginLeft: rem(2)}}>
+                {errors.email.message}
+              </Text>
+            )}
+          </View>
+          <View className="mt-6">
+            <Controller
+              name="password"
+              control={control}
+              rules={{required: 'Password Harus Diisi'}}
+              render={({field: {onChange, onBlur, value}}) => (
+                <View className="relative mx-3">
+                  <Text
+                    className="font-poppins-regular "
+                    style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                    Password
+                  </Text>
+                  <TextInput
+                    placeholder="Masukkan Password"
+                    label="Password"
+                    style={{fontFamily: 'Poppins-Regular'}}
+                    color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+                    placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
+                    className="h-12 w-full rounded-xl mx-auto px-4 pr-10 border border-stone-600"
+                    onBlur={onBlur}
+                    value={value}
+                    keyboardType="number-pad"
+                    onChangeText={onChange}
+                    secureTextEntry={isSecure}
+                  />
+                  <TouchableOpacity
+                    onPress={() => setIsSecure(!isSecure)}
+                    style={{
+                      position: 'absolute',
+                      right: 10,
+                      top: '65%',
+                      transform: [{translateY: -12}],
+                    }}>
+                    {isSecure ? <Eye /> : <EyeCrossed />}
+                  </TouchableOpacity>
+                </View>
+              )}
+            />
+            {errors.password && (
+              <Text
+                className="mt-1 text-red-400 font-poppins-regular"
+                style={{marginLeft: rem(2)}}>
+                {errors.password.message}
+              </Text>
+            )}
+          </View>
+
           <TouchableOpacity
-            className="w-11/12 rounded-3xl mx-auto px-4 h-12 items-center justify-center"
-            style={{
-              backgroundColor: BLUE_COLOR,
-              opacity: isLoading ? 0.7 : 1,
-            }}
-            disabled={isLoading}
-            onPress={handleSubmit(login)}>
-            <Text className="text-white text-md font-poppins-bold">
-              {isLoading ? 'LOADING...' : 'MASUK'}
+            onPress={() => navigation.navigate('ForgotPassScreen')}>
+            <Text
+              className="text-right my-6 mx-3  text-black text-md"
+              style={{color: BLUE_COLOR, fontFamily: 'Poppins-Regular'}}>
+              Lupa Kata Sandi?
+            </Text>
+          </TouchableOpacity>
+          <View className="flex mx-3">
+            <TouchableOpacity
+              className="w-full rounded-xl mx-auto px-4 h-12 items-center justify-center"
+              style={{
+                backgroundColor: BLUE_COLOR,
+                opacity: isLoading ? 0.7 : 1,
+              }}
+              disabled={isLoading}
+              onPress={handleSubmit(login)}>
+              <Text className="text-white text-md font-poppins-bold">
+                {isLoading ? 'LOADING...' : 'MASUK'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('BantuanLogin')}
+            className="my-6">
+            <Text
+              className="text-center capitalize text-md font-poppins-regular"
+              style={{color: BLUE_COLOR}}>
+              Butuh bantuan ?
             </Text>
           </TouchableOpacity>
         </View>
-        <View className="flex-row items-center justify-center my-8 ">
-          <Text
-            style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}
-            className="mx-1 font-poppins-regular">
-            Belum punya akun ?
-          </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('registerPage')}>
-            <Text style={{color: BLUE_COLOR, fontFamily: 'Poppins-Regular'}}>
-              Daftar
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity onPress={() => navigation.navigate('bantuanLogin')}>
-          <Text
-            className="text-center  text-md font-poppins-regular"
-            style={{color: BLUE_COLOR}}>
-            Butuh bantuan?
-          </Text>
-        </TouchableOpacity>
-      </View>
-      {/* CLOSE FORM */}
+        {/* CLOSE FORM */}
 
-      <ModalAfterProcess
-        modalVisible={modalVisible}
-        title="Login Gagal"
-        subTitle={
-          errorMessage || 'Email atau Password Salah, Silahkan Coba Lagi !'
-        }
-        url={require('../../../assets/lottie/failed-animation.json')}
-      />
+        <ModalAfterProcess
+          modalVisible={modalVisible}
+          title="Login Gagal"
+          icon={'close-sharp'}
+          iconColor={'#f43f5e'}
+          iconSize={22}
+          subTitle={
+            errorMessage || 'Email atau Password Salah, Silahkan Coba Lagi !'
+          }
+          url={require('../../../assets/lottie/failed-animation.json')}
+        />
+      </View>
     </View>
   );
 }

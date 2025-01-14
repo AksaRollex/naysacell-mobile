@@ -50,7 +50,11 @@ export default function Prabayar({navigation}) {
         className=" flex-row items-center rounded-md justify-between p-[14px] min-w-[70px]"
         style={{backgroundColor: isDarkMode ? '#262626' : '#f8f8f8'}}>
         <View className="flex-row items-center">
-          <IonIcons name="apps" size={20} color={isDarkMode ? DARK_COLOR : LIGHT_COLOR} />
+          <IonIcons
+            name="apps"
+            size={20}
+            color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+          />
           <Text
             className=" font-poppins-regular mx-2 text-sm"
             style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
@@ -191,8 +195,10 @@ export default function Prabayar({navigation}) {
     FailedOverlayModal,
   } = useDelete({
     onSuccess: () => {
-      queryClient.invalidateQueries('/master/products/prabayar');
-      navigation.navigate('Prabayar');
+      setTimeout(() => {
+        queryClient.invalidateQueries('/master/products/prabayar');
+        navigation.navigate('Prabayar');
+      }, 2000);
     },
     onError: error => {
       console.log(error);
@@ -231,7 +237,7 @@ export default function Prabayar({navigation}) {
                 source={require('../../../../../../assets/images/logo.png')}
                 className="w-12 h-12 rounded-full"
               />
-              <View className="flex-col  w-72 items-start justify-start ">
+              <View className="flex-col  w-64 items-start justify-start ">
                 <Text
                   className="font-poppins-medium text-base "
                   style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>

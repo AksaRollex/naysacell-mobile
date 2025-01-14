@@ -148,16 +148,13 @@ export default function FormOrder({route, navigation}) {
                       color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR,
                       fontFamily: 'Poppins-Regular',
                     },
-                    // Tambahkan style untuk item
                     item: {
                       paddingHorizontal: 10,
                       paddingVertical: 8,
                     },
-                    // Style untuk item yang terpilih
                     selectedItem: {
-                      backgroundColor: BLUE_COLOR + '20', // Memberi background color dengan opacity
+                      backgroundColor: BLUE_COLOR + '20', 
                     },
-                    // Style untuk text item yang terpilih
                     selectedItemText: {
                       color: BLUE_COLOR,
                       fontWeight: 'bold',
@@ -167,11 +164,9 @@ export default function FormOrder({route, navigation}) {
                     primary: BLUE_COLOR,
                     success: BLUE_COLOR,
                   }}
-                  // Tambahkan prop ini untuk mengkustomisasi icon
                   selectedIconComponent={
                     <Icon name="check" size={20} color={BLUE_COLOR} />
                   }
-                  // Posisi icon check di sebelah kanan
                   iconRight
                 />
                 {setError.order_status && (

@@ -9,14 +9,11 @@ import React from 'react';
 import {
   DARK_BACKGROUND,
   DARK_COLOR,
-  GREY_COLOR,
   LIGHT_COLOR,
   REGULAR_FONT,
   SLATE_COLOR,
   WHITE_BACKGROUND,
-  WHITE_COLOR,
 } from '../../utils/const';
-import {XClose} from '../../../assets';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 
 export default function Input({
@@ -55,7 +52,7 @@ export default function Input({
         <TouchableOpacity
           style={{position: 'absolute', right: 10}}
           onPress={onDelete}>
-          <IonIcons name="close" size={20} color={LIGHT_COLOR} />
+          <IonIcons name="close" size={20} color={isDarkMode ? DARK_COLOR : LIGHT_COLOR} />
         </TouchableOpacity>
       )}
     </View>
