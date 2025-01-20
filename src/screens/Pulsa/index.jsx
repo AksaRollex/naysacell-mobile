@@ -23,6 +23,7 @@ import {Controller, useForm} from 'react-hook-form';
 import {CheckProduct} from '../../../assets';
 import axios from '../../libs/axios';
 import {useMutation} from '@tanstack/react-query';
+import ModalAfterProcess from '../../components/ModalAfterProcess';
 
 export default function Pulsa({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
@@ -30,6 +31,8 @@ export default function Pulsa({navigation}) {
   const [selectItem, setSelectedItem] = useState('');
   const [nomorTujuan, setNomorTujuan] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [modalFailed, setModalFailed] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const pulsaRef = useRef();
   const dataRef = useRef();
@@ -118,7 +121,6 @@ export default function Pulsa({navigation}) {
       .then(res => {
         setNameCustomer(res.data.user?.name);
         setUserId(res.data.user?.id);
-        console.log('User data:', res.data.user);
       })
       .catch(err => {
         console.error('Error fetching data:', err);
@@ -131,16 +133,6 @@ export default function Pulsa({navigation}) {
         Alert.alert('Error', 'User data tidak ditemukan');
         return;
       }
-
-      console.log('Sending data:', {
-        product_id: selectItem?.id,
-        product_name: selectItem?.product_name,
-        product_price: selectItem?.product_price,
-        customer_no: nomorTujuan,
-        quantity: 1,
-        customer_name: nameCustomer,
-        user_id: userId, 
-      });
 
       const response = await axios.post('/auth/submit-product', {
         product_id: selectItem?.id,
@@ -158,15 +150,22 @@ export default function Pulsa({navigation}) {
         transaction_data: response.data.data,
       });
     } catch (error) {
-      console.log('Full error:', error);
-      console.log('Error response:', error.response?.data);
-      console.log('Error status:', error.response?.status);
-      console.log('Error headers:', error.response?.headers);
+      let errorMsg = error.response?.data?.message || 'Terjadi kesalahan';
 
-      Alert.alert(
-        'Error',
-        error.response?.data?.message || 'Terjadi kesalahan pada server',
-      );
+      if (error.response?.data?.details) {
+        const details = error.response.data.details;
+        errorMsg += `\nSaldo: ${details.saldo_sekarang}\nTotal: ${details.total_pembelian}\nKurang: ${details.kekurangan_saldo}`;
+      }
+
+      if (error.response?.data?.suggestion) {
+        errorMsg += `\n${error.response.data.suggestion}`;
+      }
+
+      setErrorMessage(errorMsg);
+      setModalFailed(true);
+      setTimeout(() => {
+        setModalFailed(false);
+      }, 2000);
     }
   };
 
@@ -174,7 +173,6 @@ export default function Pulsa({navigation}) {
 
   const productPulsa = ({item}) => {
     const isSelected = selectItem && selectItem.id === item.id;
-    console.log(item);
     return (
       <TouchableOpacity
         className={`p-2 border rounded-xl m-1 relative ${
@@ -189,7 +187,7 @@ export default function Pulsa({navigation}) {
           <Text className="font-poppins-semibold text-base text-white">
             {item.product_name}
           </Text>
-          <View className="flex-col w-full">
+          <View className="w-full">
             <View className="">
               <Text className="font-poppins-semibold text-xs">
                 Deskripsi : {item.product_desc}
@@ -297,7 +295,6 @@ export default function Pulsa({navigation}) {
                 product_provider: phoneOperator,
               }}
               onItemPress={selectedItem => {
-                console.log(selectedItem);
                 setSelectedItem(selectedItem);
               }}
             />
@@ -312,7 +309,6 @@ export default function Pulsa({navigation}) {
                 product_provider: phoneOperator,
               }}
               onItemPress={selectedItem => {
-                console.log(selectedItem);
                 setSelectedItem(selectedItem);
               }}
             />
@@ -379,6 +375,15 @@ export default function Pulsa({navigation}) {
             </View>
           )}
         </BottomModal>
+
+        <ModalAfterProcess
+          modalVisible={modalFailed}
+          title={'Kesalahan Pada Pembayaran'}
+          subTitle={errorMessage || 'Saldo Tidak Mencukupi'}
+          icon={'close-sharp'}
+          iconColor={'#f43f5e'}
+          iconSize={24}
+        />
       </View>
     </>
   );

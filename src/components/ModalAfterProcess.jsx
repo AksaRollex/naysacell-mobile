@@ -21,7 +21,7 @@ export default function ModalAfterProcess({
           className="w-80 rounded-2xl p-4 items-start shadow-2xl"
           style={{backgroundColor : isDarkMode ? '#262626' : '#f8f8f8'}}>
           <View
-            className={`w-12 h-12 rounded-full justify-center items-center`}
+            className={`w-12 h-12 rounded-full justify-center items-center `}
             style={{backgroundColor: bgIcon || '#fef2f2'}}>
             <IonIcons size={iconSize} color={iconColor} name={icon} />
           </View>

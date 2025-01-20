@@ -17,7 +17,6 @@ import IonIcons from 'react-native-vector-icons/Ionicons';
 import HomeScreen from '../Home/index';
 import Pulsa from '../Pulsa';
 import LayananPLN from '../Pln';
-import SuccessNotif from '../Notifikasi/SuccessNotif';
 import PLNPascaBayar from '../Pln/pascabayar';
 import PLNPrabayar from '../Pln/prabayar';
 import DompetElektronik from '../Dompet_elektronik';
@@ -29,6 +28,7 @@ import Transaksi from '../Transaction';
 import Deposit from '../Deposit';
 import HistoriDeposit from '../Deposit/HistoryDeposit';
 import SuccessNotifDeposit from '../Notifikasi/SuccessNotifDeposit';
+import SuccessNotif from '../Notifikasi/SuccessNotif';
 import Notifikasi from '../Notifikasi/Notifikasi';
 import Shopeepay from '../Dompet_elektronik/ShopeePay';
 import Dana from '../Dompet_elektronik/Dana';
@@ -85,6 +85,12 @@ const CustomTabBar = ({state, descriptors, navigation}) => {
     'FormAdmin',
     'FormPrabayar',
     'FormOrder',
+    'SuccessNotif',
+    'Pulsa',
+    'Shopeepay',
+    'Dana',
+    'OVO',
+    'GoPay',
   ];
 
   if (hideOnScreens.includes(routeName)) {
@@ -264,7 +270,13 @@ export default function MainScreen() {
                 'FormAdmin',
                 'FormPrabayar',
                 'FormOrder',
-                'Order'
+                'Order',
+                'SuccessNotif',
+                'Pulsa',
+                'Shopeepay',
+                'Dana',
+                'OVO',
+                'GoPay',
               ];
 
               if (hideOnScreens.includes(routeName)) {

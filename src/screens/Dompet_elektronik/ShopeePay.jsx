@@ -41,26 +41,23 @@ export default function Shopeepay({navigation}) {
     return (
       <View className="flex-row">
         <TouchableOpacity
-          className={`p-2 border  rounded-xl m-1 w-full relative ${
+          className={`p-2 border rounded-xl w-full m-1 relative ${
             isSelected
               ? 'border-green-500 bg-[#2a2a2a]'
               : 'border-gray-500 bg-[#404040]'
           }`}
-          style={{backgroundColor: isDarkMode ? '#404040' : '#f8f8f8'}}
           onPress={() => {
-            setSelectedItem(item);
+            setSelectedItem(isSelected ? null : item);
           }}>
           <View className="items-start flex-col ">
-            <Text
-              className="font-poppins-semibold text-base "
-              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+            <Text className="font-poppins-semibold text-base text-white">
               {item.product_name}
             </Text>
             <View className="w-full">
               <View className="justify-items-end items-end">
                 <Text
                   className="font-poppins-regular text-sm text-end "
-                  style={{color: BLUE_COLOR}}>
+                  style={{color: WHITE_COLOR}}>
                   {rupiah(item.product_price)}
                 </Text>
               </View>
@@ -69,7 +66,7 @@ export default function Shopeepay({navigation}) {
           {isSelected && (
             <CheckProduct
               width={20}
-              style={{position: 'absolute', right: 7, bottom: 2}}
+              style={{position: 'absolute', right: 7, top: 2}}
             />
           )}
         </TouchableOpacity>
@@ -101,7 +98,7 @@ export default function Shopeepay({navigation}) {
           ref={paginateRef}
           payload={{
             product_category: 'E-Money',
-            product_provider: 'SHOPEE PAY',
+            product_provider: 'ShopeePay',
           }}
         />
 

@@ -52,7 +52,7 @@ export default function Gopay({navigation}) {
               <Text
                 className="font-poppins-regular text-sm text-end "
                 style={{color: WHITE_COLOR}}>
-                {rupiah(item.product_buyer_price)}
+                {rupiah(item.product_price)}
               </Text>
             </View>
           </View>
@@ -85,7 +85,7 @@ export default function Gopay({navigation}) {
           ref={paginateRef}
           payload={{
             product_category: 'E-Money',
-            product_provider: 'GO PAY',
+            product_provider: 'Gopay',
           }}
         />
 

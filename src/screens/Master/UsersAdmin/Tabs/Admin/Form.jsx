@@ -23,6 +23,7 @@ import axios from '../../../../../libs/axios';
 import {Eye, EyeCrossed} from '../../../../../../assets';
 import BackButton from '../../../../../components/BackButton';
 import ModalAfterProcess from '../../../../../components/ModalAfterProcess';
+
 export default function FormAdmin({route, navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
   const queryClient = useQueryClient();
@@ -359,18 +360,18 @@ export default function FormAdmin({route, navigation}) {
             </Text>
           </TouchableOpacity>
         </View>
-        {/* <ModalAfterProcess
+        <ModalAfterProcess
           url={require('../../../../../../assets/lottie/success-animation.json')}
-          visible={modalSuccess}
+          modalVisible={modalSuccess}
           title={'Berhasil Menyimpan Data'}
           subTitle={'Pastikan Data Sudah Benar'}
         />
         <ModalAfterProcess
           url={require('../../../../../../assets/lottie/failed-animation.json')}
-          visible={modalFailed}
+          modalVisible={modalFailed}
           title={'Gagal Menyimpan Data'}
           subTitle={errorMessage || 'Pastikan Data Sudah Benar'}
-        /> */}
+        />
       </View>
     </>
   );

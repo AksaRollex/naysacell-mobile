@@ -52,7 +52,7 @@ export default function Dana({navigation}) {
               <Text
                 className="font-poppins-regular text-sm text-end "
                 style={{color: WHITE_COLOR}}>
-                {rupiah(item.product_buyer_price)}
+                {rupiah(item.product_price)}
               </Text>
             </View>
           </View>

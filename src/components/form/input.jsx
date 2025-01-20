@@ -45,7 +45,7 @@ export default function Input({
         style={{
           width: lebar ? lebar : '100%',
           paddingHorizontal: 10,
-          fontFamily: 'Poppins-Regular',
+          fontFamily: 'Poppins-Medium',
           textTransform: 'capitalize',
         }}></TextInput>
        {value && value !== '' && ( 

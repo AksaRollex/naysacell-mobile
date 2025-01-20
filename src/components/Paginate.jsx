@@ -41,7 +41,15 @@ if (
 
 const Paginate = forwardRef(
   (
-    {url, payload, renderItem, Plugin, isExternalLoading = false, ...props},
+    {
+      url,
+      payload,
+      renderItem,
+      Plugin,
+      showSearch = true,
+      isExternalLoading = false,
+      ...props
+    },
     ref,
   ) => {
     const queryClient = useQueryClient();
@@ -174,52 +182,56 @@ const Paginate = forwardRef(
 
     const ListHeader = () => (
       <>
-        <View className=" mb-1 ">
-          <Controller
-            control={control}
-            name="search"
-            render={({field: {onChange, value}}) => (
-              <View
-                className={`relative ${
-                  Boolean(props.Plugin)
-                    ? 'flex-col justify-center'
-                    : 'flex-row items-center'
-                }`}>
-                <View className={props.Plugin ? '' : 'flex-1 relative'}>
-                  <TextInput
-                    className="w-full text-base   pr-12  rounded-lg px-4 "
-                    style={{
-                      backgroundColor: isDarkMode ? '#262626' : '#f8f8f8',
-                      color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-                    }}
-                    value={value}
-                    placeholderTextColor={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
-                    placeholder="Cari..."
-                    onChangeText={text => {
-                      onChange(text);
-                    }}
-                    onSubmitEditing={() => {
-                      handleSearch(value);
-                    }}
-                  />
-                  <TouchableOpacity
-                    className="absolute right-2 top-2 -translate-y-1/2 p-2 rounded-md"
-                    activeOpacity={0.7}
-                    onPress={() => handleSearch(value)}>
-                    <Icons
-                      name="search"
-                      size={18}
-                      color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+        {showSearch && (
+          <View className=" mb-1 mt-4 ">
+            <Controller
+              control={control}
+              name="search"
+              render={({field: {onChange, value}}) => (
+                <View
+                  className={`relative ${
+                    Boolean(props.Plugin)
+                      ? 'flex-col justify-center'
+                      : 'flex-row items-center'
+                  }`}>
+                  <View className={props.Plugin ? '' : 'flex-1 relative'}>
+                    <TextInput
+                      className="w-full text-base   pr-12  rounded-lg px-4 "
+                      style={{
+                        backgroundColor: isDarkMode ? '#262626' : '#f8f8f8',
+                        color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+                      }}
+                      value={value}
+                      placeholderTextColor={
+                        isDarkMode ? DARK_COLOR : LIGHT_COLOR
+                      }
+                      placeholder="Cari..."
+                      onChangeText={text => {
+                        onChange(text);
+                      }}
+                      onSubmitEditing={() => {
+                        handleSearch(value);
+                      }}
                     />
-                  </TouchableOpacity>
+                    <TouchableOpacity
+                      className="absolute right-2 top-2 -translate-y-1/2 p-2 rounded-md"
+                      activeOpacity={0.7}
+                      onPress={() => handleSearch(value)}>
+                      <Icons
+                        name="search"
+                        size={18}
+                        color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  <View style={Plugin ? {marginLeft: 10} : {}}>
+                    {Plugin && <Plugin />}
+                  </View>
                 </View>
-                <View style={Plugin ? {marginLeft: 10} : {}}>
-                  {Plugin && <Plugin />}
-                </View>
-              </View>
-            )}
-          />
-        </View>
+              )}
+            />
+          </View>
+        )}
       </>
     );
 
@@ -337,7 +349,7 @@ const Paginate = forwardRef(
     }
 
     return (
-      <View className="flex-1 p-4" {...props}>
+      <View className="flex-1 px-4" {...props}>
         <ListHeader />
         <FlatList
           data={dataList}

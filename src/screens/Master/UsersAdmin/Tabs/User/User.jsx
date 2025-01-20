@@ -117,7 +117,7 @@ export default function User({navigation}) {
               size={17}
             />
             <Text
-              className="font-poppins-regular text-sm "
+              className="font-poppins-regular text-sm w-36"
               style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
               {item.address}
             </Text>
@@ -132,7 +132,7 @@ export default function User({navigation}) {
               size={17}
             />
             <Text
-              className="font-poppins-regular text-sm "
+              className="font-poppins-regular text-sm w-36"
               style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
               {item.phone}
             </Text>

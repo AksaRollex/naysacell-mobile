@@ -14,6 +14,7 @@ import {
   DARK_COLOR,
   LIGHT_BACKGROUND,
   LIGHT_COLOR,
+  WHITE_COLOR,
 } from '../../../../../utils/const';
 import Paginate from '../../../../../components/Paginate';
 import {MenuView} from '@react-native-menu/menu';
@@ -79,7 +80,16 @@ export default function Prabayar({navigation}) {
 
   const TypePicker = ({visible, onClose}) => {
     const categories = ['Pulsa', 'Data', 'E-Money'];
-    const providers = ['Telkomsel', 'XL', 'Indosat'];
+    const providers = [
+      'Telkomsel',
+      'XL',
+      'Indosat',
+      'By.u',
+      'Smartfren',
+      'Three',
+      'AXIS',
+    ];
+    const emoneyType = ['GoPay', 'Ovo', 'Dana', 'ShopeePay'];
 
     const hasChanges = () => {
       return tempCategory !== '' || tempProvider !== '';
@@ -102,22 +112,34 @@ export default function Prabayar({navigation}) {
         visible={visible}
         onRequestClose={onClose}>
         <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
+          <View
+            style={[
+              styles.modalContent,
+              {backgroundColor: isDarkMode ? '#262626' : '#fff'},
+            ]}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Pilih Filter</Text>
+              <Text
+                style={[
+                  styles.modalTitle,
+                  {color: isDarkMode ? WHITE_COLOR : DARK_COLOR},
+                ]}>
+                Pilih Filter
+              </Text>
               <TouchableOpacity
                 onPress={() => {
                   setTempCategory('');
                   setTempProvider('');
                   onClose();
                 }}>
-                <MaterialIcons name="close" size={24} color="#000" />
+                <MaterialIcons name="close" size={24} color={ isDarkMode ? WHITE_COLOR : DARK_COLOR} />
               </TouchableOpacity>
             </View>
 
             <View className="flex-row justify-between px-4">
               <View className="flex-1 mr-2">
-                <Text className="text-black font-poppins-semibold mb-2">
+                <Text
+                  className="font-poppins-semibold mb-2"
+                  style={{color: isDarkMode ? WHITE_COLOR : DARK_COLOR}}>
                   Kategori
                 </Text>
                 <ScrollView className="max-h-64">
@@ -143,32 +165,36 @@ export default function Prabayar({navigation}) {
                 </ScrollView>
               </View>
 
-              <View className="flex-1 ml-2">
-                <Text className="text-black font-poppins-semibold mb-2">
-                  Provider
-                </Text>
-                <ScrollView className="max-h-64">
-                  {providers.map(provider => (
-                    <TouchableOpacity
-                      key={provider}
-                      className={`p-3 rounded-md mb-2 ${
-                        tempProvider === provider
-                          ? 'bg-blue-100'
-                          : 'bg-[#ececec]'
-                      }`}
-                      onPress={() => setTempProvider(provider)}>
-                      <Text
-                        className={`${
+              {(tempCategory === 'Pulsa' || tempCategory === 'Data') && (
+                <View className="flex-1 ml-2">
+                  <Text
+                    className=" font-poppins-semibold mb-2"
+                    style={{color: isDarkMode ? WHITE_COLOR : DARK_COLOR}}>
+                    Provider
+                  </Text>
+                  <ScrollView className="max-h-64">
+                    {providers.map(provider => (
+                      <TouchableOpacity
+                        key={provider}
+                        className={`p-3 rounded-md mb-2 ${
                           tempProvider === provider
-                            ? 'text-blue-500 font-poppins-semibold'
-                            : 'text-black font-poppins-regular'
-                        }`}>
-                        {provider}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </ScrollView>
-              </View>
+                            ? 'bg-blue-100'
+                            : 'bg-[#ececec]'
+                        }`}
+                        onPress={() => setTempProvider(provider)}>
+                        <Text
+                          className={`${
+                            tempProvider === provider
+                              ? 'text-blue-500 font-poppins-semibold'
+                              : 'text-black font-poppins-regular'
+                          }`}>
+                          {provider}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+                </View>
+              )}
             </View>
 
             <View className="mt-4 px-4">
@@ -338,7 +364,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: 'white',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingVertical: 20,

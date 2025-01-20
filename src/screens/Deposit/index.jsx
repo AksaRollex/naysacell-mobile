@@ -15,19 +15,21 @@ import {
   LIGHT_BACKGROUND,
   SLATE_COLOR,
   WHITE_BACKGROUND,
-  WHITE_COLOR,
   windowWidth,
 } from '../../utils/const';
 import {rupiah} from '../../libs/utils';
 import HistoryDeposit from './HistoryDeposit';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import axios from '../../libs/axios';
-import Toast from 'react-native-toast-message';
-import BackButton from '../../components/BackButton';
+import ModalAfterProcess from '../../components/ModalAfterProcess';
+
 export default function Deposit({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
 
   const [depositAmount, setDepositAmount] = useState('');
+  const [successModal, setSuccessModal] = useState(false);
+  const [failedModal, setModalFailed] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handlePresetAmount = amount => {
     setDepositAmount(amount.toString());
@@ -38,7 +40,7 @@ export default function Deposit({navigation}) {
   const {mutate: handleTopup} = useMutation(
     async () => {
       const requestData = {
-        amount: parseInt(depositAmount.replace(/\D/g, '')), // Hapus karakter non-digit
+        amount: parseInt(depositAmount.replace(/\D/g, '')),
       };
 
       const response = await axios.post('/auth/topup', requestData);
@@ -46,21 +48,19 @@ export default function Deposit({navigation}) {
     },
     {
       onSuccess: data => {
-        Toast.show({
-          type: 'success',
-          text1: 'Berhasil',
-          text2: 'Deposit Saldo Berhasil',
-        });
-        navigation.navigate('HomeScreen', {refresh: true});
         queryClient.invalidateQueries('/auth/check-saldo');
+        setSuccessModal(true);
+        setTimeout(() => {
+          navigation.navigate('HomeScreen', {refresh: true});
+          setSuccessModal(false);
+        }, 2000);
       },
       onError: error => {
-        console.error('Full error:', error.response);
-        Toast.show({
-          type: 'error',
-          text1: 'Gagal',
-          text2: error.response?.data?.message || 'Deposit Saldo Gagal',
-        });
+        setErrorMessage(error);
+        setModalFailed(true);
+        setTimeout(() => {
+          setModalFailed(false);
+        }, 2000);
       },
     },
   );
@@ -82,7 +82,6 @@ export default function Deposit({navigation}) {
             placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
             className="h-12 w-full  mx-auto px-4 bg-[#f8f8f8 ] rounded-md border border-stone-600"></TextInput>
         </View>
-        {/* // REFERENSI NOMINAL */}
         <View
           id="referensi_nominal"
           className="px-4 py-2 flex flex-row flex-wrap justify-between items-center">
@@ -111,7 +110,23 @@ export default function Deposit({navigation}) {
           </TouchableOpacity>
         </View>
       </View>
-      {/* HISTORI */}
+      <ModalAfterProcess
+        modalVisible={successModal}
+        title="Deposit Berhasil"
+        subTitle={`Deposit sebesar ${rupiah(depositAmount)} berhasil`}
+        icon={'checkmark-done-sharp'}
+        iconColor={'#95bb72'}
+        iconSize={24}
+        bgIcon={'#e6f7e6'}
+      />
+      <ModalAfterProcess
+        modalVisible={failedModal}
+        title="Deposit Gagal"
+        subTitle={errorMessage}
+        icon={'close-sharp'}
+        iconColor={'#f43f5e'}
+        iconSize={24}
+      />
       <ScrollView className=" py-2 mt-11">
         <View className="my-2 mx-4">
           <Text className="font-poppins-semibold">Histori Deposit</Text>

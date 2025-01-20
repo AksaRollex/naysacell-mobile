@@ -1,10 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  useColorScheme,
-} from 'react-native';
+import {Text, TouchableOpacity, View, useColorScheme} from 'react-native';
 import React, {useRef, useState} from 'react';
 import {
   BLUE_COLOR,
@@ -31,7 +25,7 @@ export default function Transaction() {
 
   const getStatusColor = status => {
     switch (status) {
-      case 'Success':
+      case 'success':
         return 'text-green-400';
       case 'Pending':
         return 'text-yellow-400';
@@ -40,6 +34,20 @@ export default function Transaction() {
         return 'text-red-400';
       default:
         return 'text-gray-400';
+    }
+  };
+
+  const getStatusText = status => {
+    switch (status) {
+      case 'success':
+        return 'Berhasil';
+      case 'Pending':
+        return 'Pending';
+      case 'Gagal':
+      case 'Failed ':
+        return 'Gagal';
+      default:
+        return 'Gagal';
     }
   };
 
@@ -55,7 +63,7 @@ export default function Transaction() {
     return (
       <View
         id="cardTransaction"
-        className="rounded-md w-full p-3 flex-col mb-5"
+        className="rounded-md w-full p-3 flex-col mb-4"
         style={{
           backgroundColor: isDarkMode ? '#27272A' : WHITE_BACKGROUND,
           elevation: 3,
@@ -66,11 +74,6 @@ export default function Transaction() {
           className="flex-row justify-between border-b py-3"
           style={{borderColor: isDarkMode ? GREY_COLOR : LIGHT_COLOR}}>
           <View className="flex-col justify-start items-start">
-            {/* <Text
-              className="font-poppins-semibold"
-              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-              Pulsa
-            </Text> */}
             <Text
               className="font-poppins-semibold"
               style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
@@ -82,7 +85,7 @@ export default function Transaction() {
               className={`font-poppins-semibold text-end ${getStatusColor(
                 item.transaction_status,
               )}`}>
-              {item.transaction_status}
+              {getStatusText(item.transaction_status)}
             </Text>
           </View>
         </View>
@@ -102,7 +105,7 @@ export default function Transaction() {
             <Text
               className="font-poppins-regular"
               style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-              Produk : Telkomsel 5000
+              Produk : {item.transaction_product}
             </Text>
             <Text
               className="font-poppins-regular"
@@ -113,11 +116,6 @@ export default function Transaction() {
               className="font-poppins-regular"
               style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
               Harga : {rupiah(item.transaction_total)}
-            </Text>
-            <Text
-              className="font-poppins-regular"
-              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-              Pesan : {item?.transaction_message}
             </Text>
           </View>
         </View>
@@ -144,7 +142,7 @@ export default function Transaction() {
         </View>
       </ImageBackground>
 
-      <View className="-mt-16 justify-center items-center flex">
+      <View className=" justify-center items-center flex">
         <View
           className="w-full p-6 flex-row justify-between flex-wrap"
           style={{height: windowHeight * 0.11}}>
@@ -262,9 +260,8 @@ export default function Transaction() {
         url="/auth/histori"
         renderItem={transactionCard}
         ref={paginateRef}
+        showSearch={false}
       />
     </View>
   );
 }
-
-const styles = StyleSheet.create({});

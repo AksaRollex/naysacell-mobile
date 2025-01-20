@@ -95,17 +95,12 @@ export default function FormUser({route, navigation}) {
       onSuccess: data => {
         queryClient.invalidateQueries(['/master/users/admin']);
         setModalSuccess(true);
-        // setTimeout(() => {
-        //   setModalSuccess(false);
-        //   navigation.navigate('User', {
-        //     id: data?.id || null,
-        //   });
-        // }, 2000);
-        Toast.show({
-          type: 'success',
-          text1: 'Success',
-          text2: 'Data berhasil disimpan',
-        });
+        setTimeout(() => {
+          setModalSuccess(false);
+          navigation.navigate('User', {
+            id: data?.id || null,
+          });
+        }, 2000);
       },
       onError: error => {
         setModalFailed(true);
@@ -365,15 +360,23 @@ export default function FormUser({route, navigation}) {
       </View>
       <ModalAfterProcess
         url={require('../../../../../../assets/lottie/success-animation.json')}
-        visible={modalSuccess}
+        modalVisible={modalSuccess}
+        icon={'checkmark-done-sharp'}
+        iconColor={'#95bb72'}
+        iconSize={22}
+        bgIcon={'#e6f7e6'}
         title={'Berhasil Menyimpan Data'}
         subTitle={'Pastikan Data Sudah Benar'}
       />
       <ModalAfterProcess
         url={require('../../../../../../assets/lottie/failed-animation.json')}
-        visible={modalFailed}
+        modalVisible={modalFailed}
         title={'Gagal Menyimpan Data'}
         subTitle={errorMessage || 'Pastikan Data Sudah Benar'}
+        icon={'close-sharp'}
+        iconColor={'#f43f5e'}
+        iconSize={22}
+        bgIcon={'#fdecef'} 
       />
     </>
   );
