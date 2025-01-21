@@ -111,7 +111,7 @@ export default function PDAM() {
           </TouchableOpacity>
         </View>
         {/* MODAL WILAYAH */}
-        <FullModal
+        {/* <FullModal
           visible={showModalWilayah}
           onDismiss={() => setShowModalWilayah(!showModalWilayah)}
           title="Wilayah PDAM">
@@ -131,7 +131,7 @@ export default function PDAM() {
               )}
             />
           </View>
-        </FullModal>
+        </FullModal> */}
 
         {/* MODAL BAYAR */}
         <BottomModal

@@ -4,7 +4,6 @@ import {
   BLUE_COLOR,
   DARK_BACKGROUND,
   DARK_COLOR,
-  GREY_COLOR,
   LIGHT_BACKGROUND,
   LIGHT_COLOR,
   WHITE_BACKGROUND,
@@ -15,13 +14,36 @@ import {
 import {ImageBackground} from 'react-native';
 import {HeaderBG} from '../../../assets';
 import {rupiah} from '../../libs/utils';
-import Paginate from '../../components/Paginate';
+import ProductPaginate from '../../components/ProductPaginate';
 
-export default function Transaction() {
+export default function Transaction({ navigation }) {
   const isDarkMode = useColorScheme() === 'dark';
   const paginateRef = useRef();
 
   const [statusFilter, setStatusFilter] = useState('all');
+
+  const getPaymentStatusColor = payment_status => {
+    if (payment_status === 'success') {
+      return 'text-green-400';
+    } else if (payment_status === 'pending') {
+      return 'text-yellow-400';
+    } else if (payment_status === 'failed') {
+      return 'text-red-400';
+    }
+  };
+
+  const getPaymentStatusText = payment_status => {
+    switch (payment_status) {
+      case 'success':
+        return 'Berhasil';
+      case 'pending':
+        return 'Pending';
+      case 'failed ':
+        return 'Gagal';
+      default:
+        return 'Gagal';
+    }
+  };
 
   const getStatusColor = status => {
     switch (status) {
@@ -43,7 +65,6 @@ export default function Transaction() {
         return 'Berhasil';
       case 'Pending':
         return 'Pending';
-      case 'Gagal':
       case 'Failed ':
         return 'Gagal';
       default:
@@ -60,26 +81,29 @@ export default function Transaction() {
     }
 
     return (
-      <View
-        id="cardTransaction"
-        className="rounded-md w-full p-3 flex-col mb-4"
-        style={{
-          backgroundColor: isDarkMode ? '#262626' : WHITE_BACKGROUND,
-          elevation: 3,
-          shadowColor: isDarkMode ? '#fff' : '#000',
-        }}>
-        <View
-          id="cardTitle"
-          className="flex-row justify-between border-b py-3"
-          style={{borderColor: isDarkMode ? GREY_COLOR : LIGHT_COLOR}}>
-          <View className="flex-col justify-start items-start">
+      <View>
+        <Text
+          value
+          className="text-sm text-gray-300 capitalize font-poppins-regular">
+          {new Date(item.transaction_date).toLocaleDateString(`id-ID`, {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          })}
+        </Text>
+        <TouchableOpacity
+          className="rounded-xl p-2 flex-col mb-4"
+          onPress={() => navigation.navigate('DetailTransaction' ,  { item })}
+          style={{
+            backgroundColor: isDarkMode ? '#262626' : WHITE_BACKGROUND,
+            shadowColor: isDarkMode ? '#fff' : '#000',
+          }}>
+          <View className="flex-row justify-between items-center my-1 ">
             <Text
-              className="font-poppins-semibold"
+              className="text-md font-poppins-regular"
               style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-              {item.transaction_code}
+              Status Pesanan
             </Text>
-          </View>
-          <View className="flex justify-end items-end">
             <Text
               className={`font-poppins-semibold text-end ${getStatusColor(
                 item.transaction_status,
@@ -87,37 +111,56 @@ export default function Transaction() {
               {getStatusText(item.transaction_status)}
             </Text>
           </View>
-        </View>
-        <View id="cardTitle" className="flex-row  justify-between py-3">
-          <View className="flex-col justify-start items-start">
+          <View className="flex-row justify-between items-center my-1 ">
             <Text
-              value
-              className="font-poppins-regular"
+              className="text-md font-poppins-regular"
               style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-              Tanggal Transaksi :{' '}
-              {new Date(item.transaction_date).toLocaleDateString(`id-ID`, {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
+              Status Pembayaran
             </Text>
             <Text
-              className="font-poppins-regular"
-              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-              Produk : {item.transaction_product}
-            </Text>
-            <Text
-              className="font-poppins-regular"
-              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-              Nomor Tujuan : {item.transaction_number}
-            </Text>
-            <Text
-              className="font-poppins-regular"
-              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-              Harga : {rupiah(item.transaction_total)}
+              className={`font-poppins-semibold text-end ${getPaymentStatusColor(
+                item.payment_status,
+              )}`}>
+              {getPaymentStatusText(item.payment_status)}
             </Text>
           </View>
-        </View>
+          <View className="flex-row justify-between items-center my-1 ">
+            <Text
+              className="text-md font-poppins-regular"
+              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+              Produk
+            </Text>
+            <Text
+              className="text-md font-poppins-regular"
+              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+              {item.transaction_product}
+            </Text>
+          </View>
+          <View className="flex-row justify-between items-center my-1 ">
+            <Text
+              className="text-md font-poppins-regular"
+              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+              Pesan
+            </Text>
+            <Text
+              className="text-md font-poppins-regular"
+              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+              {item.transaction_message}
+            </Text>
+          </View>
+          <View className="flex-row justify-between items-center my-1 ">
+            <Text
+              className="text-md font-poppins-regular"
+              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+              Harga
+            </Text>
+            <Text
+              className="text-md font-poppins-regular"
+              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+              {rupiah(item.transaction_total)}
+            </Text>
+          </View>
+        </TouchableOpacity>
       </View>
     );
   };
@@ -195,7 +238,7 @@ export default function Transaction() {
                     ? '#80ed80ff'
                     : BLUE_COLOR,
               }}>
-              Sukses
+              Berhasil
             </Text>
           </TouchableOpacity>
 
@@ -255,7 +298,7 @@ export default function Transaction() {
         </View>
       </View>
 
-      <Paginate
+      <ProductPaginate
         url="/auth/histori"
         renderItem={transactionCard}
         ref={paginateRef}

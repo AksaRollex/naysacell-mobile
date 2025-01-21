@@ -14,24 +14,12 @@ import {
 import ProductPaginate from '../../../components/ProductPaginate';
 import {rupiah} from '../../../libs/utils';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 export default function HistoryDeposit() {
   const isDarkMode = useColorScheme() === 'dark';
   const paginateRef = useRef();
   const navigation = useNavigation();
-
-  const backgroundColorTextStatus = status => {
-    if (status === 'success') {
-      return 'bg-green-100';
-    } else if (status === 'pending') {
-      return 'bg-yellow-100';
-    } else if (status === 'failed') {
-      return 'bg-red-100';
-    } else {
-      return 'bg-gray-100';
-    }
-  };
 
   const colorStatusColor = status => {
     if (status === 'success') {
@@ -47,7 +35,7 @@ export default function HistoryDeposit() {
 
   const historiDepositCards = ({item}) => {
     return (
-      <TouchableOpacity id="cardTransaction" onPress={() => navigation.navigate('DetailHistoryDeposit', {item})}>
+      <View>
         <Text className="font-poppins-regular text-sm text-gray-300 capitalize">
           {new Date(item?.created_at || '').toLocaleDateString('id-ID', {
             year: 'numeric',
@@ -55,8 +43,8 @@ export default function HistoryDeposit() {
             day: 'numeric',
           })}
         </Text>
-
-        <View
+        <TouchableOpacity
+          onPress={() => navigation.navigate('DetailHistoryDeposit', {item})}
           className="rounded-xl p-2 flex-col mb-4"
           style={{
             backgroundColor: isDarkMode ? '#262626' : WHITE_BACKGROUND,
@@ -78,8 +66,8 @@ export default function HistoryDeposit() {
               size={27}
             />
           </View>
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </View>
     );
   };
   return (

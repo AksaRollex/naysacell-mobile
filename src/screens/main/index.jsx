@@ -28,6 +28,7 @@ import Transaksi from '../Transaction';
 import Deposit from '../Deposit';
 import DetailHistoryDeposit from '../Deposit/HistoryDeposit/Detail';
 import HistoryDeposit from '../Deposit/HistoryDeposit';
+import DetailTransaction from '../Transaction/Detail';
 import SuccessNotifDeposit from '../Notifikasi/SuccessNotifDeposit';
 import SuccessNotif from '../Notifikasi/SuccessNotif';
 import Notifikasi from '../Notifikasi/Notifikasi';
@@ -36,7 +37,6 @@ import Dana from '../Dompet_elektronik/Dana';
 import OVO from '../Dompet_elektronik/Ovo';
 import GoPay from '../Dompet_elektronik/Gopay';
 import Master from '../Master';
-import SyaratDanKetentuan from '../S&K';
 // USERS ADMIN
 import IndexUsersAdmin from '../Master/UsersAdmin';
 import Admin from '../Master/UsersAdmin/Tabs/Admin/Admin';
@@ -95,6 +95,7 @@ const CustomTabBar = ({state, descriptors, navigation}) => {
     'Deposit',
     'HistoryDeposit',
     'DetailHistoryDeposit',
+    'DetailTransaction'
   ];
 
   if (hideOnScreens.includes(routeName)) {
@@ -199,6 +200,7 @@ const TransactionNavigator = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="Transaksi" component={Transaksi} />
+      <Stack.Screen name="DetailTransaction" component={DetailTransaction} />
     </Stack.Navigator>
   );
 };
@@ -288,6 +290,7 @@ export default function MainScreen() {
                 'Deposit',
                 'HistoryDeposit',
                 'DetailHistoryDeposit',
+                'DetailTransaction'
               ];
 
               if (hideOnScreens.includes(routeName)) {
