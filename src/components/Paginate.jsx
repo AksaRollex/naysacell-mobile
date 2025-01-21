@@ -282,7 +282,7 @@ const Paginate = forwardRef(
 
     if (shouldShowLoading) {
       return (
-        <View className="mt-5 items-center">
+        <View className=" items-center" >
           {cardData.map((item, index) => (
             <View
               key={index}

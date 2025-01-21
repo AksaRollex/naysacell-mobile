@@ -15,6 +15,7 @@ export const BOLD_FONT = 'Inter-Bold';
 export const HORIZONTAL_MARGIN = 20;
 
 export const DARK_BACKGROUND = Colors.darker;
+// export const DARK_BACKGROUND = '#111810';
 export const LIGHT_BACKGROUND = Colors.lighter;
 export const WHITE_BACKGROUND = '#FFFFFF';
 

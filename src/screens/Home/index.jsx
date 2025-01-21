@@ -14,6 +14,7 @@ import mainMenu, {gameMenu} from '../../data/mainMenu';
 import axios from '../../libs/axios';
 import {rupiah} from '../../libs/utils';
 import {
+  BLUE_COLOR,
   DARK_BACKGROUND,
   DARK_COLOR,
   HORIZONTAL_MARGIN,
@@ -144,140 +145,125 @@ export default function HomeScreen({navigation}) {
                 </TouchableOpacity>
               </View>
             </View>
-
-            <View
-              style={{
-                backgroundColor: isDarkMode ? DARK_BACKGROUND : '#fff',
-                marginHorizontal: HORIZONTAL_MARGIN,
-                padding: 15,
-                borderRadius: 10,
-                height: 70,
-                shadowColor: '#000',
-                shadowOffset: {
-                  width: 0,
-                  height: 2,
-                },
-                shadowOpacity: 0.23,
-                shadowRadius: 2.62,
-                marginTop: windowHeight * 0.07,
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                borderBottomColor: '#404040',
-                elevation: 0.5,
-              }}>
-              <View className="flex-row gap-x-2 h-full justify-center items-center">
-                <IonIcons
-                  name="wallet"
-                  size={30}
-                  color={isDarkMode ? '#138EE9' : '#138EE9'}
-                />
-                <View className="flex-col h-full">
-                  <Text
-                    style={{
-                      color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-                    }}
-                    className="font-poppins-regular">
-                    Saldo Anda
-                  </Text>
-                  {setSaldo && (
-                    <Text
-                      style={{
-                        color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-                      }}
-                      className="font-poppins-regular text-base">
-                      {rupiah(saldo?.balance)}
-                    </Text>
-                  )}
-                </View>
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  columnGap: 15,
-                }}>
-                <TouchableOpacity
-                  style={{
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    rowGap: 3,
-                  }}
-                  onPress={() => navigation.navigate('Deposit')}>
-                  <AddIkon
-                    width={26}
-                    height={26}
-                    fill={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
-                  />
-                  <Text
-                    style={{
-                      color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-                    }}
-                    className="font-poppins-medium">
-                    Deposit
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
           </ImageBackground>
-
-          {/* TOPUP & TAGIHAN */}
           <View
             style={{
+              backgroundColor: isDarkMode ? '#252525' : '#fff',
               marginHorizontal: HORIZONTAL_MARGIN,
-              backgroundColor: isDarkMode ? '#262626' : '#f8f8f8',
+              padding: 15,
+              borderRadius: 10,
+              shadowColor: '#000',
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.23,
+              shadowRadius: 2.62,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              borderBottomColor: '#404040',
+              elevation: 0.5,
             }}
-            className="mt-10 p-3  rounded-md ">
-            <View>
-              <Text
-                style={{
-                  color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-                }}
-                className="font-poppins-semibold">
-                Topup
-              </Text>
+            className="my-4">
+            <View className="flex-row gap-x-2 h-full justify-center items-center">
+              <IonIcons
+                name="wallet"
+                size={40}
+                color={isDarkMode ? '#138EE9' : '#138EE9'}
+              />
+              <View className="flex-col h-full">
+                <Text
+                  style={{
+                    color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+                  }}
+                  className="font-poppins-medium">
+                  Saldo Anda
+                </Text>
+                {setSaldo && (
+                  <Text
+                    style={{
+                      color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+                    }}
+                    className="font-poppins-regular text-base">
+                    {rupiah(saldo?.balance)}
+                  </Text>
+                )}
+              </View>
             </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                columnGap: 15,
+              }}>
+              <TouchableOpacity
+                style={{
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  rowGap: 3,
+                }}
+                onPress={() => navigation.navigate('Deposit')}>
+                <AddIkon
+                  width={26}
+                  height={26}
+                  fill={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+                />
+                <Text
+                  style={{
+                    color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+                  }}
+                  className="font-poppins-medium">
+                  Deposit
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* TOPUP & TAGIHAN */}
+          <View style={{marginHorizontal: HORIZONTAL_MARGIN}}>
+            <Text className="text-base font-poppins-semibold" style={{ color: isDarkMode ? DARK_COLOR : LIGHT_COLOR }}>
+              Topup
+            </Text>
             <View
               style={{
                 flexDirection: 'row',
                 flexWrap: 'wrap',
                 justifyContent: 'space-between',
-              }}>
+              }}
+              className="gap-2 mt-4">
               {mainMenu.map(item => {
                 return (
                   <TouchableOpacity
                     key={item.label}
                     style={{
-                      width: 100,
-                      padding: 5,
-                      backgroundColor: isDarkMode ? DARK_BACKGROUND : '#FFF',
-                      borderRadius: 10,
-                      marginTop: 15,
                       alignItems: 'center',
                       justifyContent: 'center',
                     }}
-                    onPress={() => navigation.navigate(item.path)}>
-                    {/* <Image source={item.ikon} /> */}
-                    <FontAwesome5Icon
-                      name="money-bill"
-                      size={30}
-                      color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
-                    />
-                    <Text
-                      style={{
-                        textAlign: 'center',
-                        marginTop: 10,
-                        color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-                      }}
-                      className="font-poppins-regular">
-                      {item.label}
-                    </Text>
+                    onPress={() => navigation.navigate(item.path)}
+                    className=" w-24   justify-center items-center opacity-0.5 ">
+                    <View className="w-24 h-11 justify-center items-center">
+                      <FontAwesome5Icon
+                        name="money-bill"
+                        size={30}
+                        color={BLUE_COLOR}
+                      />
+                    </View>
+                    <View className="my-2">
+                      <Text
+                        className=" text-center text-sm font-poppins-medium"
+                        style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                        {item.label}
+                      </Text>
+                    </View>
                   </TouchableOpacity>
                 );
               })}
             </View>
           </View>
-          {/* GAME */}
-          {/* <View
+        </View>
+
+        {/* GAME */}
+        {/* <View
             style={{
               marginHorizontal: HORIZONTAL_MARGIN,
               backgroundColor: isDarkMode ? '#262626' : '#f8f8f8',
@@ -331,7 +317,6 @@ export default function HomeScreen({navigation}) {
               })}
             </View>
           </View> */}
-        </View>
       </ScrollView>
     </>
   );

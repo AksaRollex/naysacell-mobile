@@ -24,6 +24,8 @@ export default function ModalProcess({
   iconSize,
   bgIcon,
   bgTrueText,
+  buttonFalseColorText,
+  buttonTrueColorText
 }) {
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -53,13 +55,13 @@ export default function ModalProcess({
           </Text>
           <View className="flex-col justify-center items-center gap-y-2 w-full ">
             <TouchableOpacity
-              className={`px-4 py-3 w-full rounded-md
+              className={`px-4 py-3 w-full rounded-xl
               `}
               style={{backgroundColor: bgTrueText || '#F43F5E'}}
               onPress={functionTrueButton}>
               <Text
                 className="font-poppins-semibold capitalize text-center"
-                style={{color: isDarkMode ? WHITE_COLOR : DARK_COLOR}}>
+                style={{color : buttonTrueColorText || WHITE_COLOR}}>
                 {buttonTrueText}
               </Text>
             </TouchableOpacity>
@@ -68,7 +70,7 @@ export default function ModalProcess({
               onPress={functionFalseButton}>
               <Text
                 className="font-poppins-semibold capitalize text-center"
-                style={{color: isDarkMode ? WHITE_COLOR : DARK_COLOR}}>
+                style={{color: buttonFalseColorText || '#F43F5E'}}>
                 {buttonFalseText}
               </Text>
             </TouchableOpacity>

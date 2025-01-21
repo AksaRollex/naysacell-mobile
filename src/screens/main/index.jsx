@@ -26,7 +26,8 @@ import BantuanLogin from '../Bantuan/bantuan_login';
 import Profile from '../Profile';
 import Transaksi from '../Transaction';
 import Deposit from '../Deposit';
-import HistoriDeposit from '../Deposit/HistoryDeposit';
+import DetailHistoryDeposit from '../Deposit/HistoryDeposit/Detail';
+import HistoryDeposit from '../Deposit/HistoryDeposit';
 import SuccessNotifDeposit from '../Notifikasi/SuccessNotifDeposit';
 import SuccessNotif from '../Notifikasi/SuccessNotif';
 import Notifikasi from '../Notifikasi/Notifikasi';
@@ -91,6 +92,9 @@ const CustomTabBar = ({state, descriptors, navigation}) => {
     'Dana',
     'OVO',
     'GoPay',
+    'Deposit',
+    'HistoryDeposit',
+    'DetailHistoryDeposit',
   ];
 
   if (hideOnScreens.includes(routeName)) {
@@ -174,7 +178,11 @@ const HomeScreenNavigator = () => {
       <Stack.Screen name="PDAM" component={PDAM} />
       <Stack.Screen name="BantuanLogin" component={BantuanLogin} />
       <Stack.Screen name="Deposit" component={Deposit} />
-      <Stack.Screen name="HistoriDeposit" component={HistoriDeposit} />
+      <Stack.Screen name="HistoryDeposit" component={HistoryDeposit} />
+      <Stack.Screen
+        name="DetailHistoryDeposit"
+        component={DetailHistoryDeposit}
+      />
       <Stack.Screen
         name="SuccessNotifDeposit"
         component={SuccessNotifDeposit}
@@ -277,6 +285,9 @@ export default function MainScreen() {
                 'Dana',
                 'OVO',
                 'GoPay',
+                'Deposit',
+                'HistoryDeposit',
+                'DetailHistoryDeposit',
               ];
 
               if (hideOnScreens.includes(routeName)) {

@@ -11,10 +11,12 @@ import React, {useState} from 'react';
 import {
   BLUE_COLOR,
   DARK_BACKGROUND,
+  DARK_COLOR,
   GREY_COLOR,
   LIGHT_BACKGROUND,
   SLATE_COLOR,
   WHITE_BACKGROUND,
+  WHITE_COLOR,
   windowWidth,
 } from '../../utils/const';
 import {rupiah} from '../../libs/utils';
@@ -80,7 +82,7 @@ export default function Deposit({navigation}) {
             onChangeText={setDepositAmount}
             keyboardType="numeric"
             placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
-            className="h-12 w-full  mx-auto px-4 bg-[#f8f8f8 ] rounded-md border border-stone-600"></TextInput>
+            className="h-12 w-full rounded-xl mx-auto px-4 pr-10 border border-stone-600"></TextInput>
         </View>
         <View
           id="referensi_nominal"
@@ -91,7 +93,7 @@ export default function Deposit({navigation}) {
                 key={index}
                 className="px-1 py-4 my-1 rounded-md justify-center items-center"
                 style={{
-                  backgroundColor: isDarkMode ? '#27272A' : WHITE_BACKGROUND,
+                  backgroundColor: isDarkMode ? '#262626' : WHITE_BACKGROUND,
                   width: windowWidth * 0.3,
                 }}
                 onPress={() => handlePresetAmount(amount)}>
@@ -128,8 +130,12 @@ export default function Deposit({navigation}) {
         iconSize={24}
       />
       <ScrollView className=" py-2 mt-11">
-        <View className="my-2 mx-4">
-          <Text className="font-poppins-semibold">Histori Deposit</Text>
+        <View className=" mx-4 justify-end items-end">
+          <Text
+            className="font-poppins-semibold text-end"
+            style={{color: isDarkMode ? WHITE_COLOR : DARK_COLOR}}>
+            Histori Deposit
+          </Text>
         </View>
         <HistoryDeposit />
       </ScrollView>

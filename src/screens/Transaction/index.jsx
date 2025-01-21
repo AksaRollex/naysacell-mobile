@@ -52,7 +52,6 @@ export default function Transaction() {
   };
 
   const transactionCard = ({item}) => {
-    console.log(item, 111);
     if (
       statusFilter !== 'all' &&
       item.transaction_status.toLowerCase() !== statusFilter.toLowerCase()
@@ -65,7 +64,7 @@ export default function Transaction() {
         id="cardTransaction"
         className="rounded-md w-full p-3 flex-col mb-4"
         style={{
-          backgroundColor: isDarkMode ? '#27272A' : WHITE_BACKGROUND,
+          backgroundColor: isDarkMode ? '#262626' : WHITE_BACKGROUND,
           elevation: 3,
           shadowColor: isDarkMode ? '#fff' : '#000',
         }}>
