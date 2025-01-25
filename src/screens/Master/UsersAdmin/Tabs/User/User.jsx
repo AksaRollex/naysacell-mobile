@@ -1,6 +1,7 @@
 import {Image, StyleSheet, Text, View, useColorScheme} from 'react-native';
 import React, {useRef} from 'react';
 import {
+  BLUE_COLOR,
   DARK_BACKGROUND,
   DARK_COLOR,
   LIGHT_BACKGROUND,
@@ -12,7 +13,8 @@ import {MenuView} from '@react-native-menu/menu';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useDelete} from '../../../../../hooks/useDelete';
-import { useQueryClient } from '@tanstack/react-query';
+import {useQueryClient} from '@tanstack/react-query';
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 export default function User({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
   const paginateRef = useRef();
@@ -58,11 +60,14 @@ export default function User({navigation}) {
         }}>
         <View className="flex-row w-full  my-2 justify-center ">
           <View className="w-full flex-row justify-between items-start">
-            <View className="flex-row  items-start gap-x-2 ">
-              <Image
-                source={require('../../../../../../assets/images/logo.png')}
-                className="w-12 h-12 rounded-full"
-              />
+            <View className="flex-row  items-center justify-start gap-x-2 ">
+              <View className="p-3 items-center rounded-full   bg-[#242424]">
+                <FontAwesome5Icon
+                  name="user-alt"
+                  size={25}
+                  color={BLUE_COLOR}
+                />
+              </View>
               <View className="flex-col items-start justify-start ">
                 <Text
                   className="font-poppins-medium text-base "
@@ -74,10 +79,24 @@ export default function User({navigation}) {
                   style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                   {item.email}
                 </Text>
-                <View className="bg-blue-100 rounded-md pl-2   mt-1 justify-center  items-center flex-row  py-1 max-w-[120px]">
-                  <IonIcons name="person" color="#138EE9" size={15} />
+                <View className="flex-row gap-x-2">
+                  <View className="bg-yellow-100 rounded-md pl-2   mt-1 justify-center  items-center flex-row  py-1 max-w-[120px]">
+                    <FontAwesome5Icon name="universal-access" color="#cb8c18" size={15} />
+                    <Text className="font-poppins-medium text-xs mx-2 text-[#cb8c18]">
+                      {item?.role?.full_name}
+                    </Text>
+                  </View>
+                  <View className="bg-green-100 rounded-md pl-2   mt-1 justify-center  items-center flex-row  py-1 max-w-[120px]">
+                    <IonIcons name="call" color="#658844" size={15} />
+                    <Text className="font-poppins-medium text-xs mx-2 text-[#658844]">
+                      {item?.phone}
+                    </Text>
+                  </View>
+                </View>
+                <View className="bg-blue-100 rounded-md pl-2   mt-1 justify-center  items-center flex-row  py-1 max-w-[260px]">
+                  <IonIcons name="location-sharp" color="#138EE9" size={15} />
                   <Text className="font-poppins-medium text-xs mx-2 text-[#138EE9]">
-                    {item?.role?.full_name}
+                    {item?.address}
                   </Text>
                 </View>
               </View>
@@ -104,38 +123,6 @@ export default function User({navigation}) {
                 />
               </View>
             </MenuView>
-          </View>
-        </View>
-        <View
-          className="border-[0.5px] w-full my-2 opacity-40 rounded-es-xl"
-          style={{borderColor: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}></View>
-        <View className="flex-row w-full justify-between items-center my-2">
-          <View className="w-1/2 gap-x-2 flex-row items-center justify-start">
-            <IonIcons
-              name="location"
-              color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
-              size={17}
-            />
-            <Text
-              className="font-poppins-regular text-sm w-36"
-              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-              {item.address}
-            </Text>
-          </View>
-          <View
-            className="border-[0.5px] h-7 w-[0.3px] opacity-40"
-            style={{borderColor: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}></View>
-          <View className="w-1/2  gap-x-2 flex-row items-center justify-start">
-            <IonIcons
-              name="call"
-              color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
-              size={17}
-            />
-            <Text
-              className="font-poppins-regular text-sm w-36"
-              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-              {item.phone}
-            </Text>
           </View>
         </View>
       </View>

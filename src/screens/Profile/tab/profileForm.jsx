@@ -15,6 +15,7 @@ import {
   WHITE_COLOR,
   LIGHT_COLOR,
   BLUE_COLOR,
+  GREY_COLOR,
 } from '../../../utils/const';
 import axios from '../../../libs/axios';
 import Toast from 'react-native-toast-message';
@@ -34,6 +35,7 @@ export default function ProfileForm({route}) {
   const [file, setFile] = React.useState(null);
   const [currentPhotoUrl, setCurrentPhotoUrl] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const query = useQueryClient();
   const {control} = useForm();
 
@@ -62,6 +64,7 @@ export default function ProfileForm({route}) {
   }, []);
 
   const fetchUserData = async () => {
+    setIsLoading(true);
     try {
       const response = await axios.get('/auth/me');
       setData(response.data.user);
@@ -77,7 +80,16 @@ export default function ProfileForm({route}) {
         type: 'error',
         text1: 'Gagal mengambil data',
       });
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  const renderLoadingOrValue = (value, placeholder = 'Memuat...') => {
+    if (isLoading) {
+      return placeholder;
+    }
+    return value || '';
   };
 
   // FETCH PHOTO
@@ -308,7 +320,7 @@ export default function ProfileForm({route}) {
                       Nama Lengkap
                     </Text>
                     <TextInput
-                      value={formData.name}
+                      value={renderLoadingOrValue(formData.name)}
                       onChangeText={value => handleInputChange('name', value)}
                       onBlur={onBlur}
                       editable={isEditing}
@@ -339,9 +351,9 @@ export default function ProfileForm({route}) {
                       Nomor Telepon
                     </Text>
                     <TextInput
-                      value={formData.phone}
+                      value={renderLoadingOrValue(formData.phone)}
                       onBlur={onBlur}
-                      keyboardType='phone-pad'
+                      keyboardType="numeric"
                       onChangeText={value => handleInputChange('phone', value)}
                       editable={isEditing}
                       placeholderTextColor={
@@ -369,7 +381,7 @@ export default function ProfileForm({route}) {
                       Alamat Lengkap
                     </Text>
                     <TextInput
-                      value={formData.address}
+                      value={renderLoadingOrValue(formData.address)}
                       onBlur={onBlur}
                       onChangeText={value =>
                         handleInputChange('address', value)
@@ -394,7 +406,7 @@ export default function ProfileForm({route}) {
                 Email
               </Text>
               <TextInput
-                value={formData.email}
+                value={renderLoadingOrValue(formData.email)}
                 onChangeText={value => handleInputChange('email', value)}
                 editable={false}
                 placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
@@ -411,14 +423,14 @@ export default function ProfileForm({route}) {
                 Tanggal Pendaftaran
               </Text>
               <TextInput
-                value={new Date(data.created_at || '').toLocaleDateString(
+                value={renderLoadingOrValue(new Date(data.created_at || '').toLocaleDateString(
                   'id-ID',
                   {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric',
                   },
-                )}
+                ))}
                 editable={false}
                 placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
                 className="h-12 w-full mx-auto px-4  rounded-md border-[0.5px] border-neutral-700  font-poppins-regular"

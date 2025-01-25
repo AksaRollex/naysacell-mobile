@@ -29,6 +29,7 @@ import ArrowRight from './images/svg/arrow-right.svg';
 import Eye from './images/svg/eye.svg';
 import EyeCrossed from './images/svg/eye-crossed.svg';
 import Mail from './images/svg/mail.svg';
+import Headset from './images/svg/headset.svg'
 import Pencil from './images/svg/pencil.svg';
 import SignOut from './images/svg/sign-out.svg';
 import MasterDefault from './images/svg/master-default.svg';
@@ -58,6 +59,7 @@ export {
   Eye,
   EyeCrossed,
   Mail,
+  Headset,
   FreeFireIcon,
   PUBGIcon,
   ValorantIcon,

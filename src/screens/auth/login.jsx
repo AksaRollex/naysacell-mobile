@@ -7,13 +7,13 @@ import {
   Image,
   useColorScheme,
   ImageBackground,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useState} from 'react';
 import {
   BLUE_COLOR,
   DARK_BACKGROUND,
   DARK_COLOR,
-  GREY_COLOR,
   LIGHT_COLOR,
   SLATE_COLOR,
   WHITE_BACKGROUND,
@@ -23,7 +23,6 @@ import {Controller, useForm} from 'react-hook-form';
 import axios from '../../libs/axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
-import Header from '../../components/Header';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import ModalAfterProcess from '../../components/ModalAfterProcess';
 rem = multiplier => baseRem * multiplier;
@@ -45,7 +44,7 @@ export default function LoginPage() {
   const queryClient = useQueryClient();
 
   const {mutate: login, isLoading} = useMutation({
-    mutationFn: data => axios.post(`/auth/login`, data),
+    mutationFn: data => axios.post(`/auth/loginMobile`, data),
     onSuccess: async res => {
       await AsyncStorage.setItem('userToken', res.data.token);
       queryClient.invalidateQueries({
@@ -88,7 +87,9 @@ export default function LoginPage() {
           </View>
 
           <View className="flex-row items-start justify-start">
-            <Text className="font-poppins-semibold text-white">Belum punya akun ?</Text>
+            <Text className="font-poppins-semibold text-white">
+              Belum punya akun ?
+            </Text>
             <TouchableOpacity
               className="rounded-md"
               onPress={() => navigation.navigate('registerPage')}>
@@ -128,7 +129,9 @@ export default function LoginPage() {
                     placeholder="Masukkan Email"
                     label="Email"
                     color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
-                    placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
+                    placeholderTextColor={
+                      isDarkMode ? SLATE_COLOR : LIGHT_COLOR
+                    }
                     style={{fontFamily: 'Poppins-Regular'}}
                     className="h-12 w-full rounded-xl   px-4 bg-[#f8f8f8 ] border border-stone-600"
                     onBlur={onBlur}
@@ -138,9 +141,7 @@ export default function LoginPage() {
               )}
             />
             {errors.email && (
-              <Text
-                className="mt-1 text-red-400 font-poppins-regular"
-                style={{marginLeft: rem(2)}}>
+              <Text className="mt-1 text-red-400 font-poppins-regular mx-3">
                 {errors.email.message}
               </Text>
             )}
@@ -162,7 +163,9 @@ export default function LoginPage() {
                     label="Password"
                     style={{fontFamily: 'Poppins-Regular'}}
                     color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
-                    placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
+                    placeholderTextColor={
+                      isDarkMode ? SLATE_COLOR : LIGHT_COLOR
+                    }
                     className="h-12 w-full rounded-xl mx-auto px-4 pr-10 border border-stone-600"
                     onBlur={onBlur}
                     value={value}
@@ -175,7 +178,7 @@ export default function LoginPage() {
                     style={{
                       position: 'absolute',
                       right: 10,
-                      top: '65%',
+                      top: '50%',
                       transform: [{translateY: -12}],
                     }}>
                     {isSecure ? <Eye /> : <EyeCrossed />}
@@ -184,9 +187,7 @@ export default function LoginPage() {
               )}
             />
             {errors.password && (
-              <Text
-                className="mt-1 text-red-400 font-poppins-regular"
-                style={{marginLeft: rem(2)}}>
+              <Text className="mt-1 text-red-400 font-poppins-regular mx-3">
                 {errors.password.message}
               </Text>
             )}
@@ -195,7 +196,7 @@ export default function LoginPage() {
           <TouchableOpacity
             onPress={() => navigation.navigate('ForgotPassScreen')}>
             <Text
-              className="text-right my-6 mx-3  text-black text-md"
+              className="text-right my-4 mx-3  text-black text-sm"
               style={{color: BLUE_COLOR, fontFamily: 'Poppins-Regular'}}>
               Lupa Kata Sandi?
             </Text>
@@ -209,16 +210,16 @@ export default function LoginPage() {
               }}
               disabled={isLoading}
               onPress={handleSubmit(login)}>
-              <Text className="text-white text-md font-poppins-bold">
-                {isLoading ? 'LOADING...' : 'MASUK'}
+              <Text className="text-white text-sm font-poppins-bold">
+                {isLoading ? <ActivityIndicator color="white" /> : 'MASUK'}
               </Text>
             </TouchableOpacity>
           </View>
           <TouchableOpacity
-            onPress={() => navigation.navigate('BantuanLogin')}
+            onPress={() => navigation.navigate('bantuanLogin')}
             className="my-6">
             <Text
-              className="text-center capitalize text-md font-poppins-regular"
+              className="text-center capitalize text-sm font-poppins-regular"
               style={{color: BLUE_COLOR}}>
               Butuh bantuan ?
             </Text>

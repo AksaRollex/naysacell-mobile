@@ -1,17 +1,19 @@
-import {Text, useColorScheme, View} from 'react-native';
-import React from 'react';
+import {Text, useColorScheme, View, Share, Modal, TouchableOpacity} from 'react-native';
+import React, {useState} from 'react';
 import {
   DARK_BACKGROUND,
   DARK_COLOR,
   LIGHT_BACKGROUND,
   LIGHT_COLOR,
+  BLUE_COLOR
 } from '../../../utils/const';
+import IonIcons from 'react-native-vector-icons/Ionicons';
 import {rupiah} from '../../../libs/utils';
 
 export default function DetailHistoryDeposit({route}) {
   const {item} = route.params;
   const isDarkMode = useColorScheme() === 'dark';
-  console.log(item);
+  const [shareModalVisible, setShareModalVisible] = useState(true);
 
   const statusColor = status => {
     if (status === 'success') {
@@ -37,6 +39,41 @@ export default function DetailHistoryDeposit({route}) {
     }
   };
 
+  const shareTransaction = async () => {
+    try {
+      const shareMessage = `Detail Deposit
+Kode Transaksi : ${item?.deposit_code}
+Jumlah Deposit : ${rupiah(item?.amount)}
+Nomor Tujuan  : ${item?.user_numbe}
+Status Deposit : ${item.status}
+Status Pembayaran : ${(item?.payment_status || 'Pending')}
+Tanggal Deposit : ${new Date(item?.created_at || '').toLocaleDateString(
+        'id-ID',
+        {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        },
+      )}`;
+
+      const result = await Share.share({
+        message: shareMessage,
+        title: 'Detail Transaksi',
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      console.error('Error sharing transaction:', error);
+    }
+  };
+
   return (
     <View
       className="w-full h-full"
@@ -44,14 +81,11 @@ export default function DetailHistoryDeposit({route}) {
         backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
       }}>
       <View className="p-3">
-        <View className="w-full p-3 rounded-xl bg-[#1c1c1c]  justify-between flex-col flex-wrap">
-          <Text
-            className="text-center font-poppins-semibold text-base uppercase"
-            style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-            Informasi Detail
-          </Text>
+        <View
+          className="w-full p-3 rounded-xl justify-between flex-col flex-wrap"
+          style={{backgroundColor: isDarkMode ? '#1e1e1e' : '#fff'}}>
           <View
-            className="w-full p-3 rounded-xl flex-col mt-3 "
+            className="w-full p-3 rounded-xl flex-col"
             style={{
               borderColor: '#464646',
               borderStyle: 'dashed',
@@ -59,60 +93,60 @@ export default function DetailHistoryDeposit({route}) {
             }}>
             <View className="flex-row justify-between items-center my-1 ">
               <Text
-                className="text-md font-poppins-regular"
+                className="text-sm font-poppins-regular"
                 style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                 Kode Transaksi
               </Text>
               <Text
-                className="text-md font-poppins-regular"
+                className="text-sm font-poppins-regular"
                 style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                 {item?.deposit_code}
               </Text>
             </View>
             <View className="flex-row justify-between items-center my-1">
               <Text
-                className="text-md font-poppins-regular"
+                className="text-sm font-poppins-regular"
                 style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                 Status Deposit
               </Text>
               <Text
-                className="text-md font-poppins-regular"
+                className="text-sm font-poppins-semibold"
                 style={{color: statusColor(item?.status)}}>
                 {textStatus(item?.status)}
               </Text>
             </View>
             <View className="flex-row justify-between items-center my-1">
               <Text
-                className="text-md font-poppins-regular"
+                className="text-sm font-poppins-regular"
                 style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                 Jumlah Deposit
               </Text>
               <Text
-                className="text-md font-poppins-regular"
+                className="text-sm font-poppins-regular"
                 style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                 {rupiah(item?.amount)}
               </Text>
             </View>
             <View className="flex-row justify-between items-center my-1">
               <Text
-                className="text-md font-poppins-regular"
+                className="text-sm font-poppins-regular"
                 style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                 Nomor Tujuan
               </Text>
               <Text
-                className="text-md font-poppins-regular"
+                className="text-sm font-poppins-regular"
                 style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                 {item?.user_number}
               </Text>
             </View>
             <View className="flex-row justify-between items-center my-1">
               <Text
-                className="text-md font-poppins-regular"
+                className="text-sm font-poppins-regular"
                 style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                 Tanggal Deposit
               </Text>
               <Text
-                className="text-md font-poppins-regular"
+                className="text-sm font-poppins-regular"
                 style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                 {new Date(item?.created_at || '').toLocaleDateString('id-ID', {
                   year: 'numeric',
@@ -124,6 +158,41 @@ export default function DetailHistoryDeposit({route}) {
           </View>
         </View>
       </View>
+      <Modal
+        visible={shareModalVisible}
+        transparent={true}
+        animationType="slide">
+        <View
+          className="mx-3 rounded-t-2xl p-3"
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            backgroundColor: isDarkMode ? '#1e1e1e' : '#fff',
+            shadowColor: '#000',
+            shadowOffset: {width: 0, height: -2},
+            shadowOpacity: 0.2,
+            shadowRadius: 4,
+          }}>
+          <View className="items-center">
+            <TouchableOpacity onPress={shareTransaction}>
+              <View className=" items-center  justify-center">
+                <View
+                  className="p-3 w-full rounded-2xl flex-row space-x-2  items-center justify-center "
+                  style={{backgroundColor: isDarkMode ? '#262626' : '#f8f8f8'}}>
+                  <IonIcons name="share-social" size={25} color={BLUE_COLOR} />
+                  <Text
+                    className="text-sm capitalize font-poppins-medium "
+                    style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                    Bagi bukti bayar
+                  </Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }

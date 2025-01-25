@@ -1,4 +1,10 @@
-import {ScrollView, StyleSheet, Text, View, useColorScheme} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  useColorScheme,
+} from 'react-native';
 import React from 'react';
 import {
   DARK_BACKGROUND,
@@ -7,19 +13,34 @@ import {
   DARK_COLOR,
   LIGHT_COLOR,
 } from '../../../utils/const';
-import {List} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function IndexLaporan({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
 
-  const GrafikPenjualan = () => {
-    navigation.navigate('GrafikPenjualan');
-  };
-
-  const Laporan = () => {
-    navigation.navigate('Laporan');
-  };
+  const mainMenus = [
+    {
+      title: 'Grafik Penjualan',
+      icon: 'chart-timeline-variant-shimmer',
+      screen: 'GrafikPenjualan',
+      color: '#138EE9',
+      description: 'Ketuk untuk masuk ke halaman grafik penjualan',
+    },
+    {
+      title: 'Transaksi Produk',
+      icon: 'script-text',
+      screen: 'Laporan',
+      color: '#138EE9',
+      description: 'Ketuk untuk masuk ke halaman transaksi produk',
+    },
+    {
+      title: 'Transaksi Deposit',
+      icon: 'credit-card-plus',
+      screen: 'LaporanDeposit',
+      color: '#138EE9',
+      description: 'Ketuk untuk masuk ke halaman transaksi deposit',
+    },
+  ];
 
   return (
     <View
@@ -27,100 +48,68 @@ export default function IndexLaporan({navigation}) {
       style={{
         backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
       }}>
-      <ScrollView
-        contentContainerStyle={styles.scrollViewContent}
-        className="gap-y-4 my-4">
-        <View>
-          <List.Item
-            style={{
-              borderTopLeftRadius: 10,
-              borderTopRightRadius: 10,
-              backgroundColor: isDarkMode ? '#262626' : '#f8f8f8',
-            }}
-            title={
-              <Text
-                className="font-poppins-medium text-[15px]"
-                style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                Grafik Penjualan
-              </Text>
-            }
-            left={() => (
+      <View className="gap-y-4 ">
+        <View className="flex-row flex-wrap justify-between px-3 gap-3">
+          {mainMenus.map((menu, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.menuCard(isDarkMode)}
+              className="w-[48%]"
+              onPress={() => navigation.navigate(menu.screen)}>
               <View
-                className="rounded-full ml-3"
-                style={{backgroundColor: BLUE_COLOR}}>
+                style={[
+                  styles.menuIconContainer,
+                  {backgroundColor: menu.color},
+                ]}
+                className="rounded-full">
                 <MaterialCommunityIcons
-                  name="chart-line-variant"
-                  size={17}
-                  color={'white'}
-                  style={{padding: 5}}
+                  name={menu.icon}
+                  size={22}
+                  color="white"
                 />
               </View>
-            )}
-            right={props => (
-              <List.Icon
-                {...props}
-                icon="chevron-right"
-                color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
-              />
-            )}
-            className="bg-[#ffffff] border-black p-2 ml-3 mr-3"
-            onPress={GrafikPenjualan}
-          />
-          <View
-            style={{
-              borderBottomWidth: 1,
-              borderBottomColor: isDarkMode ? '#262626' : '#f8f8f8',
-              marginHorizontal: 15,
-            }}
-          />
-        </View>
-        <View>
-          <List.Item
-            style={{
-              borderTopLeftRadius: 10,
-              borderTopRightRadius: 10,
-              backgroundColor: isDarkMode ? '#262626' : '#f8f8f8',
-            }}
-            title={
-              <Text
-                className="font-poppins-medium text-[15px]"
-                style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                Laporan
+              <Text style={styles.menuTitle(isDarkMode)}>{menu.title}</Text>
+              <Text style={styles.menuDescription(isDarkMode)}>
+                {menu.description}
               </Text>
-            }
-            left={() => (
-              <View
-                className="rounded-full ml-3"
-                style={{backgroundColor: BLUE_COLOR}}>
-                <MaterialCommunityIcons
-                  name="note-check"
-                  size={17}
-                  color={'white'}
-                  style={{padding: 5}}
-                />
-              </View>
-            )}
-            right={props => (
-              <List.Icon
-                {...props}
-                icon="chevron-right"
-                color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
-              />
-            )}
-            className="bg-[#ffffff] border-black p-2 ml-3 mr-3"
-            onPress={Laporan}
-          />
-          <View
-            style={{
-              borderBottomWidth: 1,
-              borderBottomColor: isDarkMode ? '#262626' : '#f8f8f8',
-              marginHorizontal: 15,
-            }}
-          />
+            </TouchableOpacity>
+          ))}
         </View>
-      </ScrollView>
+      </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  menuCard: isDarkMode => ({
+    backgroundColor: isDarkMode ? '#262626' : '#fff',
+    borderRadius: 16,
+    padding: 16,
+    width: '47%',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  }),
+  menuIconContainer: {
+    backgroundColor: BLUE_COLOR,
+    width: 56,
+    height: 56,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  menuTitle: isDarkMode => ({
+    fontSize: 17,
+    color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+    fontFamily: 'Poppins-SemiBold',
+    marginBottom: 8,
+  }),
+  menuDescription: isDarkMode => ({
+    fontSize: 13,
+    color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+    lineHeight: 16,
+    fontFamily: 'Poppins-Regular',
+  }),
+});

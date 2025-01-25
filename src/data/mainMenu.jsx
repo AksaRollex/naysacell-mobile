@@ -17,43 +17,28 @@ export default mainMenu = [
   {
     label: 'Pulsa & Data',
     path: 'Pulsa',
+    ikon: 'wifi',
   },
-  // {
-  //   label: 'PLN',
-  //   ikon: PLNIkon,
-  //   path: 'LayananPLN',
-  // },
   {
     label: 'Shopeepay',
     path: 'Shopeepay',
+    ikon: 'wallet',
   },
   {
     label: 'Dana',
     path: 'Dana',
+    ikon: 'wallet',
   },
   {
     label: 'GoPay',
-    path: 'GoPay',
+    ikon: 'wallet',
+    ikon: 'wallet',
   },
   {
     label: 'OVO',
     path: 'OVO',
+    ikon: 'wallet',
   },
-  // {
-  //   label: 'BPJS Kesehatan',
-  //   ikon: BPJSIkon,
-  //   path: 'BPJSKesehatan',
-  // },
-  // {
-  //   label: 'PDAM',
-  //   ikon: PDAMIkon,
-  //   path: 'PDAM',
-  // },
-  // {
-  //   label: 'Internet',
-  //   ikon: InternetIkon,
-  //   path: 'Internet',
-  // },
 ];
 
 export const gameMenu = [

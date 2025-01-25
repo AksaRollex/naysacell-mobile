@@ -21,7 +21,6 @@ import {
 import {Controller, useForm} from 'react-hook-form';
 import axios from '../../../libs/axios';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
-import Feather from 'react-native-vector-icons/Feather';
 import {Eye, EyeCrossed} from '../../../../assets';
 const PHASES = {
   EMAIL: 'EMAIL',
@@ -128,10 +127,10 @@ export default function ForgotPasswordScreen() {
               Email
             </Text>
             <TextInput
-              placeholder="Masukkan email"
+              placeholder="Masukkan Email"
               label="Email"
               color={isDarkMode ? DARK_COLOR : '#000'}
-              placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
+              placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
               className="h-12 w-full rounded-xl px-4 border border-stone-600"
               style={{fontFamily: 'Poppins-Regular'}}
               onBlur={onBlur}
@@ -146,18 +145,20 @@ export default function ForgotPasswordScreen() {
 
   const renderOTPPhase = () => (
     <>
-      <View className="flex-col my-6">
+      <View className="flex-row mb-2 px-3 gap-x-2">
         <Text
-          className="text-sm text-center capitalize font-poppins-regular"
-          style={{color: isDarkMode ? SLATE_COLOR : GREY_COLOR}}>
+          className="text-sm text-start capitalize font-poppins-regular"
+          style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
           Kode OTP telah dikirim ke email
         </Text>
         <Text
-          className="text-sm text-center font-poppins-regular"
-          style={{color: isDarkMode ? SLATE_COLOR : GREY_COLOR}}>
+          className="text-sm text-start ms-2 font-poppins-regular"
+          style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
           {email}
         </Text>
       </View>
+      <View className="px-3">
+
       <Controller
         name="otp"
         control={control}
@@ -170,17 +171,22 @@ export default function ForgotPasswordScreen() {
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <OTPInputView
-            style={{width: '80%', height: 60, alignSelf: 'center'}}
+            style={{
+              width: '100%',
+              height: 60,
+              alignSelf: 'center',
+              justifyContent: 'center',
+            }}
             pinCount={6}
             code={value}
             onCodeChanged={onChange}
             autoFocusOnLoad
             codeInputFieldStyle={{
-              width: 45,
-              height: 45,
+              width: 60,
+              height: 50,
               borderWidth: 1,
               borderColor: isDarkMode ? SLATE_COLOR : GREY_COLOR,
-              borderRadius: 8,
+              borderRadius: 12,
               color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
               fontSize: 20,
             }}
@@ -190,10 +196,12 @@ export default function ForgotPasswordScreen() {
           />
         )}
       />
-      <View className="items-center flex-row justify-center mt-2 gap-x-2">
+      </View>
+
+      <View className="items-start flex-row justify-start px-3 mt-2 gap-x-2">
         <Text
-          className="text-md text-center capitalize font-poppins-regular"
-          style={{color: isDarkMode ? SLATE_COLOR : GREY_COLOR}}>
+          className="text-sm text-start capitalize font-poppins-regular"
+          style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
           Tidak menerima email ?
         </Text>
         <TouchableOpacity
@@ -218,7 +226,7 @@ export default function ForgotPasswordScreen() {
             }
           }}>
           <Text
-            className="text-md text-center font-poppins-regular"
+            className="text-sm text-center capitalize font-poppins-regular"
             style={{color: BLUE_COLOR}}>
             Kirim ulang
           </Text>
@@ -250,8 +258,8 @@ export default function ForgotPasswordScreen() {
               placeholder="Masukkan Password Baru"
               label="Password"
               secureTextEntry={passwordIsSecure}
-              color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
-              placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
+              color={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
+              placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
               className="h-12 w-full rounded-xl mx-auto px-4 border border-stone-600 mb-4"
               style={{fontFamily: 'Poppins-Regular'}}
               onBlur={onBlur}
@@ -290,7 +298,7 @@ export default function ForgotPasswordScreen() {
               placeholder="Konfirmasi Password Baru"
               label="Konfirmasi Password"
               color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
-              placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
+              placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
               className="h-12 w-full rounded-xl mx-auto px-4 border border-stone-600"
               style={{fontFamily: 'Poppins-Regular'}}
               onBlur={onBlur}
@@ -364,14 +372,10 @@ export default function ForgotPasswordScreen() {
         className="w-full h-[200px] items-start justify-start ">
         <View className="p-4">
           <View className="justify-start flex-col items-start">
-            <Text
-              className="text-white capitalize text-2xl font-poppins-semibold"
-              >
+            <Text className="text-white capitalize text-2xl font-poppins-semibold">
               {getPhaseTitle()}
             </Text>
-            <Text
-              className="text-white capitalize text-sm font-poppins-medium"
-              >
+            <Text className="text-white capitalize text-sm font-poppins-medium">
               {getPhaseSubtitle()}
             </Text>
           </View>
@@ -384,13 +388,13 @@ export default function ForgotPasswordScreen() {
           {phase === PHASES.NEW_PASSWORD && renderPasswordPhase()}
 
           {errors[Object.keys(errors)[0]] && (
-            <Text className="mt-2 mx-auto text-red-400 font-poppins-regular">
+            <Text className="mt-2 mx-3 text-red-400 font-poppins-regular text-start">
               {errors[Object.keys(errors)[0]].message}
             </Text>
           )}
 
           {error && (
-            <Text className="mt-2 mx-auto text-red-400 font-poppins-regular">
+            <Text className="mt-2 mx-3 capitalize text-red-400 font-poppins-regular text-start">
               {error}
             </Text>
           )}
@@ -403,11 +407,12 @@ export default function ForgotPasswordScreen() {
             disabled={loading}
             style={{
               backgroundColor: BLUE_COLOR,
+              opacity: loading ? 0.7 : 1,
             }}>
             {loading ? (
               <ActivityIndicator color="white" />
             ) : (
-              <Text className="text-white text-md font-poppins-bold">
+              <Text className="text-white text-sm font-poppins-bold">
                 {phase === PHASES.NEW_PASSWORD ? 'RESET PASSWORD' : 'LANJUT'}
               </Text>
             )}
@@ -421,9 +426,8 @@ export default function ForgotPasswordScreen() {
             <TouchableOpacity
               onPress={() => navigation.navigate('LoginScreen')}
               className="ms-1 flex-row">
-              <Feather name="chevrons-left" size={21} color={BLUE_COLOR} />
               <Text
-                className="text-md font-poppins-medium text-center"
+                className="text-sm font-poppins-medium text-center"
                 style={{
                   color: isDarkMode ? BLUE_COLOR : BLUE_COLOR,
                 }}>
@@ -431,13 +435,13 @@ export default function ForgotPasswordScreen() {
               </Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate('bantuanLogin')}>
+          {/* <TouchableOpacity onPress={() => navigation.navigate('bantuanLogin')}>
             <Text
-              className="text-center capitalize text-md font-poppins-regular"
+              className="text-center capitalize text-sm font-poppins-regular"
               style={{color: BLUE_COLOR}}>
               Butuh bantuan ?
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       )}
     </View>

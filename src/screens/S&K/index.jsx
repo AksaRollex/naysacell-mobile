@@ -16,7 +16,9 @@ export default function SyaratDanKetentuan() {
       style={{
         backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
       }}>
-      <ScrollView className="mx-auto my-5 ">
+      <ScrollView
+        className="m-3 my-5 "
+        style={{backgroundColor: isDarkMode ? '#1e1e1e' : '#fff'}}>
         <View id="S&K" className="p-3 items-center">
           <Text
             className="text-base font-poppins-semibold"

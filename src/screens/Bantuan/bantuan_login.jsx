@@ -17,7 +17,9 @@ export default function BantuanLogin() {
       style={{
         backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
       }}>
-      <View className=" mx-auto my-5  ">
+      <View
+        className="m-3 my-5"
+        style={{backgroundColor: isDarkMode ? '#1e1e1e' : '#fff'}}>
         <Text
           className="text-base text-center  my-2"
           style={{

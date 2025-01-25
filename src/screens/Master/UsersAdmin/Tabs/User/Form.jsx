@@ -1,4 +1,5 @@
 import {
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -16,6 +17,7 @@ import {
   WHITE_BACKGROUND,
   WHITE_COLOR,
   LIGHT_COLOR,
+  GREY_COLOR,
 } from '../../../../../utils/const';
 import Toast from 'react-native-toast-message';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
@@ -146,7 +148,7 @@ export default function FormUser({route, navigation}) {
               {id ? 'Edit' : 'Tambah'} User
             </Text>
           </View>
-          <View className="p-3">
+          <ScrollView className="p-3">
             <Controller
               control={control}
               name="name"
@@ -238,7 +240,12 @@ export default function FormUser({route, navigation}) {
                   </Text>
                   <TextInput
                     value={value}
-                    onChangeText={onChange}
+                    onChangeText={text => {
+                      const sanitizedText = text
+                        .replace(/[^a-zA-Z0-9 ]/g, '')
+                        .slice(0, 13);
+                      onChange(sanitizedText);
+                    }}
                     onBlur={onBlur}
                     keyboardType="numeric"
                     editable={!isLoadingData}
@@ -304,48 +311,51 @@ export default function FormUser({route, navigation}) {
                   },
                 }}
                 render={({field: {onChange, onBlur, value}}) => (
-                  <View className="relative">
-                    <Text
-                      className="font-poppins-semibold my-1"
-                      style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
-                      Password
-                    </Text>
-                    <TextInput
-                      value={value}
-                      onChangeText={onChange}
-                      onBlur={onBlur}
-                      style={{fontFamily: 'Poppins-Regular'}}
-                      placeholder="Password"
-                      placeholderTextColor={
-                        isDarkMode ? SLATE_COLOR : GREY_COLOR
-                      }
-                      keyboardType="numeric"
-                      className={`h-12 w-full mx-auto px-4 rounded-md border-[0.5px] border-neutral-700 font-poppins-regular ${
-                        !isLoadingData ? '' : 'bg-gray-100'
-                      }`}
-                      secureTextEntry={showPassword}
-                    />
+                  <>
+                    <View className="relative">
+                      <Text
+                        className="font-poppins-semibold my-1"
+                        style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
+                        Password
+                      </Text>
+                      <TextInput
+                        value={value}
+                        onChangeText={onChange}
+                        onBlur={onBlur}
+                        style={{fontFamily: 'Poppins-Regular'}}
+                        placeholder="Password"
+                        placeholderTextColor={
+                          isDarkMode ? SLATE_COLOR : LIGHT_COLOR
+                        }
+                        keyboardType="numeric"
+                        className={`h-12 w-full mx-auto px-4 rounded-md border-[0.5px] border-neutral-700 font-poppins-regular ${
+                          !isLoadingData ? '' : 'bg-gray-100'
+                        }`}
+                        secureTextEntry={showPassword}
+                      />
 
-                    <TouchableOpacity
-                      onPress={() => setShowPassword(!showPassword)}
-                      style={{
-                        position: 'absolute',
-                        top: '70%',
-                        right: 10,
-                        transform: [{translateY: -12}],
-                      }}>
-                      {showPassword ? <Eye /> : <EyeCrossed />}
-                    </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => setShowPassword(!showPassword)}
+                        style={{
+                          position: 'absolute',
+                          top: '70%',
+                          right: 10,
+                          transform: [{translateY: -12}],
+                        }}>
+                        {showPassword ? <Eye /> : <EyeCrossed />}
+                      </TouchableOpacity>
+                    </View>
+
                     {errors.password && (
                       <Text className="text-red-500 text-sm mt-1">
                         {errors.password.message}
                       </Text>
                     )}
-                  </View>
+                  </>
                 )}
               />
             )}
-          </View>
+          </ScrollView>
         </View>
         <View style={[styles.bottom]} className="p-3">
           <TouchableOpacity
@@ -376,7 +386,7 @@ export default function FormUser({route, navigation}) {
         icon={'close-sharp'}
         iconColor={'#f43f5e'}
         iconSize={22}
-        bgIcon={'#fdecef'} 
+        bgIcon={'#fdecef'}
       />
     </>
   );

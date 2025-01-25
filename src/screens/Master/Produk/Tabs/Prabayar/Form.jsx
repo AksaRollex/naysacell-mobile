@@ -8,11 +8,7 @@ import {
   ScrollView,
 } from 'react-native';
 import React from 'react';
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import Toast from 'react-native-toast-message';
 import {
   DARK_BACKGROUND,
@@ -127,7 +123,7 @@ export default function FormPrabayar({route, navigation}) {
             {id ? 'Edit' : 'Tambah'} Produk
           </Text>
         </View>
-        <ScrollView className="p-3">
+        <ScrollView  className="p-3">
           <Controller
             control={control}
             name="product_name"
@@ -170,7 +166,12 @@ export default function FormPrabayar({route, navigation}) {
                 </Text>
                 <TextInput
                   value={value}
-                  onChangeText={onChange}
+                  onChangeText={text => {
+                    const sanitizedText = text
+                      .replace(/[^a-zA-Z0-9 ]/g, '')
+                      .slice(0, 13);
+                    onChange(sanitizedText);
+                  }}
                   onBlur={onBlur}
                   editable={!isLoadingData}
                   keyboardType="numeric"
@@ -305,20 +306,19 @@ export default function FormPrabayar({route, navigation}) {
             )}
           />
         </ScrollView>
-          <View style={[styles.bottom]}  className="m-3">
-            <TouchableOpacity
-              style={[
-                styles.bottomButton,
-                {opacity: isLoadingData || isSaving ? 0.5 : 1},
-              ]}
-           
-              disabled={isLoadingData || isSaving}
-              onPress={onSubmit}>
-              <Text style={styles.buttonLabel}>
-                {isLoadingData || isSaving ? 'Loading...' : 'Simpan'}
-              </Text>
-            </TouchableOpacity>
-          </View>
+        <View style={[styles.bottom]} className="m-3">
+          <TouchableOpacity
+            style={[
+              styles.bottomButton,
+              {opacity: isLoadingData || isSaving ? 0.5 : 1},
+            ]}
+            disabled={isLoadingData || isSaving}
+            onPress={onSubmit}>
+            <Text style={styles.buttonLabel}>
+              {isLoadingData || isSaving ? 'Loading...' : 'Simpan'}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );

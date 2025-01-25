@@ -1,4 +1,10 @@
-import {ScrollView, StyleSheet, Text, View, useColorScheme} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  useColorScheme,
+} from 'react-native';
 import React from 'react';
 import {
   DARK_BACKGROUND,
@@ -7,19 +13,27 @@ import {
   DARK_COLOR,
   LIGHT_COLOR,
 } from '../../../utils/const';
-import {List} from 'react-native-paper';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 export default function IndexUsersAdmin({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
 
-  const Admin = () => {
-    navigation.navigate('Admin');
-  };
-
-  const User = () => {
-    navigation.navigate('User');
-  };
+  const mainMenus = [
+    {
+      title: 'Admin',
+      icon: 'user-cog',
+      screen: 'Admin',
+      color: '#138EE9',
+      description: 'Ketuk untuk masuk ke halaman admin',
+    },
+    {
+      title: 'User',
+      icon: 'user-alt',
+      screen: 'User',
+      color: '#138EE9',
+      description: 'Ketuk untuk masuk ke halaman user',
+    },
+  ];
 
   return (
     <View
@@ -27,100 +41,66 @@ export default function IndexUsersAdmin({navigation}) {
       style={{
         backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
       }}>
-      <ScrollView
-        contentContainerStyle={styles.scrollViewContent}
-        className="gap-y-4 my-4">
-        <View>
-          <List.Item
-            style={{
-              borderTopLeftRadius: 10,
-              borderTopRightRadius: 10,
-              backgroundColor: isDarkMode ? '#262626' : '#f8f8f8',
-            }}
-            title={
-              <Text
-                className="font-poppins-medium text-[15px]"
-                style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                User
-              </Text>
-            }
-            left={() => (
-              <View
-                className="rounded-full ml-3"
-                style={{backgroundColor: BLUE_COLOR}}>
-                <FontAwesome5
-                  name="user-alt"
-                  size={17}
-                  color={'white'}
-                  style={{padding: 5}}
-                />
-              </View>
-            )}
-            right={props => (
-              <List.Icon
-                {...props}
-                icon="chevron-right"
-                color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
-              />
-            )}
-            className="bg-[#ffffff] border-black p-2 ml-3 mr-3"
-            onPress={User}
-          />
-          <View
-            style={{
-              borderBottomWidth: 1,
-              borderBottomColor: isDarkMode ? '#262626' : '#f8f8f8',
-              marginHorizontal: 15,
-            }}
-          />
+      <View className="gap-y-4 ">
+        <View className=" flex-row justify-between items-center p-3">
+          <View className="items-center flex-row gap-x-1 justify-between">
+            {mainMenus.map((menu, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.menuCard(isDarkMode)}
+                onPress={() => navigation.navigate(menu.screen)}>
+                <View
+                  style={[
+                    styles.menuIconContainer,
+                    {backgroundColor: menu.color},
+                  ]}
+                  className="rounded-full">
+                  <FontAwesome5 name={menu.icon} size={22} color="white" />
+                </View>
+                <Text style={styles.menuTitle(isDarkMode)}>{menu.title}</Text>
+                <Text style={styles.menuDescription(isDarkMode)}>
+                  {menu.description}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
-        <View>
-          <List.Item
-            style={{
-              borderTopLeftRadius: 10,
-              borderTopRightRadius: 10,
-              backgroundColor: isDarkMode ? '#262626' : '#f8f8f8',
-            }}
-            title={
-              <Text
-                className="font-poppins-medium text-[15px]"
-                style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                Admin
-              </Text>
-            }
-            left={() => (
-              <View
-                className="rounded-full ml-3"
-                style={{backgroundColor: BLUE_COLOR}}>
-                <FontAwesome5
-                  name="user-cog"
-                  size={17}
-                  color={'white'}
-                  style={{padding: 5}}
-                />
-              </View>
-            )}
-            right={props => (
-              <List.Icon
-                {...props}
-                icon="chevron-right"
-                color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
-              />
-            )}
-            className="bg-[#ffffff] border-black p-2 ml-3 mr-3"
-            onPress={Admin}
-          />
-          <View
-            style={{
-              borderBottomWidth: 1,
-              borderBottomColor: isDarkMode ? '#262626' : '#f8f8f8',
-              marginHorizontal: 15,
-            }}
-          />
-        </View>
-      </ScrollView>
+      </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+
+  menuCard: isDarkMode => ({
+    backgroundColor: isDarkMode ? '#262626' : '#fff',
+    borderRadius: 16,
+    padding: 16,
+    width: '49%',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  }),
+  menuIconContainer: {
+    backgroundColor: BLUE_COLOR,
+    width: 56,
+    height: 56,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  menuTitle: isDarkMode => ({
+    fontSize: 17,
+    color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+    fontFamily: 'Poppins-SemiBold',
+    marginBottom: 8,
+  }),
+  menuDescription: isDarkMode => ({
+    fontSize: 13,
+    color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+    lineHeight: 16,
+    fontFamily: 'Poppins-Regular',
+  }),
+});

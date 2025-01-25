@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {
+  BLUE_COLOR,
   DARK_BACKGROUND,
   DARK_COLOR,
   LIGHT_BACKGROUND,
@@ -37,6 +38,7 @@ export default function Prabayar({navigation}) {
 
   const [tempCategory, setTempCategory] = useState('');
   const [tempProvider, setTempProvider] = useState('');
+  const [tempEmoney, setTempEMoney] = useState('');
 
   const [payload, setPayload] = useState({});
 
@@ -49,7 +51,7 @@ export default function Prabayar({navigation}) {
           setTempProvider(selectedProvider);
         }}
         className=" flex-row items-center rounded-md justify-between p-[14px] min-w-[70px]"
-        style={{backgroundColor: isDarkMode ? '#262626' : '#f8f8f8'}}>
+        style={{backgroundColor: isDarkMode ? '#262626' : '#fff'}}>
         <View className="flex-row items-center">
           <IonIcons
             name="apps"
@@ -89,7 +91,7 @@ export default function Prabayar({navigation}) {
       'Three',
       'AXIS',
     ];
-    const emoneyType = ['GoPay', 'Ovo', 'Dana', 'ShopeePay'];
+    const emoneyType = ['Gopay', 'Ovo', 'Dana', 'Shopeepay'];
 
     const hasChanges = () => {
       return tempCategory !== '' || tempProvider !== '';
@@ -121,7 +123,7 @@ export default function Prabayar({navigation}) {
               <Text
                 style={[
                   styles.modalTitle,
-                  {color: isDarkMode ? WHITE_COLOR : DARK_COLOR},
+                  {color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR},
                 ]}>
                 Pilih Filter
               </Text>
@@ -131,7 +133,11 @@ export default function Prabayar({navigation}) {
                   setTempProvider('');
                   onClose();
                 }}>
-                <MaterialIcons name="close" size={24} color={ isDarkMode ? WHITE_COLOR : DARK_COLOR} />
+                <MaterialIcons
+                  name="close"
+                  size={24}
+                  color={isDarkMode ? WHITE_COLOR : LIGHT_COLOR}
+                />
               </TouchableOpacity>
             </View>
 
@@ -139,7 +145,7 @@ export default function Prabayar({navigation}) {
               <View className="flex-1 mr-2">
                 <Text
                   className="font-poppins-semibold mb-2"
-                  style={{color: isDarkMode ? WHITE_COLOR : DARK_COLOR}}>
+                  style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
                   Kategori
                 </Text>
                 <ScrollView className="max-h-64">
@@ -189,6 +195,36 @@ export default function Prabayar({navigation}) {
                               : 'text-black font-poppins-regular'
                           }`}>
                           {provider}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+                </View>
+              )}
+              {tempCategory === 'E-Money' && (
+                <View className="flex-1 ml-2">
+                  <Text
+                    className=" font-poppins-semibold mb-2"
+                    style={{color: isDarkMode ? WHITE_COLOR : DARK_COLOR}}>
+                    Provider
+                  </Text>
+                  <ScrollView className="max-h-64">
+                    {emoneyType.map(emoney => (
+                      <TouchableOpacity
+                        key={emoney}
+                        className={`p-3 rounded-md mb-2 ${
+                          tempProvider === emoney
+                            ? 'bg-blue-100'
+                            : 'bg-[#ececec]'
+                        }`}
+                        onPress={() => setTempProvider(emoney)}>
+                        <Text
+                          className={`${
+                            tempProvider === emoney
+                              ? 'text-blue-500 font-poppins-semibold'
+                              : 'text-black font-poppins-regular'
+                          }`}>
+                          {emoney}
                         </Text>
                       </TouchableOpacity>
                     ))}
@@ -258,11 +294,10 @@ export default function Prabayar({navigation}) {
         }}>
         <View className="flex-row w-full  my-2 justify-center ">
           <View className="w-full flex-row justify-between items-start">
-            <View className="flex-row  items-start gap-x-2 ">
-              <Image
-                source={require('../../../../../../assets/images/logo.png')}
-                className="w-12 h-12 rounded-full"
-              />
+            <View className="flex-row  items-center justify-start gap-x-2 ">
+              <View className="p-3 items-center rounded-full   bg-[#242424]">
+                <MaterialIcons name="shopping-cart" size={25} color={BLUE_COLOR} />
+              </View>
               <View className="flex-col  w-64 items-start justify-start ">
                 <Text
                   className="font-poppins-medium text-base "

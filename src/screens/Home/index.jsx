@@ -9,8 +9,8 @@ import {
   View,
   useColorScheme,
 } from 'react-native';
-import {AddIkon, BellIkon, HeaderBG, Mail} from '../../../assets';
-import mainMenu, {gameMenu} from '../../data/mainMenu';
+import {AddIkon, BellIkon, HeaderBG, Headset, Mail} from '../../../assets';
+import mainMenu from '../../data/mainMenu';
 import axios from '../../libs/axios';
 import {rupiah} from '../../libs/utils';
 import {
@@ -24,7 +24,6 @@ import {
   windowWidth,
 } from '../../utils/const';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
-import {useQueryClient, useMutation} from '@tanstack/react-query';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 
 const getGreeting = () => {
@@ -40,9 +39,7 @@ export default function HomeScreen({navigation}) {
   const [greeting, setGreeting] = useState(getGreeting());
   const [data, setData] = useState([]);
   const [saldo, setSaldo] = useState('');
-  const [idUser, setIdUser] = useState('');
-
-  const queryClient = useQueryClient();
+  const [saldoIsLoading, setSaldoIsLoading] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -77,15 +74,19 @@ export default function HomeScreen({navigation}) {
   }, []);
 
   useEffect(() => {
+    setSaldoIsLoading(true);
+
     const unsubscribe = navigation.addListener('focus', () => {
       axios
         .get('/auth/check-saldo')
         .then(response => {
           setSaldo(response.data);
-          console.log(response.data);
         })
         .catch(error => {
           console.error('Error fetching data:', error);
+        })
+        .finally(() => {
+          setSaldoIsLoading(false);
         });
     });
 
@@ -128,6 +129,13 @@ export default function HomeScreen({navigation}) {
               )}
 
               <View className="flex-row gap-4">
+                <TouchableOpacity onPress={() => navigation.navigate('CustomerService')}>
+                  <Headset
+                    width={24}
+                    height={24}
+                    fill={isDarkMode ? 'white' : 'black'}
+                  />
+                </TouchableOpacity>
                 <TouchableOpacity onPress={openWhatsApp}>
                   <Mail
                     width={24}
@@ -185,8 +193,12 @@ export default function HomeScreen({navigation}) {
                     style={{
                       color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
                     }}
-                    className="font-poppins-regular text-base">
-                    {rupiah(saldo?.balance)}
+                    className="font-poppins-regular text-sm">
+                    {saldoIsLoading ? (
+                      <Text>Memuat...</Text>
+                    ) : (
+                      <Text>{rupiah(saldo?.balance)}</Text>
+                    )}
                   </Text>
                 )}
               </View>
@@ -212,7 +224,7 @@ export default function HomeScreen({navigation}) {
                   style={{
                     color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
                   }}
-                  className="font-poppins-medium">
+                  className="font-poppins-semibold text-xs">
                   Deposit
                 </Text>
               </TouchableOpacity>
@@ -220,8 +232,15 @@ export default function HomeScreen({navigation}) {
           </View>
 
           {/* TOPUP & TAGIHAN */}
-          <View style={{marginHorizontal: HORIZONTAL_MARGIN}}>
-            <Text className="text-base font-poppins-semibold" style={{ color: isDarkMode ? DARK_COLOR : LIGHT_COLOR }}>
+          <View
+            className=" rounded-xl p-3"
+            style={{
+              backgroundColor: isDarkMode ? '#262626' : '#fff',
+              marginHorizontal: HORIZONTAL_MARGIN,
+            }}>
+            <Text
+              className="text-sm font-poppins-medium"
+              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
               Topup
             </Text>
             <View
@@ -243,14 +262,14 @@ export default function HomeScreen({navigation}) {
                     className=" w-24   justify-center items-center opacity-0.5 ">
                     <View className="w-24 h-11 justify-center items-center">
                       <FontAwesome5Icon
-                        name="money-bill"
+                        name={item.ikon}
                         size={30}
                         color={BLUE_COLOR}
                       />
                     </View>
                     <View className="my-2">
                       <Text
-                        className=" text-center text-sm font-poppins-medium"
+                        className=" text-center text-xs font-poppins-medium"
                         style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                         {item.label}
                       </Text>

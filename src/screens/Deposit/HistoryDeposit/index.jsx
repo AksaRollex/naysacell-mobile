@@ -1,14 +1,10 @@
-import {
-  Text,
-  View,
-  useColorScheme,
-  TouchableOpacity,
-} from 'react-native';
+import {Text, View, useColorScheme, TouchableOpacity} from 'react-native';
 import React, {useRef} from 'react';
 import {
   DARK_COLOR,
   GREY_COLOR,
   LIGHT_COLOR,
+  SLATE_COLOR,
   WHITE_BACKGROUND,
 } from '../../../utils/const';
 import ProductPaginate from '../../../components/ProductPaginate';
@@ -36,13 +32,17 @@ export default function HistoryDeposit() {
   const historiDepositCards = ({item}) => {
     return (
       <View>
-        <Text className="font-poppins-regular text-sm text-gray-300 capitalize">
-          {new Date(item?.created_at || '').toLocaleDateString('id-ID', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          })}
-        </Text>
+        <View className="ms-2 w-full  px-2">
+          <Text
+            className="font-poppins-regular text-[13px]  capitalize"
+            style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+            {new Date(item?.created_at || '').toLocaleDateString('id-ID', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
+          </Text>
+        </View>
         <TouchableOpacity
           onPress={() => navigation.navigate('DetailHistoryDeposit', {item})}
           className="rounded-xl p-2 flex-col mb-4"
@@ -55,7 +55,7 @@ export default function HistoryDeposit() {
             className="flex-row  justify-between items-center"
             style={{borderColor: isDarkMode ? GREY_COLOR : LIGHT_COLOR}}>
             <Text
-              className="font-poppins-semibold"
+              className="font-poppins-semibold text-[13px]"
               style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
               Jumlah Deposit : {rupiah(item?.amount || 0)}
             </Text>

@@ -13,6 +13,7 @@ import {
   REGULAR_FONT,
   SLATE_COLOR,
   WHITE_BACKGROUND,
+  WHITE_COLOR,
 } from '../../utils/const';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 
@@ -41,18 +42,26 @@ export default function Input({
         placeholder={placeholder}
         placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
         value={value}
-        onChangeText={onChange}
+        onChangeText={text => {
+          const sanitizedText = text.replace(/[^a-zA-Z0-9 ]/g, '').slice(0, 13);
+          onChange(sanitizedText);
+        }}
         style={{
           width: lebar ? lebar : '100%',
           paddingHorizontal: 10,
+          color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR,
           fontFamily: 'Poppins-Medium',
           textTransform: 'capitalize',
         }}></TextInput>
-       {value && value !== '' && ( 
+      {value && value !== '' && (
         <TouchableOpacity
           style={{position: 'absolute', right: 10}}
           onPress={onDelete}>
-          <IonIcons name="close" size={20} color={isDarkMode ? DARK_COLOR : LIGHT_COLOR} />
+          <IonIcons
+            name="close"
+            size={20}
+            color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+          />
         </TouchableOpacity>
       )}
     </View>

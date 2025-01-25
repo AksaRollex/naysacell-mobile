@@ -20,7 +20,6 @@ import {rupiah} from '../../libs/utils';
 import Input from '../../components/form/input';
 import ProductPaginate from '../../components/ProductPaginate';
 import {Controller, useForm} from 'react-hook-form';
-import {CheckProduct} from '../../../assets';
 import axios from '../../libs/axios';
 import {useMutation} from '@tanstack/react-query';
 import ModalAfterProcess from '../../components/ModalAfterProcess';
@@ -33,7 +32,7 @@ export default function Pulsa({navigation}) {
   const [showModal, setShowModal] = useState(false);
   const [modalFailed, setModalFailed] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-
+  const [isValidNumber, setIsValidNumber] = useState(false);
   const pulsaRef = useRef();
   const dataRef = useRef();
   const product_type = ['Pulsa', 'Data'];
@@ -91,7 +90,7 @@ export default function Pulsa({navigation}) {
   ];
 
   useEffect(() => {
-    if (nomorTujuan && nomorTujuan.length >= 4) {
+    if (nomorTujuan) {
       const prefix = nomorTujuan.substring(0, 4);
       const operatorMatch = phoneOperators.find(op =>
         op.prefix.includes(prefix),
@@ -99,10 +98,13 @@ export default function Pulsa({navigation}) {
 
       setPhoneOperator(operatorMatch ? operatorMatch.operator : null);
 
+      const isValid = nomorTujuan.length >= 11 && nomorTujuan.length <= 13;
+      setIsValidNumber(isValid);
       setIsSearchEnabled(nomorTujuan.length >= 4);
     } else {
       setIsSearchEnabled(false);
       setPhoneOperator(null);
+      setIsValidNumber(false);
     }
   }, [nomorTujuan]);
 
@@ -144,7 +146,7 @@ export default function Pulsa({navigation}) {
         user_id: userId,
       });
 
-      navigation.navigate('SuccessNotif', {
+      navigation.replace('SuccessNotif', {
         item: selectItem,
         customer_no: nomorTujuan,
         transaction_data: response.data.data,
@@ -188,11 +190,6 @@ export default function Pulsa({navigation}) {
             {item.product_name}
           </Text>
           <View className="w-full">
-            <View className="">
-              <Text className="font-poppins-semibold text-xs">
-                Deskripsi : {item.product_desc}
-              </Text>
-            </View>
             <View className="justify-items-end items-end">
               <Text
                 className="font-poppins-regular text-sm text-end "
@@ -202,12 +199,6 @@ export default function Pulsa({navigation}) {
             </View>
           </View>
         </View>
-        {isSelected && (
-          <CheckProduct
-            width={20}
-            style={{position: 'absolute', right: 7, top: 2}}
-          />
-        )}
       </TouchableOpacity>
     );
   };
@@ -240,8 +231,8 @@ export default function Pulsa({navigation}) {
                   />
                 </View>
                 {phoneOperator && (
-                  <View className="bg-blue-500 p-4 rounded">
-                    <Text className="text-white font-poppins-semibold text-xs">
+                  <View className="bg-blue-500 p-4 rounded-xl">
+                    <Text className="text-white font-poppins-bold uppercase text-xs">
                       {phoneOperator}
                     </Text>
                   </View>
@@ -316,19 +307,43 @@ export default function Pulsa({navigation}) {
         ) : (
           <View className="flex-1 justify-center items-center">
             <Text className="text-gray-500 font-poppins-regular capitalize">
-              Masukkan nomor minimal 8 digit untuk melihat produk
+              Masukkan nomor minimal 3 digit untuk melihat produk
             </Text>
           </View>
         )}
 
-        {selectItem && (
+        {/* Ganti kondisi selectItem menjadi seperti ini */}
+        {selectItem && isSearchEnabled && (
           <View style={[styles.bottom(isDarkMode)]}>
             <TouchableOpacity
-              style={styles.bottomButton}
+              style={[
+                styles.bottomButton,
+                {
+                  backgroundColor: isValidNumber ? BLUE_COLOR : GREY_COLOR,
+                },
+              ]}
+              disabled={!isValidNumber}
               onPress={() => setShowModal(true)}>
-              <Text style={styles.buttonText}>Lanjutkan</Text>
+              <Text
+                style={[styles.buttonText, {opacity: isValidNumber ? 1 : 0.5}]}>
+                Lanjutkan
+              </Text>
             </TouchableOpacity>
           </View>
+        )}
+
+        {/* Modifikasi juga pesan error-nya */}
+        {selectItem && isSearchEnabled && !isValidNumber && (
+          <Text
+            className="mb-5"
+            style={{
+              textAlign: 'center',
+              color: '#f43f5e',
+              fontFamily: 'Poppins-SemiBold',
+              fontSize: 12,
+            }}>
+            Mohon Untuk Memasukkan Nomor Dengan Benar
+          </Text>
         )}
 
         <BottomModal

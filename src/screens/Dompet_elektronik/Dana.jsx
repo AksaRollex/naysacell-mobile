@@ -20,37 +20,58 @@ import {
 } from '../../utils/const';
 import BottomModal from '../../components/BottomModal';
 import Input from '../../components/form/input';
-import { rupiah } from '../../libs/utils';
+import {rupiah} from '../../libs/utils';
 import ProductPaginate from '../../components/ProductPaginate';
 
 export default function Dana({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
   const [nomorTujuan, setNomorTujuan] = useState('');
-
+  const [showProducts, setShowProducts] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectItem, setSelectedItem] = useState(null);
+  const [message, setMessage] = useState('');
 
   const paginateRef = useRef();
+
   const resetInput = () => {
-    setCustomerNo('');
+    setNomorTujuan('');
+    setShowProducts(false);
+    setSelectedItem(null);
+    setMessage('');
+  };
+
+  const isValidNumber = nomorTujuan.length >= 3;
+
+  const handleNext = () => {
+    if (nomorTujuan.length < 8) {
+      setMessage('Nomor Minimal 8 Digit Ya!');
+      setShowProducts(false);
+    } else {
+      setMessage('');
+      setShowProducts(true);
+    }
   };
 
   const productDana = ({item}) => {
+    const isSelected = selectItem && selectItem.id === item.id;
     return (
       <TouchableOpacity
-        className="p-2 border border-gray-500 rounded-xl m-1 bg-[#404040]"
+        className={`p-2 border rounded-xl relative ${
+          isSelected
+            ? 'border-green-500 bg-[#252525]'
+            : 'border-gray-500 bg-[#252525]'
+        }`}
         onPress={() => {
-          setSelectedItem(item);
-          setShowModal(true);
+          setSelectedItem(isSelected ? null : item);
         }}>
         <View className="items-start flex-col ">
-          <Text className="font-poppins-semibold text-base text-white">
+          <Text className="font-poppins-semibold text-sm text-white">
             {item.product_name}
           </Text>
           <View className="w-full">
-            <View className="justify-items-end items-end">
+            <View className="justify-items-end items-start">
               <Text
-                className="font-poppins-regular text-sm text-end "
+                className="font-poppins-regular text-sm"
                 style={{color: WHITE_COLOR}}>
                 {rupiah(item.product_price)}
               </Text>
@@ -60,6 +81,7 @@ export default function Dana({navigation}) {
       </TouchableOpacity>
     );
   };
+
   return (
     <>
       <View
@@ -68,62 +90,170 @@ export default function Dana({navigation}) {
           backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
         }}>
         <View style={styles.container}>
-          <View style={styles.formGroup}>
+          <View className="p-3 bg-[#262626] rounded-xl">
+            <Text
+              className="text-sm font-poppins-semibold my-1 "
+              style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
+              Nomor Tujuan
+            </Text>
             <Input
               value={nomorTujuan}
               placeholder="Masukkan Nomor Tujuan"
-              onChange={text => setNomorTujuan(text)}
+              onChange={text => {
+                setNomorTujuan(text);
+                setMessage('');
+                if (showProducts) {
+                  setShowProducts(false);
+                  setSelectedItem(null);
+                }
+              }}
               type="numeric"
               onDelete={resetInput}
               style={{fontFamily: 'Poppins-Regular'}}
             />
           </View>
+
+          {message !== '' && <Text style={styles.errorMessage}>{message}</Text>}
+
+          {isValidNumber && !showProducts && (
+            <TouchableOpacity
+              style={[styles.bottomButton, {marginTop: 10}]}
+              onPress={handleNext}>
+              <Text style={styles.buttonText}>Lanjut</Text>
+            </TouchableOpacity>
+          )}
         </View>
-        <ProductPaginate
-          renderItem={productDana}
-          url="/master/product/prepaid"
-          ref={paginateRef}
-          payload={{
-            product_category: 'E-Money',
-            product_provider: 'DANA',
-          }}
-        />
+        {showProducts && (
+          <View
+            style={{flex: 0.32, marginHorizontal: HORIZONTAL_MARGIN}}
+            className="my-4">
+            <View className="flex-1 bg-[#262626] rounded-xl">
+              <ProductPaginate
+                renderItem={productDana}
+                url="/master/product/prepaid"
+                ref={paginateRef}
+                payload={{
+                  product_category: 'E-Money',
+                  product_provider: 'Dana',
+                }}
+              />
+            </View>
+          </View>
+        )}
 
         {selectItem && (
           <View style={[styles.bottom(isDarkMode)]}>
             <TouchableOpacity
               style={styles.bottomButton}
               onPress={() => setShowModal(true)}>
-              <Text style={styles.buttonText}>Bayar</Text>
+              <Text style={styles.buttonText}>Lanjutkan</Text>
             </TouchableOpacity>
           </View>
         )}
+
         <BottomModal
           visible={showModal}
           onDismiss={() => setShowModal(false)}
-          title="Detail Transaksi">
-          <View>
-            <View style={styles.modalData(isDarkMode)}>
-              <Text style={styles.labelModalData(isDarkMode)}>
-                Nomor Tujuan
+          title="Konfirmasi Pesanan">
+          <View className="w-full p-3 rounded-xl bg-[#1c1c1c]  justify-between flex-col flex-wrap">
+            <View
+              className="w-full p-3 rounded-xl flex-col "
+              style={{
+                borderColor: '#464646',
+                borderStyle: 'dashed',
+                borderWidth: 1,
+              }}>
+              <Text className="text-center capitalize text-white text-sm font-poppins-medium mt-2 mb-4">
+                rincian pembelian
               </Text>
-              <Text style={styles.valueModalData(isDarkMode)}>
-                {nomorTujuan}
-              </Text>
-            </View>
-            <View style={styles.modalData(isDarkMode)}>
-              <Text style={styles.labelModalData(isDarkMode)}>Produk </Text>
-              <Text style={styles.valueModalData(isDarkMode)}>
-                {selectItem?.product_name}
-              </Text>
-            </View>
-            <View style={styles.modalData(isDarkMode)}>
-              <Text style={styles.labelModalData(isDarkMode)}>Harga </Text>
-              <Text style={styles.valueModalData(isDarkMode)}>
-                {rupiah(selectItem?.product_buyer_price)}
-              </Text>
+              <View className="flex-row justify-between items-center my-1 ">
+                <Text
+                  className="text-sm font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  Layanan
+                </Text>
+                <Text
+                  className="text-sm font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  {selectItem?.product_provider}
+                </Text>
+              </View>
+              <View className="flex-row justify-between items-center my-1 ">
+                <Text
+                  className="text-sm font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  Nomor Tujuan
+                </Text>
+                <Text
+                  className="text-sm font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  {nomorTujuan}
+                </Text>
+              </View>
+              <View className="flex-row justify-between items-center my-1 ">
+                <Text
+                  className="text-sm font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  Produk
+                </Text>
+                <Text
+                  className="text-sm font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  {selectItem?.product_name}
+                </Text>
+              </View>
+              <View className="flex-row justify-between items-center my-1 ">
+                <Text
+                  className="text-sm font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  Harga
+                </Text>
+                <Text
+                  className="text-sm font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  {rupiah(selectItem?.product_price)}
+                </Text>
+              </View>
             </View>
           </View>
+          <View className="w-full p-3 rounded-xl bg-[#1c1c1c] mt-5 justify-between flex-col flex-wrap">
+            <View
+              className="w-full p-3 rounded-xl flex-col "
+              style={{
+                borderColor: '#464646',
+                borderStyle: 'dashed',
+                borderWidth: 1,
+              }}>
+              <Text className="text-center capitalize text-white text-sm font-poppins-medium mt-2 mb-4">
+                rincian pembayaran
+              </Text>
+              <View className="flex-row justify-between items-center my-1 ">
+                <Text
+                  className="text-sm font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  Harga Produk
+                </Text>
+                <Text
+                  className="text-sm font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  {rupiah(selectItem?.product_price)}
+                </Text>
+              </View>
+              <View className="flex-row justify-between items-center my-1 ">
+                <Text
+                  className="text-sm font-poppins-semibold"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  Total
+                </Text>
+                <Text
+                  className="text-sm font-poppins-semibold"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  {rupiah(selectItem?.product_price)}
+                </Text>
+              </View>
+            </View>
+          </View>
+
           {selectItem && (
             <View style={[styles.bottom(isDarkMode)]}>
               <TouchableOpacity
@@ -149,13 +279,13 @@ const styles = StyleSheet.create({
     marginHorizontal: HORIZONTAL_MARGIN,
     marginTop: 15,
   },
-  formGroup: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    columnGap: 5,
+  errorMessage: {
+    color: '#FF4B4B',
+    fontFamily: 'Poppins-Regular',
+    fontSize: 12,
+    marginTop: 8,
+    textAlign: 'left',
   },
-
   bottom: isDarkMode => ({
     position: 'absolute',
     bottom: 0,
@@ -178,7 +308,7 @@ const styles = StyleSheet.create({
   bottomButton: {
     backgroundColor: BLUE_COLOR,
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 12,
   },
   modalData: isDarkMode => ({
     borderBottomWidth: 1,

@@ -129,22 +129,39 @@ const ProductPaginate = forwardRef(
     if (isFetching && page === 1) {
       return (
         <View className="mt-5 items-center">
-          {cardData.map(index => (
-            <View key={index} className="flex-row w-full px-4 mb-2">
-              <View
-                className="w-full rounded-2xl "
-                style={{
-                  backgroundColor: '#E6E6E6',
-                }}>
-                <Skeleton
-                  animation="wave"
-                  width="100%"
-                  height={70}
-                  LinearGradientComponent={LinearGradient}
-                />
-              </View>
-            </View>
-          ))}
+          {/* Kontainer baris */}
+          {cardData.map((_, index) => {
+            // Membuat baris baru setiap dua item
+            if (index % 2 === 0) {
+              return (
+                <View key={index} className="flex-row w-full mb-2 px-4">
+                  {/* Elemen produk pertama */}
+                  <View className="w-1/2 px-1" style={{}}>
+                    <Skeleton
+                      animation="wave"
+                      width="100%"
+                      style={{borderRadius: 12}}
+                      height={70}
+                      LinearGradientComponent={LinearGradient}
+                    />
+                  </View>
+                  {/* Elemen produk kedua */}
+                  {cardData[index + 1] && (
+                    <View className="w-1/2 px-1" style={{}}>
+                      <Skeleton
+                        animation="wave"
+                        width="100%"
+                        style={{borderRadius: 12}}
+                        height={70}
+                        LinearGradientComponent={LinearGradient}
+                      />
+                    </View>
+                  )}
+                </View>
+              );
+            }
+            return null; // Jangan render elemen jika bukan awal baris
+          })}
         </View>
       );
     }
@@ -152,15 +169,17 @@ const ProductPaginate = forwardRef(
     const enhancedRenderItem = ({item, index}) => {
       const isSelected = selectedItem && selectedItem.id === item.id;
       return (
-        <TouchableOpacity
-          onPress={() => handleItemPress(item)}
-          onLongPress={editUrl ? () => handleEditItem(item) : undefined}>
-          {renderItem({
-            item,
-            index,
-            isSelected,
-          })}
-        </TouchableOpacity>
+        <View style={{width: '50%', padding: 5}}>
+          <TouchableOpacity
+            onPress={() => handleItemPress(item)}
+            onLongPress={editUrl ? () => handleEditItem(item) : undefined}>
+            {renderItem({
+              item,
+              index,
+              isSelected,
+            })}
+          </TouchableOpacity>
+        </View>
       );
     };
 
@@ -169,18 +188,20 @@ const ProductPaginate = forwardRef(
         <FlatList
           data={dataList}
           renderItem={enhancedRenderItem}
+          numColumns={2}
           keyExtractor={(item, index) => index.toString()}
           onScroll={handleScroll}
           onEndReached={handleLoadMore}
           onEndReachedThreshold={0.5}
           ListFooterComponent={ListFooter}
+          columnWrapperStyle={{justifyContent: 'flex-start'}}
           ListEmptyComponent={() => (
             <View className="flex-1 justify-center items-center mt-20">
               <Image
                 source={require('../../assets/images/datanotfound.png')}
-                className="w-60 h-60 opacity-60 "
+                className="w-60 h-60 opacity-60"
               />
-              <Text className="text-gray-500 font-poppins-regular ">
+              <Text className="text-gray-500 font-poppins-regular">
                 Data Tidak Ditemukan
               </Text>
             </View>

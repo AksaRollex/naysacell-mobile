@@ -9,12 +9,13 @@ import {
 } from 'react-native';
 import React from 'react';
 import {
-  BOLD_FONT,
   DARK_BACKGROUND,
+  DARK_COLOR,
+  LIGHT_COLOR,
   WHITE_BACKGROUND,
   windowWidth,
 } from '../utils/const';
-import {XClose} from '../../assets';
+import IonIcons from 'react-native-vector-icons/Ionicons';
 
 export default function BottomModal({visible, onDismiss, title, children}) {
   const isDarkMode = useColorScheme() === 'dark';
@@ -23,8 +24,7 @@ export default function BottomModal({visible, onDismiss, title, children}) {
       visible={visible}
       animationType="slide"
       onRequestClose={onDismiss}
-      transparent={true}
-     >
+      transparent={true}>
       <TouchableWithoutFeedback onPress={onDismiss}>
         <View
           style={{
@@ -38,7 +38,7 @@ export default function BottomModal({visible, onDismiss, title, children}) {
       </TouchableWithoutFeedback>
       <View
         style={{
-          height: '50%',
+          height: '58%',
           backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
           width: windowWidth,
           position: 'absolute',
@@ -51,17 +51,22 @@ export default function BottomModal({visible, onDismiss, title, children}) {
         <View
           style={{
             flexDirection: 'row',
-            alignItems: ' center ',
-            justifyContent: 'center',
-          }}>
+            alignItems: 'center',
+          }}
+          className="py-2 mb-4">
           <Text
-            style={{fontFamily: 'Poppins-SemiBold', fontSize: 16, textAlign: 'center'}}>
+            className="font-poppins-semibold text-lg text-start capitalize"
+            style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
             {title}
           </Text>
           <TouchableOpacity
-            style={{position: 'absolute', right: 10}}
+            style={{position: 'absolute', right: 0.001}}
             onPress={onDismiss}>
-            <XClose width={20} height={20} />
+            <IonIcons
+              name="close"
+              size={27}
+              color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+            />
           </TouchableOpacity>
         </View>
         {children}

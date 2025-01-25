@@ -101,7 +101,7 @@ const Paginate = forwardRef(
       const totalItems = data?.total || 0;
 
       return (
-        <View className="mt-2 mb-1">
+        <View className="mt-2 mb-6">
           <Text className=" text-sm text-start text-gray-500 font-poppins-regular capitalize">
             Menampilkan {startIndex} sampai {endIndex} dari {totalItems} data
           </Text>
@@ -196,9 +196,9 @@ const Paginate = forwardRef(
                   }`}>
                   <View className={props.Plugin ? '' : 'flex-1 relative'}>
                     <TextInput
-                      className="w-full text-base   pr-12  rounded-lg px-4 "
+                      className="w-full text-base   pr-12  rounded-xl px-4 "
                       style={{
-                        backgroundColor: isDarkMode ? '#262626' : '#f8f8f8',
+                        backgroundColor: isDarkMode ? '#262626' : '#fff',
                         color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
                       }}
                       value={value}
@@ -282,7 +282,19 @@ const Paginate = forwardRef(
 
     if (shouldShowLoading) {
       return (
-        <View className=" items-center" >
+        <View className=" items-center">
+          <View
+            className="flex-row justify-center items-center  mt-6  "
+            style={{width: '90%'}}
+            LinearGradientComponent={LinearGradient}>
+            <Skeleton
+              animation="wave"
+              width={390}
+              LinearGradientComponent={LinearGradient}
+              height={53}
+              style={{borderRadius: 12}}
+            />
+          </View>
           {cardData.map((item, index) => (
             <View
               key={index}
@@ -304,7 +316,8 @@ const Paginate = forwardRef(
                     animation="wave"
                     width={390}
                     LinearGradientComponent={LinearGradient}
-                    height={180}
+                    height={120}
+                    style={{borderRadius: 12}}
                   />
                   <View
                     style={{
@@ -317,13 +330,6 @@ const Paginate = forwardRef(
                       width={360}
                       height={30}
                       LinearGradientComponent={LinearGradient}
-                    />
-                    <Skeleton
-                      animation="wave"
-                      width={100}
-                      height={28}
-                      LinearGradientComponent={LinearGradient}
-                      style={{marginTop: 10}}
                     />
                     <Skeleton
                       animation="wave"

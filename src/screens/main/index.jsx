@@ -22,10 +22,10 @@ import PLNPrabayar from '../Pln/prabayar';
 import DompetElektronik from '../Dompet_elektronik';
 import BPJSKesehatan from '../BPJS';
 import PDAM from '../PDAM';
-import BantuanLogin from '../Bantuan/bantuan_login';
 import Profile from '../Profile';
 import Transaksi from '../Transaction';
 import Deposit from '../Deposit';
+import BantuanLogin from '../Bantuan/bantuan_login';
 import DetailHistoryDeposit from '../Deposit/HistoryDeposit/Detail';
 import HistoryDeposit from '../Deposit/HistoryDeposit';
 import DetailTransaction from '../Transaction/Detail';
@@ -37,6 +37,7 @@ import Dana from '../Dompet_elektronik/Dana';
 import OVO from '../Dompet_elektronik/Ovo';
 import GoPay from '../Dompet_elektronik/Gopay';
 import Master from '../Master';
+import CustomerService from '../Bantuan/customer_service';
 // USERS ADMIN
 import IndexUsersAdmin from '../Master/UsersAdmin';
 import Admin from '../Master/UsersAdmin/Tabs/Admin/Admin';
@@ -54,12 +55,13 @@ import Pascabayar from '../Master/Produk/Tabs/Pascabayar';
 import IndexLaporan from '../Master/Laporan';
 import Laporan from '../Master/Laporan/Tabs/Laporan';
 import GrafikPenjualan from '../Master/Laporan/Tabs/GrafikPenjualan';
-import {BLUE_COLOR} from '../../utils/const';
+import {BLUE_COLOR, DARK_COLOR, LIGHT_COLOR} from '../../utils/const';
 import FormPrabayar from '../Master/Produk/Tabs/Prabayar/Form';
 import axios from '../../libs/axios';
 import LoginPage from '../auth/login';
 import Order from '../Master/Order';
 import FormOrder from '../Master/Order/Form';
+import LaporanDeposit from '../Master/Laporan/Tabs/LaporanDeposit';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -95,38 +97,54 @@ const CustomTabBar = ({state, descriptors, navigation}) => {
     'Deposit',
     'HistoryDeposit',
     'DetailHistoryDeposit',
-    'DetailTransaction'
+    'DetailTransaction',
+    'LaporanDeposit',
+    'CustomerService'
   ];
 
   if (hideOnScreens.includes(routeName)) {
     return null;
   }
 
+  if (hideOnScreens.includes(routeName)) {
+    return null;
+  }
+
+  const handleTabPress = route => {
+    const event = navigation.emit({
+      type: 'tabPress',
+      target: route.key,
+    });
+
+    if (!event.defaultPrevented) {
+      navigation.reset({
+        index: 0,
+        routes: [
+          {
+            name: route.name,
+            params: {
+              refresh: new Date().getTime(),
+            },
+          },
+        ],
+      });
+    }
+  };
+
   return (
     <View
       style={[
         styles.tabBar,
-        {backgroundColor: isDarkMode ? '#262626' : 'fff'},
+        {backgroundColor: isDarkMode ? '#252525' : '#fff'},
       ]}>
       {state.routes.map((route, index) => {
         const {options} = descriptors[route.key];
         const isFocused = state.index === index;
 
-        const onPress = () => {
-          const event = navigation.emit({
-            type: 'tabPress',
-            target: route.key,
-          });
-
-          if (!isFocused && !event.defaultPrevented) {
-            navigation.navigate(route.name);
-          }
-        };
-
         return (
           <TouchableOpacity
             key={index}
-            onPress={onPress}
+            onPress={() => handleTabPress(route, isFocused)}
             style={[styles.tabItem, {borderTopWidth: 0.1}]}>
             <View style={[styles.iconContainer]}>
               <IonIcons
@@ -142,7 +160,7 @@ const CustomTabBar = ({state, descriptors, navigation}) => {
                     : 'list-circle'
                 }
                 size={25}
-                color={isFocused ? BLUE_COLOR : '#5f5f5f'}
+                color={isFocused ? BLUE_COLOR : '#7f7f7f'}
               />
               <Text
                 style={[styles.label, isFocused && styles.labelFocused]}
@@ -166,10 +184,42 @@ const CustomTabBar = ({state, descriptors, navigation}) => {
 };
 
 const HomeScreenNavigator = () => {
+  const isDarkMode = useColorScheme() === 'dark';
+
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen name="HomeScreen" component={HomeScreen} />
-      <Stack.Screen name="Pulsa" component={Pulsa} />
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: isDarkMode ? '#252525' : '#fff',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      }}>
+      <Stack.Screen
+        name="HomeScreen"
+        component={HomeScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Pulsa"
+        component={Pulsa}
+        options={{
+          title: 'Pulsa & Paket Data',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {fontFamily: 'Poppins-SemiBold', fontSize: 18},
+        }}
+      />
+      <Stack.Screen
+        name="CustomerService"
+        component={CustomerService}
+        options={{
+          title: 'Layanan Customer',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {fontFamily: 'Poppins-SemiBold', fontSize: 18},
+        }}
+      />
       <Stack.Screen name="LayananPLN" component={LayananPLN} />
       <Stack.Screen name="SuccessNotif" component={SuccessNotif} />
       <Stack.Screen name="PLNPascaBayar" component={PLNPascaBayar} />
@@ -178,18 +228,40 @@ const HomeScreenNavigator = () => {
       <Stack.Screen name="BPJSKesehatan" component={BPJSKesehatan} />
       <Stack.Screen name="PDAM" component={PDAM} />
       <Stack.Screen name="BantuanLogin" component={BantuanLogin} />
-      <Stack.Screen name="Deposit" component={Deposit} />
+      <Stack.Screen
+        name="Deposit"
+        component={Deposit}
+        options={{
+          title: 'Deposit',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {fontFamily: 'Poppins-SemiBold', fontSize: 18},
+        }}
+      />
       <Stack.Screen name="HistoryDeposit" component={HistoryDeposit} />
       <Stack.Screen
         name="DetailHistoryDeposit"
         component={DetailHistoryDeposit}
+        options={{
+          title: 'Detail Deposit',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {fontFamily: 'Poppins-SemiBold', fontSize: 18},
+        }}
       />
       <Stack.Screen
         name="SuccessNotifDeposit"
         component={SuccessNotifDeposit}
       />
       <Stack.Screen name="Notifikasi" component={Notifikasi} />
-      <Stack.Screen name="Shopeepay" component={Shopeepay} />
+      <Stack.Screen
+        name="Shopeepay"
+        component={Shopeepay}
+        options={{
+          title: 'ShopeePay',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {fontFamily: 'Poppins-SemiBold', fontSize: 18},
+        }}
+      />
+
       <Stack.Screen name="Dana" component={Dana} />
       <Stack.Screen name="OVO" component={OVO} />
       <Stack.Screen name="GoPay" component={GoPay} />
@@ -197,34 +269,199 @@ const HomeScreenNavigator = () => {
   );
 };
 const TransactionNavigator = () => {
+  const isDarkMode = useColorScheme() === 'dark';
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen name="Transaksi" component={Transaksi} />
-      <Stack.Screen name="DetailTransaction" component={DetailTransaction} />
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: isDarkMode ? '#252525' : '#fff',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      }}>
+      <Stack.Screen
+        name="Transaksi"
+        component={Transaksi}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="DetailTransaction"
+        component={DetailTransaction}
+        options={{
+          title: 'Detail Transaksi',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: 18,
+            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+          },
+        }}
+      />
     </Stack.Navigator>
   );
 };
 
 const MasterNavigation = () => {
+  const isDarkMode = useColorScheme() === 'dark';
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen name="Master" component={Master} />
-      <Stack.Screen name="IndexUsersAdmin" component={IndexUsersAdmin} />
-      <Stack.Screen name="Admin" component={Admin} />
-      <Stack.Screen name="FormUser" component={FormUser} />
-      <Stack.Screen name="FormAdmin" component={FormAdmin} />
-      <Stack.Screen name="User" component={User} />
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: isDarkMode ? '#252525' : '#fff',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      }}>
+      <Stack.Screen
+        name="Master"
+        component={Master}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="IndexUsersAdmin"
+        component={IndexUsersAdmin}
+        options={{
+          title: 'User / Admin',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: 18,
+            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+          },
+        }}
+      />
+      <Stack.Screen
+        name="Admin"
+        component={Admin}
+        options={{
+          title: 'Admin',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: 18,
+            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+          },
+        }}
+      />
+      <Stack.Screen
+        name="FormUser"
+        component={FormUser}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="FormAdmin"
+        component={FormAdmin}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="User"
+        component={User}
+        options={{
+          title: 'User',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: 18,
+            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+          },
+        }}
+      />
       <Stack.Screen name="IndexMaster" component={IndexMaster} />
       <Stack.Screen name="Brand" component={Brand} />
       <Stack.Screen name="IndexProduk" component={IndexProduk} />
-      <Stack.Screen name="Prabayar" component={Prabayar} />
-      <Stack.Screen name="FormPrabayar" component={FormPrabayar} />
+      <Stack.Screen
+        name="Prabayar"
+        component={Prabayar}
+        options={{
+          title: 'Produk',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: 18,
+            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+          },
+        }}
+      />
+      <Stack.Screen
+        name="FormPrabayar"
+        component={FormPrabayar}
+        options={{headerShown: false}}
+      />
       <Stack.Screen name="Pascabayar" component={Pascabayar} />
-      <Stack.Screen name="IndexLaporan" component={IndexLaporan} />
-      <Stack.Screen name="Laporan" component={Laporan} />
-      <Stack.Screen name="GrafikPenjualan" component={GrafikPenjualan} />
-      <Stack.Screen name="Order" component={Order} />
-      <Stack.Screen name="FormOrder" component={FormOrder} />
+      <Stack.Screen
+        name="IndexLaporan"
+        component={IndexLaporan}
+        options={{
+          title: 'Laporan',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: 18,
+            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+          },
+        }}
+      />
+      <Stack.Screen
+        name="Laporan"
+        component={Laporan}
+        options={{
+          title: 'Laporan Pembelian Produk',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: 18,
+            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+          },
+        }}
+      />
+      <Stack.Screen
+        name="GrafikPenjualan"
+        component={GrafikPenjualan}
+        options={{
+          title: 'Grafik Penjualan',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: 18,
+            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+          },
+        }}
+      />
+      <Stack.Screen
+        name="Order"
+        component={Order}
+        options={{
+          title: 'Pesanan',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: 18,
+            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+          },
+        }}
+      />
+      <Stack.Screen
+        name="FormOrder"
+        component={FormOrder}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="LaporanDeposit"
+        component={LaporanDeposit}
+        options={{
+          title: 'Laporan Deposit',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: 18,
+            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+          },
+        }}
+      />
     </Stack.Navigator>
   );
 };
@@ -290,7 +527,8 @@ export default function MainScreen() {
                 'Deposit',
                 'HistoryDeposit',
                 'DetailHistoryDeposit',
-                'DetailTransaction'
+                'DetailTransaction',
+                'LaporanDeposit',
               ];
 
               if (hideOnScreens.includes(routeName)) {
@@ -373,7 +611,6 @@ const styles = StyleSheet.create({
   },
   tabBar: {
     flexDirection: 'row',
-    backgroundColor: '#ececec',
     height: 60,
   },
   tabItem: {

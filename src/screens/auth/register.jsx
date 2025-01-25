@@ -6,6 +6,7 @@ import {
   View,
   useColorScheme,
   ScrollView,
+  ImageBackground,
 } from 'react-native';
 import React, {useState} from 'react';
 import {
@@ -106,8 +107,20 @@ export default function RegisterPage({navigation}) {
           backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
         }}
         className="h-[100vh]">
-        <Header title="Daftar Akun" subtitle="Silahkan Daftar Akun Anda" />
-
+        <ImageBackground
+          source={require('../../../assets/images/headerBg.jpg')}
+          className="w-full h-[200px] items-start justify-start ">
+          <View className="p-4">
+            <View className="justify-start flex-col items-start">
+              <Text className="text-white capitalize text-2xl font-poppins-semibold">
+                Daftar Akun
+              </Text>
+              <Text className="text-white capitalize text-sm font-poppins-medium">
+                Silahkan lengkapi form berikut untuk mendaftar
+              </Text>
+            </View>
+          </View>
+        </ImageBackground>
         <View>
           {/* OPEN FORM */}
           <View>
@@ -128,7 +141,7 @@ export default function RegisterPage({navigation}) {
                       onBlur={onBlur}
                       keyboardType="default"
                       placeholderTextColor={
-                        isDarkMode ? SLATE_COLOR : GREY_COLOR
+                        isDarkMode ? SLATE_COLOR : LIGHT_COLOR
                       }
                       className="h-12 w-full rounded-xl mx-auto  px-4  border border-stone-600"></TextInput>
                   </View>
@@ -165,7 +178,7 @@ export default function RegisterPage({navigation}) {
                       style={{fontFamily: 'Poppins-Regular'}}
                       autoCapitalize="none"
                       placeholderTextColor={
-                        isDarkMode ? SLATE_COLOR : GREY_COLOR
+                        isDarkMode ? SLATE_COLOR : LIGHT_COLOR
                       }
                       className="h-12 w-full rounded-xl mx-auto px-4 border border-stone-600"
                     />
@@ -197,7 +210,7 @@ export default function RegisterPage({navigation}) {
                       style={{fontFamily: 'Poppins-Regular'}}
                       autoCapitalize="none"
                       placeholderTextColor={
-                        isDarkMode ? SLATE_COLOR : GREY_COLOR
+                        isDarkMode ? SLATE_COLOR : LIGHT_COLOR
                       }
                       className="h-12 w-full rounded-xl mx-auto px-4 border border-stone-600"
                     />
@@ -232,7 +245,7 @@ export default function RegisterPage({navigation}) {
                       style={{fontFamily: 'Poppins-Regular'}}
                       keyboardType="numeric"
                       placeholderTextColor={
-                        isDarkMode ? SLATE_COLOR : GREY_COLOR
+                        isDarkMode ? SLATE_COLOR : LIGHT_COLOR
                       }
                       className="h-12 w-full rounded-xl px-4 border border-stone-600"
                     />
@@ -266,7 +279,7 @@ export default function RegisterPage({navigation}) {
                       style={{fontFamily: 'Poppins-Regular'}}
                       placeholder="Password"
                       placeholderTextColor={
-                        isDarkMode ? SLATE_COLOR : GREY_COLOR
+                        isDarkMode ? SLATE_COLOR : LIGHT_COLOR
                       }
                       keyboardType="numeric"
                       className="h-12 w-full rounded-xl mx-auto px-4 border border-stone-600"
@@ -312,7 +325,7 @@ export default function RegisterPage({navigation}) {
                         style={{fontFamily: 'Poppins-Regular'}}
                         keyboardType="numeric"
                         placeholderTextColor={
-                          isDarkMode ? SLATE_COLOR : GREY_COLOR
+                          isDarkMode ? SLATE_COLOR : LIGHT_COLOR
                         }
                         secureTextEntry={showConfirmPassword}
                         className="h-12 w-full rounded-xl mx-auto px-4 border border-stone-600"
@@ -388,20 +401,20 @@ export default function RegisterPage({navigation}) {
                 </View>
               </View>
             </View>
-              <View className="mx-3">
-                <TouchableOpacity
-                  className="w-full rounded-xl px-4 h-12 items-center justify-center"
-                  style={{
-                    backgroundColor: BLUE_COLOR,
-                    opacity: isLoading ? 0.7 : 1,
-                  }}
-                  onPress={handleSubmit(onSubmit)}
-                  disabled={isLoading}>
-                  <Text className="text-white text-md font-poppins-bold">
-                    {isLoading ? 'MENDAFTAR...' : 'DAFTAR'}
-                  </Text>
-                </TouchableOpacity>
-              </View>
+            <View className="mx-3">
+              <TouchableOpacity
+                className="w-full rounded-xl px-4 h-12 items-center justify-center"
+                style={{
+                  backgroundColor: BLUE_COLOR,
+                  opacity: isLoading ? 0.7 : 1,
+                }}
+                onPress={handleSubmit(onSubmit)}
+                disabled={isLoading}>
+                <Text className="text-white text-sm font-poppins-bold">
+                  {isLoading ? 'MENDAFTAR...' : 'DAFTAR'}
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
           {/* CLOSE FORM */}
 
@@ -426,7 +439,7 @@ export default function RegisterPage({navigation}) {
             <TouchableOpacity
               onPress={() => navigation.navigate('bantuanLogin')}>
               <Text
-                className="text-center  text-md font-poppins-regular "
+                className="text-center  text-sm font-poppins-regular "
                 style={{color: BLUE_COLOR}}>
                 Butuh bantuan?
               </Text>

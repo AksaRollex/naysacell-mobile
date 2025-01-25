@@ -19,18 +19,7 @@ export default function SuccessNotif({route}) {
   const {item, transaction_data} = route.params;
   const [orderStatus, setOrderStatus] = useState('');
 
-  useEffect (( ) => {
-    axios
-    .get(`/master/order/get/${route.params.id}`)
-    .then(res => {
-      console.log(res.data.data);
-    })
-    .catch(err => {
-      console.log(err);
-    });
-  })
-  
-  console.log(transaction_data);
+  console.log(transaction_data, 222);
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <View

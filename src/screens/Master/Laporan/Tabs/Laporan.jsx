@@ -3,13 +3,13 @@ import {
   Text,
   View,
   useColorScheme,
-  Image,
   Modal,
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import React, {useEffect, useRef} from 'react';
+import React, {useRef} from 'react';
 import {
+  BLUE_COLOR,
   DARK_BACKGROUND,
   DARK_COLOR,
   LIGHT_BACKGROUND,
@@ -31,25 +31,35 @@ export default function Laporan({navigation}) {
   const queryClient = useQueryClient();
 
   const backgroundColor = transaction_status => {
-    if (transaction_status === 'Success') {
+    if (transaction_status === 'success') {
       return 'bg-green-100';
-    } else if (transaction_status === 'Pending') {
+    } else if (transaction_status === 'pending') {
       return 'bg-blue-100';
-    } else if (transaction_status === 'Failed') {
+    } else if (transaction_status === 'failed') {
       return 'bg-red-100';
     } else {
       return 'bg-gray-100';
     }
   };
   const textColor = transaction_status => {
-    if (transaction_status === 'Success') {
-      return 'text-green-400';
-    } else if (transaction_status === 'Pending') {
-      return 'text-blue-400';
-    } else if (transaction_status === 'Failed') {
-      return 'text-red-400';
+    if (transaction_status === 'success') {
+      return 'text-green-600';
+    } else if (transaction_status === 'pending') {
+      return 'text-blue-500';
+    } else if (transaction_status === 'failed') {
+      return 'text-red-500';
     } else {
       return 'text-gray-600';
+    }
+  };
+
+  const text = status => {
+    if (status === 'success') {
+      return 'Berhasil';
+    } else if (status === 'pending') {
+      return 'Pending';
+    } else if (status === 'failed') {
+      return 'Gagal';
     }
   };
 
@@ -150,7 +160,7 @@ export default function Laporan({navigation}) {
                       key={statusTransaksi}
                       className={`p-3 rounded-md mb-2 ${
                         transactionStatus === statusTransaksi
-                          ? 'bg-blue-100'
+                          ? 'bg-blue-50'
                           : 'bg-[#ececec]'
                       }`}
                       onPress={() => setTransactionStatus(statusTransaksi)}>
@@ -207,11 +217,10 @@ export default function Laporan({navigation}) {
         }}>
         <View className="flex-row w-full  my-2 justify-center ">
           <View className="w-full flex-row justify-between items-start">
-            <View className="flex-row  items-start gap-x-2 ">
-              <Image
-                source={require('../../../../../assets/images/logo.png')}
-                className="w-12 h-12 rounded-full"
-              />
+            <View className="flex-row  items-center justify-start gap-x-2 ">
+              <View className="p-3  items-center rounded-full  bg-[#242424]">
+                <IonIcons name="receipt" size={25} color={BLUE_COLOR} />
+              </View>
               <View className="flex-col items-start justify-start ">
                 <Text
                   className="font-poppins-medium text-base "
@@ -223,16 +232,64 @@ export default function Laporan({navigation}) {
                   style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                   {item?.transaction_code}
                 </Text>
-                <View
-                  className={`rounded-md  justify-center items-center flex-col mt-1 py-1 max-w-[120px] ${backgroundColor(
-                    item?.transaction_status,
-                  )}`}>
+                <View className="flex-row gap-x-2">
+                  <View className="bg-green-100 rounded-md pl-2   mt-1 justify-center  items-center flex-row  py-1 max-w-[130px]">
+                    <IonIcons name="call" color="#658844" size={15} />
+                    <Text className="font-poppins-medium text-xs mx-2 text-[#658844]">
+                      {item?.transaction_number}
+                    </Text>
+                  </View>
+                  <View className="bg-gray-100 rounded-md pl-2    mt-1 justify-center  items-center flex-row  py-1 max-w-[190px]">
+                    <IonIcons name="today" color="#2f2f2f" size={15} />
+                    <Text
+                      className="font-poppins-regular text-xs mx-2"
+                      style={{color: '#2f2f2f'}}>
+                      {new Date(item.created_at).toLocaleDateString(`id-ID`, {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })}
+                    </Text>
+                  </View>
+                </View>
+                <View className="bg-red-100 rounded-md pl-2    mt-1 justify-center  items-center flex-row  py-1 max-w-[190px]">
+                  <IonIcons name="cart" color="#f43f5e" size={15} />
                   <Text
-                    className={`font-poppins-medium text-xs mx-2 ${textColor(
+                    className="font-poppins-regular text-xs mx-2"
+                    style={{color: '#f43f5e'}}>
+                    {item?.transaction_product}
+                  </Text>
+                </View>
+                <View className="flex-row gap-x-2">
+                  <View className="bg-blue-100 rounded-md pl-2   mt-1 justify-center  items-center flex-row  py-1 max-w-[120px]">
+                    <IonIcons name="pricetag" color="#138EE9" size={15} />
+                    <Text className="font-poppins-medium text-xs mx-2 text-[#138EE9]">
+                      {rupiah(item?.transaction_total)}
+                    </Text>
+                  </View>
+
+                  <View
+                    className={`rounded-md  justify-center items-center flex-row mt-1 py-1 gap-x-2 ${backgroundColor(
                       item?.transaction_status,
                     )}`}>
-                    {item?.transaction_status}
-                  </Text>
+                    {item?.transaction_status === 'success' ? (
+                      <IonIcons
+                        name="checkmark-done-sharp"
+                        color="#4caf50"
+                        size={15}
+                      />
+                    ) : item?.transaction_status === 'failed' ? (
+                      <IonIcons name="close" color="#138EE9" size={15} />
+                    ) : (
+                      <IonIcons name="information" color="#138EE9" size={15} />
+                    )}
+                    <Text
+                      className={`font-poppins-medium text-xs mx-2  ${textColor(
+                        item?.transaction_status,
+                      )}`}>
+                      {text(item?.transaction_status)}
+                    </Text>
+                  </View>
                 </View>
               </View>
             </View>
@@ -258,50 +315,6 @@ export default function Laporan({navigation}) {
                 />
               </View>
             </MenuView>
-          </View>
-        </View>
-        <View
-          className="border-[0.5px] w-full my-2 opacity-40 rounded-es-xl"
-          style={{borderColor: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}></View>
-        <View className="flex-row w-full justify-between items-center ">
-          <View className="w-1/2 gap-x-2 flex-col items-start justify-start space-y-1">
-            <View className="flex-row justify-between space-x-1">
-              <Text
-                className="font-poppins-regular text-sm "
-                style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                {item?.transaction_time}
-              </Text>
-              <Text
-                className="font-poppins-regular text-sm "
-                style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                :
-              </Text>
-              <Text
-                className="font-poppins-regular text-sm "
-                style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                {item?.transaction_date}
-              </Text>
-            </View>
-            <Text
-              className="font-poppins-regular text-sm "
-              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-              {item?.transaction_message}
-            </Text>
-          </View>
-          <View
-            className="border-[0.5px] h-7 w-[0.3px] opacity-40"
-            style={{borderColor: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}></View>
-          <View className="w-1/2  gap-x-2 flex-col items-start justify-start">
-            <Text
-              className="font-poppins-regular text-sm "
-              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-              {item?.transaction_number}
-            </Text>
-            <Text
-              className="font-poppins-regular text-sm "
-              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-              {rupiah(item?.transaction_total)}
-            </Text>
           </View>
         </View>
       </View>

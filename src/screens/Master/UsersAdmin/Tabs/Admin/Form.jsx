@@ -16,6 +16,7 @@ import {
   WHITE_BACKGROUND,
   WHITE_COLOR,
   LIGHT_COLOR,
+  GREY_COLOR,
 } from '../../../../../utils/const';
 import Toast from 'react-native-toast-message';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
@@ -216,9 +217,9 @@ export default function FormAdmin({route, navigation}) {
                     }`}
                     placeholder="Harap Lengkapi Email"
                   />
-                  {errors.name && (
+                  {errors.email && (
                     <Text className="text-red-500 text-sm mt-1">
-                      {errors.name.message}
+                      {errors.email.message}
                     </Text>
                   )}
                 </>
@@ -243,8 +244,14 @@ export default function FormAdmin({route, navigation}) {
                   </Text>
                   <TextInput
                     value={value}
-                    onChangeText={onChange}
+                    onChangeText={text => {
+                      const sanitizedText = text
+                        .replace(/[^a-zA-Z0-9 ]/g, '')
+                        .slice(0, 13);
+                      onChange(sanitizedText);
+                    }}
                     onBlur={onBlur}
+                    keyboardType="numeric"
                     editable={!isLoadingData}
                     placeholderTextColor={
                       isDarkMode ? SLATE_COLOR : LIGHT_COLOR

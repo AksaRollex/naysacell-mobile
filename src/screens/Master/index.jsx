@@ -30,13 +30,8 @@ const Master = () => {
   const UsersAdmin = () => {
     navigation.navigate('IndexUsersAdmin');
   };
-
-  const Master = () => {
-    navigation.navigate('IndexMaster');
-  };
-
   const Produk = () => {
-    navigation.navigate('IndexProduk');
+    navigation.navigate('Prabayar');
   };
 
   const Laporan = () => {
@@ -75,7 +70,7 @@ const Master = () => {
             style={{
               borderTopLeftRadius: 10,
               borderTopRightRadius: 10,
-              backgroundColor: isDarkMode ? '#262626' : '#f8f8f8',
+              backgroundColor: isDarkMode ? '#262626' : '#fff',
             }}
             title={
               <Text
@@ -109,61 +104,17 @@ const Master = () => {
           <View
             style={{
               borderBottomWidth: 1,
-              borderBottomColor: isDarkMode ? '#262626' : '#f8f8f8',
+              borderBottomColor: isDarkMode ? '#262626' : '#fff',
               marginHorizontal: 15,
             }}
           />
         </View>
-        {/* <View>
-          <List.Item
-            style={{
-              borderTopLeftRadius: 10,
-              borderTopRightRadius: 10,
-              backgroundColor: isDarkMode ? '#262626' : '#f8f8f8',
-            }}
-            title={
-              <Text
-                className="font-poppins-medium text-[15px]"
-                style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                Master
-              </Text>
-            }
-            left={() => (
-              <View
-                className="rounded-full ml-3"
-                style={{backgroundColor: BLUE_COLOR}}>
-                <Ionicons
-                  name="apps-sharp"
-                  size={17}
-                  color={'white'}
-                  style={{padding: 5}}
-                />
-              </View>
-            )}
-            right={props => (
-              <List.Icon
-                {...props}
-                icon="chevron-right"
-                color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
-              />
-            )}
-            className="bg-[#ffffff] border-black p-2 ml-3 mr-3"
-            onPress={Master}
-          />
-          <View
-            style={{
-              borderBottomWidth: 1,
-              borderBottomColor: isDarkMode ? '#262626' : '#f8f8f8',
-              marginHorizontal: 15,
-            }}
-          />
-        </View> */}
         <View>
           <List.Item
             style={{
               borderTopLeftRadius: 10,
               borderTopRightRadius: 10,
-              backgroundColor: isDarkMode ? '#262626' : '#f8f8f8',
+              backgroundColor: isDarkMode ? '#262626' : '#fff',
             }}
             title={
               <Text
@@ -177,7 +128,7 @@ const Master = () => {
                 className="rounded-full ml-3"
                 style={{backgroundColor: BLUE_COLOR}}>
                 <MaterialIcons
-                  name="production-quantity-limits"
+                  name="shopping-cart"
                   size={17}
                   color={'white'}
                   style={{padding: 5}}
@@ -197,7 +148,7 @@ const Master = () => {
           <View
             style={{
               borderBottomWidth: 1,
-              borderBottomColor: isDarkMode ? '#262626' : '#f8f8f8',
+              borderBottomColor: isDarkMode ? '#262626' : '#fff',
               marginHorizontal: 15,
             }}
           />
@@ -207,7 +158,7 @@ const Master = () => {
             style={{
               borderTopLeftRadius: 10,
               borderTopRightRadius: 10,
-              backgroundColor: isDarkMode ? '#262626' : '#f8f8f8',
+              backgroundColor: isDarkMode ? '#262626' : '#fff',
             }}
             title={
               <Text
@@ -241,7 +192,7 @@ const Master = () => {
           <View
             style={{
               borderBottomWidth: 1,
-              borderBottomColor: isDarkMode ? '#262626' : '#f8f8f8',
+              borderBottomColor: isDarkMode ? '#262626' : '#fff',
               marginHorizontal: 15,
             }}
           />
@@ -251,7 +202,7 @@ const Master = () => {
             style={{
               borderTopLeftRadius: 10,
               borderTopRightRadius: 10,
-              backgroundColor: isDarkMode ? '#262626' : '#f8f8f8',
+              backgroundColor: isDarkMode ? '#262626' : '#fff',
             }}
             title={
               <Text
@@ -285,7 +236,7 @@ const Master = () => {
           <View
             style={{
               borderBottomWidth: 1,
-              borderBottomColor: isDarkMode ? '#262626' : '#f8f8f8',
+              borderBottomColor: isDarkMode ? '#262626' : '#fff',
               marginHorizontal: 15,
             }}
           />

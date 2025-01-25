@@ -2,6 +2,7 @@ import {StyleSheet, Text, useColorScheme, View, Image} from 'react-native';
 import React, {useRef} from 'react';
 import Paginate from '../../../components/Paginate';
 import {
+  BLUE_COLOR,
   DARK_BACKGROUND,
   DARK_COLOR,
   LIGHT_BACKGROUND,
@@ -13,6 +14,7 @@ import {rupiah} from '../../../libs/utils';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import {useQueryClient} from '@tanstack/react-query';
 import {useDelete} from '../../../hooks/useDelete';
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 
 export default function Order({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
@@ -20,15 +22,15 @@ export default function Order({navigation}) {
 
   const backgroundColorOrderStatus = order_status => {
     if (order_status === 'pending') {
-      return 'bg-blue-50';
+      return 'bg-blue-100';
     } else if (order_status === 'success') {
-      return 'bg-green-50';
+      return 'bg-green-100';
     } else if (order_status === 'processing') {
-      return 'bg-yellow-50';
+      return 'bg-yellow-100';
     } else if (order_status === 'failed') {
-      return 'bg-red-50';
+      return 'bg-red-100';
     } else {
-      return 'bg-blue-50';
+      return 'bg-blue-100';
     }
   };
 
@@ -117,52 +119,65 @@ export default function Order({navigation}) {
         }}>
         <View className="flex-row w-full  my-2 justify-center ">
           <View className="w-full flex-row justify-between items-start">
-            <View className="flex-row  items-start gap-x-2 ">
-              <Image
-                source={require('../../../../assets/images/logo.png')}
-                className="w-12 h-12 rounded-full"
-              />
+            <View className="flex-row  items-center justify-center gap-x-2 ">
+              <View className="p-3 items-center rounded-full   bg-[#242424]">
+                <FontAwesome5Icon
+                  name="cart-arrow-down"
+                  size={25}
+                  color={BLUE_COLOR}
+                />
+              </View>
               <View className="flex-col  w-64 items-start justify-start ">
                 <Text
                   className="font-poppins-medium text-base "
                   style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                   {item?.customer_name}
                 </Text>
-                <Text
-                  className="font-poppins-regular text-sm "
-                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                  {item?.product_name}
-                </Text>
-                <Text
-                  className="font-poppins-regular text-sm "
-                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                  {item?.customer_no}
-                </Text>
-                <View className="flex-row gap-x-2">
-                  <View
-                    className={`rounded-md pl-2 mt-1 justify-center items-center flex-row py-1 max-w-[120px] ${backgroundColorOrderStatus(
-                      item?.order_status,
-                    )}`}>
-                    <IonIcons
-                      name="wallet"
-                      color={colorOrderStatus(item?.order_status)}
-                      size={17}
-                    />
 
+                <View className="flex-row gap-x-2">
+                  <View className="bg-red-100 rounded-md pl-2    mt-1 justify-center  items-center flex-row  py-1 max-w-[190px]">
+                    <IonIcons name="cart" color="#f43f5e" size={15} />
                     <Text
-                      className={`font-poppins-medium text-xs mx-2 ${textColorOrderStatus(
+                      className="font-poppins-regular text-xs mx-2"
+                      style={{color: '#f43f5e'}}>
+                      {item?.product_name}
+                    </Text>
+                  </View>
+
+                  <View className="flex-row ">
+                    <View
+                      className={`rounded-md pl-2 mt-1 justify-center items-center flex-row py-1 max-w-[120px] ${backgroundColorOrderStatus(
                         item?.order_status,
                       )}`}>
-                      {textOrderStatus(item?.order_status)}
-                    </Text>
+                      <IonIcons
+                        name="wallet"
+                        color={colorOrderStatus(item?.order_status)}
+                        size={17}
+                      />
+
+                      <Text
+                        className={`font-poppins-medium text-xs mx-2 ${textColorOrderStatus(
+                          item?.order_status,
+                        )}`}>
+                        {textOrderStatus(item?.order_status)}
+                      </Text>
+                    </View>
                   </View>
                 </View>
                 <View className="flex-row gap-x-2">
-                  <View className="bg-blue-100 rounded-md pl-2   mt-1 justify-center  items-center flex-row  py-1 max-w-[120px]">
-                    <IonIcons name="pricetag" color="#138EE9" size={17} />
-                    <Text className="font-poppins-medium text-xs mx-2 text-[#138EE9]">
-                      {rupiah(item?.product_price)}
+                  <View className="bg-green-100 rounded-md pl-2   mt-1 justify-center  items-center flex-row  py-1 max-w-[130px]">
+                    <IonIcons name="call" color="#658844" size={15} />
+                    <Text className="font-poppins-medium text-xs mx-2 text-[#658844]">
+                      {item?.customer_no}
                     </Text>
+                  </View>
+                  <View className="flex-row ">
+                    <View className="bg-blue-100 rounded-md pl-2   mt-1 justify-center  items-center flex-row  py-1 max-w-[120px]">
+                      <IonIcons name="pricetag" color="#138EE9" size={17} />
+                      <Text className="font-poppins-medium text-xs mx-2 text-[#138EE9]">
+                        {rupiah(item?.product_price)}
+                      </Text>
+                    </View>
                   </View>
                 </View>
               </View>
@@ -203,11 +218,7 @@ export default function Order({navigation}) {
       <View
         className="rounded-lg "
         style={{backgroundColor: isDarkMode ? '#262626' : '#f8f8f8'}}></View>
-      <Paginate
-        url="/master/order"
-        ref={paginateRef}
-        renderItem={orderCards}
-      />
+      <Paginate url="/master/order" ref={paginateRef} renderItem={orderCards} />
 
       <DeleteConfirmationModal />
       <SuccessOverlayModal />
