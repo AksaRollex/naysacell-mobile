@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   ImageBackground,
   Linking,
@@ -20,11 +20,16 @@ import {
   HORIZONTAL_MARGIN,
   LIGHT_BACKGROUND,
   LIGHT_COLOR,
+  SLATE_COLOR,
+  WHITE_BACKGROUND,
   windowHeight,
   windowWidth,
 } from '../../utils/const';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import IonIcons from 'react-native-vector-icons/Ionicons';
+import Paginate from '../../components/Paginate';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const getGreeting = () => {
   const hour = new Date().getHours();
@@ -40,6 +45,75 @@ export default function HomeScreen({navigation}) {
   const [data, setData] = useState([]);
   const [saldo, setSaldo] = useState('');
   const [saldoIsLoading, setSaldoIsLoading] = useState(false);
+  const paginateRef = useRef();
+
+  const getStatusColor = status => {
+    switch (status) {
+      case 'success':
+        return 'text-green-400';
+      case 'Pending':
+        return 'text-yellow-400';
+      case 'Gagal':
+      case 'Failed ':
+        return 'text-red-400';
+      default:
+        return 'text-gray-400';
+    }
+  };
+
+  const getStatusText = status => {
+    switch (status) {
+      case 'success':
+        return 'Berhasil';
+      case 'Pending':
+        return 'Pending';
+      case 'Failed ':
+        return 'Gagal';
+      default:
+        return 'Gagal';
+    }
+  };
+
+  const transactionCard = ({item}) => {
+    return (
+      <View
+        className="w-full p-2 flex-col  rounded-xl mb-4"
+        style={{backgroundColor: isDarkMode ? '#232323' : '#f9f9f9'}}>
+        <View
+          className="rounded-xl  w-full p-2 flex-row justify-between "
+          onPress={() => navigation.navigate('DetailTransaction', {item})}>
+          <View
+            className="items-center justify-center"
+            style={{
+              backgroundColor: isDarkMode ? '#242424' : '#fff',
+              width: 50,
+              height: 50,
+              borderRadius: 25,
+            }}>
+            <MaterialIcons name="shopping-cart" size={25} color={BLUE_COLOR} />
+          </View>
+          <View className="flex-col items-end">
+            <Text
+              className={`font-poppins-semibold text-end ${getStatusColor(
+                item.transaction_status,
+              )}`}>
+              {getStatusText(item.transaction_status)}
+            </Text>
+            <Text
+              className="text-sm font-poppins-regular"
+              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+              {item.transaction_product}
+            </Text>
+            <Text
+              className="text-sm font-poppins-regular"
+              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+              {rupiah(item.transaction_total)}
+            </Text>
+          </View>
+        </View>
+      </View>
+    );
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -124,12 +198,13 @@ export default function HomeScreen({navigation}) {
                     marginBottom: 5,
                   }}
                   className="font-poppins-semibold">
-                  {greeting} , {data.name || 'User'}
+                  {greeting} , {data.name || 'Pengguna'}
                 </Text>
               )}
 
               <View className="flex-row gap-4">
-                <TouchableOpacity onPress={() => navigation.navigate('CustomerService')}>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('CustomerService')}>
                   <Headset
                     width={24}
                     height={24}
@@ -231,7 +306,7 @@ export default function HomeScreen({navigation}) {
             </View>
           </View>
 
-          {/* TOPUP & TAGIHAN */}
+          {/* TOPUP */}
           <View
             className=" rounded-xl p-3"
             style={{
@@ -279,63 +354,49 @@ export default function HomeScreen({navigation}) {
               })}
             </View>
           </View>
-        </View>
-
-        {/* GAME */}
-        {/* <View
+          <View
+            className=" rounded-xl my-4 py-4"
             style={{
+              backgroundColor: isDarkMode ? '#262626' : '#fff',
               marginHorizontal: HORIZONTAL_MARGIN,
-              backgroundColor: isDarkMode ? '#262626' : '#f8f8f8',
-            }}
-            className="my-5 p-3  rounded-md ">
-            <View>
+            }}>
+            <View className="flex-row justify-between items-center mb-5">
               <Text
-                style={{
-                  color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-                }}
-                className="font-poppins-semibold">
-                Game
+                className="text-sm font-poppins-medium mx-3 "
+                style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                Histori Transaksi Terakhir
               </Text>
             </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                flexWrap: 'wrap',
-                justifyContent: 'space-between',
-              }}>
-              {gameMenu.map(item => {
-                return (
-                  <TouchableOpacity
-                    key={item.label}
-                    style={{
-                      width: 100,
-                      padding: 5,
-                      backgroundColor: isDarkMode ? DARK_BACKGROUND : '#FFF',
-                      borderRadius: 10,
-                      marginTop: 15,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                    onPress={() => navigation.navigate(item.path)}>
-                    <FontAwesome5Icon
-                      name="gamepad"
-                      size={30}
-                      color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
-                    />
-                    <Text
-                      style={{
-                        textAlign: 'center',
-                        marginTop: 10,
-                        color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-                      }}
-                      className="font-poppins-regular">
-                      {item.label}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
+            <Paginate
+              url="/auth/histori/home"
+              renderItem={transactionCard}
+              ref={paginateRef}
+              showSearchSkeleton={false}
+              showListFooter={false}
+              showPaginationInfo={false}
+              showSearch={false}
+            />
+            <View className=" flex-row  items-end justify-end px-2 w-full ">
+              <TouchableOpacity
+                className="flex-row items-end justify-end"
+                onPress={() => {
+                  navigation.navigate('Transaksi');
+                }}>
+                <Text
+                  value
+                  className="text-xs font-poppins-regular "
+                  style={{color: isDarkMode ? SLATE_COLOR : SLATE_COLOR}}>
+                  Lihat Semua Transaksi
+                </Text>
+                <MaterialCommunityIcons
+                  name="chevron-double-right"
+                  size={17}
+                  color={isDarkMode ? SLATE_COLOR : SLATE_COLOR}
+                />
+              </TouchableOpacity>
             </View>
-          </View> */}
+          </View>
+        </View>
       </ScrollView>
     </>
   );

@@ -178,7 +178,7 @@ export default function LoginPage() {
                     style={{
                       position: 'absolute',
                       right: 10,
-                      top: '50%',
+                      top: '65%',
                       transform: [{translateY: -12}],
                     }}>
                     {isSecure ? <Eye /> : <EyeCrossed />}

@@ -8,7 +8,12 @@ import {
 } from 'react-native';
 import React from 'react';
 import LottieView from 'lottie-react-native';
-import {DARK_COLOR, WHITE_BACKGROUND, WHITE_COLOR} from '../utils/const';
+import {
+  DARK_COLOR,
+  LIGHT_COLOR,
+  WHITE_BACKGROUND,
+  WHITE_COLOR,
+} from '../utils/const';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function ModalProcess({
@@ -25,7 +30,7 @@ export default function ModalProcess({
   bgIcon,
   bgTrueText,
   buttonFalseColorText,
-  buttonTrueColorText
+  buttonTrueColorText,
 }) {
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -50,7 +55,7 @@ export default function ModalProcess({
           </Text>
           <Text
             className="text-sm text-start capitalize mb-4 font-poppins-regular"
-            style={{color: isDarkMode ? WHITE_COLOR : DARK_COLOR}}>
+            style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
             {subTitle}
           </Text>
           <View className="flex-col justify-center items-center gap-y-2 w-full ">
@@ -61,7 +66,7 @@ export default function ModalProcess({
               onPress={functionTrueButton}>
               <Text
                 className="font-poppins-semibold capitalize text-center"
-                style={{color : buttonTrueColorText || WHITE_COLOR}}>
+                style={{color: buttonTrueColorText || WHITE_COLOR}}>
                 {buttonTrueText}
               </Text>
             </TouchableOpacity>

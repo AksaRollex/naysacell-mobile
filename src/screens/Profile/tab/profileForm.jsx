@@ -307,9 +307,13 @@ export default function ProfileForm({route}) {
                 name="name"
                 rules={{
                   required: 'Nama Harus Diisi',
+                  pattern: {
+                    value: /^[A-Za-z\s]+$/, 
+                    message: 'Nama Tidak Boleh Mengandung Angka atau Simbol',
+                  },
                   maxLength: {
-                    value: 20,
-                    message: 'Nama Tidak Boleh Lebih Dari 20 Karakter',
+                    value: 17, 
+                    message: 'Nama Tidak Boleh Lebih Dari 17 Karakter',
                   },
                 }}
                 render={({field: {onBlur}}) => (
@@ -330,6 +334,7 @@ export default function ProfileForm({route}) {
                       className={`h-12 w-full mx-auto px-4 rounded-md border-[0.5px] border-neutral-700 font-poppins-regular ${
                         isEditing ? '' : ''
                       }`}
+                      maxLength={17} // Maksimal karakter di level input
                     />
                   </>
                 )}
@@ -341,6 +346,9 @@ export default function ProfileForm({route}) {
                 control={control}
                 name="phone"
                 rules={{
+                  pattern: {
+                    value: /^[0-9]+$/,
+                  },
                   required: 'Nomor Telepon Harus Diisi',
                 }}
                 render={({field: {onBlur}}) => (
@@ -423,14 +431,15 @@ export default function ProfileForm({route}) {
                 Tanggal Pendaftaran
               </Text>
               <TextInput
-                value={renderLoadingOrValue(new Date(data.created_at || '').toLocaleDateString(
-                  'id-ID',
-                  {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  },
-                ))}
+                value={renderLoadingOrValue(
+                  data.created_at
+                    ? new Date(data.created_at).toLocaleDateString('id-ID', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })
+                    : 'Tanggal tidak tersedia',
+                )}
                 editable={false}
                 placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
                 className="h-12 w-full mx-auto px-4  rounded-md border-[0.5px] border-neutral-700  font-poppins-regular"
@@ -476,10 +485,16 @@ export default function ProfileForm({route}) {
         modalVisible={modalSuccess}
         title="Berhasil Memperbarui Data"
         subTitle="Data anda telah diperbarui"
+        icon="checkmark-done-sharp"
+        iconColor={'#95bb72'}
+        bgIcon={'#e6f7e6'}
         url={require('../../../../assets/lottie/success-animation.json')}
       />
       <ModalAfterProcess
         modalVisible={modalFailed}
+        icon="close-sharp"
+        iconColor={'#f43f5e'}
+        bgIcon={'#fdecef'}
         title="Gagal Memperbarui Data"
         subTitle={errorMessage}
         url={require('../../../../assets/lottie/failed-animation.json')}

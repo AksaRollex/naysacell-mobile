@@ -24,7 +24,7 @@ import {HeaderBG, SignOut} from '../../../assets';
 import ProfileForm from './tab/profileForm';
 import {useState} from 'react';
 import ModalProcess from '../../components/ModalProcess';
-import {useMutation, useQuery} from '@tanstack/react-query';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from '../../libs/axios';
 import ModalAfterProcess from '../../components/ModalAfterProcess';
@@ -58,25 +58,18 @@ export default function Profile({navigation}) {
     setModalLogout(false);
   };
 
-  const {mutate: logout} = useMutation({
-    mutationFn: () => axios.delete('/auth/logout'),
+  const queryClient = useQueryClient()
+
+  const {mutate: logout} = useMutation(() => axios.post('/auth/logout'), {
     onSuccess: async () => {
-      try {
-        await AsyncStorage.removeItem('@auth-token');
-        setModalSuccessLogout(true);
-        setTimeout(() => {
-          setModalSuccessLogout(false);
-          navigation.navigate('LoginPage');
-        }, 2000);
-      } catch (error) {
-        setErrorMessage(error.response?.data || error.message);
-        setModalFailedLogout(true);
-        setTimeout(() => {
-          setModalFailedLogout(false);
-        }, 2000);
-      }
+      await AsyncStorage.removeItem('@auth-token');
+      setModalSuccessLogout(true);
+      setTimeout(() => {
+        setModalSuccessLogout(false);
+      }, 2000);
+      queryClient.invalidateQueries(['auth', 'user']);
     },
-    onError: error => {
+    onError: () => {
       console.error('Logout error:', error.response?.data || error.message);
       setErrorMessage(error.response?.data || error.message);
       setModalFailedLogout(true);
@@ -85,7 +78,6 @@ export default function Profile({navigation}) {
       }, 2000);
     },
   });
-
   const {data} = useQuery({
     queryKey: ['auth', 'user'],
     queryFn: () => axios.get('/auth/me').then(response => response.data.user),

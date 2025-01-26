@@ -47,6 +47,9 @@ const Paginate = forwardRef(
       renderItem,
       Plugin,
       showSearch = true,
+      showListFooter = true,
+      showPaginationInfo = true,
+      showSearchSkeleton = true,
       isExternalLoading = false,
       ...props
     },
@@ -93,6 +96,8 @@ const Paginate = forwardRef(
     });
 
     const PaginationInfo = () => {
+      if (!showPaginationInfo) return null;
+
       const startIndex = (page - 1) * (data?.per_page || 10) + 1;
       const endIndex = Math.min(
         page * (data?.per_page || 10),
@@ -235,66 +240,72 @@ const Paginate = forwardRef(
       </>
     );
 
-    const ListFooter = () => (
-      <View className="flex-row justify-start mt-6 space-x-2 items-center">
-        {page > 1 && (
-          <>
-            <TouchableOpacity
-              className="px-3  py-2 rounded-lg border "
-              style={{borderColor: '#138EE9'}}
-              onPress={() => setPage(1)}>
-              <Icons name="chevrons-left" size={18} color="#138EE9" />
-            </TouchableOpacity>
-          </>
-        )}
+    const ListFooter = () => {
+      // If showListFooter is false, return null
+      if (!showListFooter) return null;
 
-        {pagination.map(i => (
-          <TouchableOpacity
-            key={i}
-            className={`px-3 py-2 rounded-md border ${
-              i == data?.current_page
-                ? 'bg-[#138EE9] border-[#138EE9] border'
-                : 'border-[#138EE9] border'
-            }`}
-            onPress={() => setPage(i)}>
-            <Text
-              className={`${
-                i == data?.current_page ? 'text-white' : 'text-[#138EE9]'
-              } font-semibold`}>
-              {i}
-            </Text>
-          </TouchableOpacity>
-        ))}
+      return (
+        <View className="flex-row justify-start mt-6 space-x-2 items-center">
+          {page > 1 && (
+            <>
+              <TouchableOpacity
+                className="px-3 py-2 rounded-lg border"
+                style={{borderColor: '#138EE9'}}
+                onPress={() => setPage(1)}>
+                <Icons name="chevrons-left" size={18} color="#138EE9" />
+              </TouchableOpacity>
+            </>
+          )}
 
-        {page < data.last_page && (
-          <>
+          {pagination.map(i => (
             <TouchableOpacity
-              className="px-3 py-2 mx-2 rounded-md border border-[#138EE9]"
-              onPress={() => setPage(data.last_page)}>
-              <Icons name="chevrons-right" size={18} color="#138EE9" />
+              key={i}
+              className={`px-3 py-2 rounded-md border ${
+                i == data?.current_page
+                  ? 'bg-[#138EE9] border-[#138EE9] border'
+                  : 'border-[#138EE9] border'
+              }`}
+              onPress={() => setPage(i)}>
+              <Text
+                className={`${
+                  i == data?.current_page ? 'text-white' : 'text-[#138EE9]'
+                } font-semibold`}>
+                {i}
+              </Text>
             </TouchableOpacity>
-          </>
-        )}
-      </View>
-    );
+          ))}
+
+          {page < data.last_page && (
+            <>
+              <TouchableOpacity
+                className="px-3 py-2 mx-2 rounded-md border border-[#138EE9]"
+                onPress={() => setPage(data.last_page)}>
+                <Icons name="chevrons-right" size={18} color="#138EE9" />
+              </TouchableOpacity>
+            </>
+          )}
+        </View>
+      );
+    };
 
     const shouldShowLoading = isExternalLoading || (isFetching && page === 1);
 
     if (shouldShowLoading) {
       return (
         <View className=" items-center">
-          <View
-            className="flex-row justify-center items-center  mt-6  "
-            style={{width: '90%'}}
-            LinearGradientComponent={LinearGradient}>
-            <Skeleton
-              animation="wave"
-              width={390}
-              LinearGradientComponent={LinearGradient}
-              height={53}
-              style={{borderRadius: 12}}
-            />
-          </View>
+          {showSearchSkeleton && (
+            <View
+              className="flex-row justify-center items-center mt-6"
+              style={{width: '90%'}}>
+              <Skeleton
+                animation="wave"
+                width={390}
+                LinearGradientComponent={LinearGradient}
+                height={53}
+                style={{borderRadius: 12}}
+              />
+            </View>
+          )}
           {cardData.map((item, index) => (
             <View
               key={index}

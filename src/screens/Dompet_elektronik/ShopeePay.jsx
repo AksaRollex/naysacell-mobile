@@ -132,7 +132,7 @@ export default function Shopeepay({navigation}) {
             style={{flex: 0.32, marginHorizontal: HORIZONTAL_MARGIN}}
             className="my-4 h-full">
             <View
-              className="w-full h-full rounded-xl"
+              className="w-full h-full rounded-xl p-3"
               style={{backgroundColor: isDarkMode ? '#262626' : '#fff'}}>
               <ProductPaginate
                 renderItem={productShopeepay}

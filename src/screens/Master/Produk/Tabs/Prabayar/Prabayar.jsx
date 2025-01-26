@@ -50,7 +50,7 @@ export default function Prabayar({navigation}) {
           setTempCategory(selectedCategory);
           setTempProvider(selectedProvider);
         }}
-        className=" flex-row items-center rounded-md justify-between p-[14px] min-w-[70px]"
+        className=" flex-row items-center rounded-xl justify-between p-[14px] min-w-[70px]"
         style={{backgroundColor: isDarkMode ? '#262626' : '#fff'}}>
         <View className="flex-row items-center">
           <IonIcons
@@ -295,7 +295,13 @@ export default function Prabayar({navigation}) {
         <View className="flex-row w-full  my-2 justify-center ">
           <View className="w-full flex-row justify-between items-start">
             <View className="flex-row  items-center justify-start gap-x-2 ">
-              <View className="p-3 items-center rounded-full   bg-[#242424]">
+              <View  className="items-center justify-center"
+                style={{
+                  backgroundColor: isDarkMode ? '#242424' : '#fff',
+                  width: 50,
+                  height: 50,
+                  borderRadius: 25,
+                }}>
                 <MaterialIcons name="shopping-cart" size={25} color={BLUE_COLOR} />
               </View>
               <View className="flex-col  w-64 items-start justify-start ">

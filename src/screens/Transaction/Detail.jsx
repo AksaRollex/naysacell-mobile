@@ -4,9 +4,8 @@ import {
   useColorScheme,
   Share,
   View,
-  Modal,
 } from 'react-native';
-import React, {useState} from 'react';
+import React from 'react';
 import {
   BLUE_COLOR,
   DARK_BACKGROUND,
@@ -19,7 +18,6 @@ import IonIcons from 'react-native-vector-icons/Ionicons';
 
 export default function DetailTransaction({route}) {
   const {item} = route.params;
-  const [shareModalVisible, setShareModalVisible] = useState(true);
   const isDarkMode = useColorScheme() === 'dark';
 
   const getPaymentStatusColor = payment_status => {
@@ -238,41 +236,37 @@ Tanggal: ${new Date(item?.created_at || '').toLocaleDateString('id-ID', {
           </View>
         </View>
       </View>
-      <Modal
-        visible={shareModalVisible}
-        transparent={true}
-        animationType="slide">
-        <View
-          className="mx-3 rounded-t-2xl p-3"
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            backgroundColor: isDarkMode ? '#1e1e1e' : '#fff',
-            shadowColor: '#000',
-            shadowOffset: {width: 0, height: -2},
-            shadowOpacity: 0.2,
-            shadowRadius: 4,
-          }}>
-          <View className="items-center">
-            <TouchableOpacity onPress={shareTransaction}>
-              <View className=" items-center  justify-center">
-                <View
-                  className="p-3 w-full rounded-2xl flex-row space-x-2  items-center justify-center "
-                  style={{backgroundColor: isDarkMode ? '#262626' : '#f8f8f8'}}>
-                  <IonIcons name="share-social" size={25} color={BLUE_COLOR} />
-                  <Text
-                    className="text-sm capitalize font-poppins-medium "
-                    style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                    Bagi bukti bayar
-                  </Text>
-                </View>
+
+      <View
+        className="mx-3 rounded-t-2xl p-3"
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          backgroundColor: isDarkMode ? '#1e1e1e' : '#fff',
+          shadowColor: '#000',
+          shadowOffset: {width: 0, height: -2},
+          shadowOpacity: 0.2,
+          shadowRadius: 4,
+        }}>
+        <View className="items-center">
+          <TouchableOpacity onPress={shareTransaction}>
+            <View className=" items-center  justify-center">
+              <View
+                className="p-3 w-full rounded-2xl flex-row space-x-2  items-center justify-center "
+                style={{backgroundColor: isDarkMode ? '#262626' : '#f8f8f8'}}>
+                <IonIcons name="share-social" size={25} color={BLUE_COLOR} />
+                <Text
+                  className="text-sm capitalize font-poppins-medium "
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  Bagi bukti bayar
+                </Text>
               </View>
-            </TouchableOpacity>
-          </View>
+            </View>
+          </TouchableOpacity>
         </View>
-      </Modal>
+      </View>
     </View>
   );
 }

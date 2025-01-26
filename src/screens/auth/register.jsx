@@ -13,7 +13,6 @@ import {
   BLUE_COLOR,
   DARK_BACKGROUND,
   DARK_COLOR,
-  GREY_COLOR,
   LIGHT_COLOR,
   SLATE_COLOR,
   WHITE_BACKGROUND,
@@ -21,7 +20,6 @@ import {
 } from '../../utils/const';
 import axios from '../../libs/axios';
 import {Controller, useForm} from 'react-hook-form';
-import Header from '../../components/Header';
 import ModalAfterProcess from '../../components/ModalAfterProcess';
 import {Eye, EyeCrossed} from '../../../assets';
 import Checkbox from '@react-native-community/checkbox';
@@ -132,6 +130,11 @@ export default function RegisterPage({navigation}) {
                 rules={{required: 'Nama Harus Diisi'}}
                 render={({field: {onChange, onBlur, value}}) => (
                   <View className="mx-3">
+                    <Text
+                      className="font-poppins-regular "
+                      style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                      Nama
+                    </Text>
                     <TextInput
                       placeholder="Username"
                       label="name"
@@ -150,7 +153,7 @@ export default function RegisterPage({navigation}) {
               {errors.name && (
                 <Text
                   className="mt-1  text-red-400 font-poppins-regular"
-                  style={{marginLeft: rem(2)}}>
+                  style={{marginLeft: rem(1)}}>
                   {errors.name.message}
                 </Text>
               )}
@@ -169,6 +172,11 @@ export default function RegisterPage({navigation}) {
                 }}
                 render={({field: {onChange, onBlur, value}}) => (
                   <View className="mx-3">
+                    <Text
+                      className="font-poppins-regular "
+                      style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                      Email
+                    </Text>
                     <TextInput
                       value={value}
                       onChangeText={onChange}
@@ -186,7 +194,7 @@ export default function RegisterPage({navigation}) {
                 )}
               />
               {errors.email && (
-                <Text className="mt-1 text-red-400 ml-8 font-poppins-regular">
+                <Text className="mt-1 text-red-400 ml-4 font-poppins-regular">
                   {errors.email.message}
                 </Text>
               )}
@@ -201,6 +209,11 @@ export default function RegisterPage({navigation}) {
                 }}
                 render={({field: {onChange, onBlur, value}}) => (
                   <View className="mx-3">
+                    <Text
+                      className="font-poppins-regular "
+                      style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                      Alamat
+                    </Text>
                     <TextInput
                       value={value}
                       onChangeText={onChange}
@@ -218,7 +231,7 @@ export default function RegisterPage({navigation}) {
                 )}
               />
               {errors.address && (
-                <Text className="mt-1 text-red-400 ml-8 font-poppins-regular">
+                <Text className="mt-1 text-red-400 ml-4 font-poppins-regular">
                   {errors.address.message}
                 </Text>
               )}
@@ -237,6 +250,11 @@ export default function RegisterPage({navigation}) {
                 }}
                 render={({field: {onChange, onBlur, value}}) => (
                   <View className="mx-3">
+                    <Text
+                      className="font-poppins-regular "
+                      style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                      Nomor Telepon
+                    </Text>
                     <TextInput
                       value={value}
                       onChangeText={onChange}
@@ -253,7 +271,7 @@ export default function RegisterPage({navigation}) {
                 )}
               />
               {errors.phone && (
-                <Text className="mt-1 text-red-400 ml-8 font-poppins-regular">
+                <Text className="mt-1 text-red-400 ml-4 font-poppins-regular">
                   {errors.phone.message}
                 </Text>
               )}
@@ -272,6 +290,11 @@ export default function RegisterPage({navigation}) {
                 }}
                 render={({field: {onChange, onBlur, value}}) => (
                   <View className="relative mx-3">
+                    <Text
+                      className="font-poppins-regular "
+                      style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                      Password
+                    </Text>
                     <TextInput
                       value={value}
                       onChangeText={onChange}
@@ -289,7 +312,7 @@ export default function RegisterPage({navigation}) {
                       onPress={() => setShowPassword(!showPassword)}
                       style={{
                         position: 'absolute',
-                        top: '50%',
+                        top: '65%',
                         right: 10,
                         transform: [{translateY: -12}],
                       }}>
@@ -299,7 +322,7 @@ export default function RegisterPage({navigation}) {
                 )}
               />
               {errors.password && (
-                <Text className="mt-1 text-red-400 ml-8 font-poppins-regular">
+                <Text className="mt-1 text-red-400 ml-4 font-poppins-regular">
                   {errors.password.message}
                 </Text>
               )}
@@ -317,6 +340,11 @@ export default function RegisterPage({navigation}) {
                   }}
                   render={({field: {onChange, onBlur, value}}) => (
                     <View className="relative mx-3">
+                      <Text
+                        className="font-poppins-regular "
+                        style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                        Konfirmasi Password
+                      </Text>
                       <TextInput
                         value={value}
                         onChangeText={onChange}
@@ -336,7 +364,7 @@ export default function RegisterPage({navigation}) {
                         }
                         style={{
                           position: 'absolute',
-                          top: '50%',
+                          top: '65%',
                           right: 10,
                           transform: [{translateY: -12}],
                         }}>
@@ -347,7 +375,7 @@ export default function RegisterPage({navigation}) {
                 />
               </View>
               {errors.password_confirmation && (
-                <Text className="mt-1 text-red-400 ml-8 font-poppins-regular">
+                <Text className="mt-1 text-red-400 ml-4 font-poppins-regular">
                   {errors.password_confirmation.message}
                 </Text>
               )}

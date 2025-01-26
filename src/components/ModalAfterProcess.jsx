@@ -23,7 +23,7 @@ export default function ModalAfterProcess({
           <View
             className={`w-12 h-12 rounded-full justify-center items-center `}
             style={{backgroundColor: bgIcon || '#fef2f2'}}>
-            <IonIcons size={iconSize} color={iconColor} name={icon} />
+            <IonIcons size={iconSize || 25} color={iconColor || '#95bb72'} name={icon} />
           </View>
           <Text className="text-base my-1 capitalize font-poppins-semibold" style={{ color : isDarkMode ? WHITE_COLOR : LIGHT_COLOR }}>
             {title}

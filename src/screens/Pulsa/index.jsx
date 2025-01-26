@@ -1,4 +1,11 @@
-import {StyleSheet, Text, View, TouchableOpacity, Alert} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
 import React, {useRef, useState, useEffect} from 'react';
 import {
   BLUE_COLOR,
@@ -21,7 +28,7 @@ import Input from '../../components/form/input';
 import ProductPaginate from '../../components/ProductPaginate';
 import {Controller, useForm} from 'react-hook-form';
 import axios from '../../libs/axios';
-import {useMutation} from '@tanstack/react-query';
+import {useMutation, useQueryClient} from '@tanstack/react-query';
 import ModalAfterProcess from '../../components/ModalAfterProcess';
 
 export default function Pulsa({navigation}) {
@@ -36,7 +43,7 @@ export default function Pulsa({navigation}) {
   const pulsaRef = useRef();
   const dataRef = useRef();
   const product_type = ['Pulsa', 'Data'];
-
+  const queryClient = useQueryClient();
   const [isSearchEnabled, setIsSearchEnabled] = useState(false);
   const [phoneOperator, setPhoneOperator] = useState(null);
 
@@ -145,7 +152,7 @@ export default function Pulsa({navigation}) {
         customer_name: nameCustomer,
         user_id: userId,
       });
-
+      queryClient.invalidateQueries('/auth/histori');
       navigation.replace('SuccessNotif', {
         item: selectItem,
         customer_no: nomorTujuan,
@@ -349,43 +356,132 @@ export default function Pulsa({navigation}) {
         <BottomModal
           visible={showModal}
           onDismiss={() => setShowModal(false)}
-          title="Detail Transaksi">
-          <View>
-            <View style={styles.modalData(isDarkMode)}>
-              <Text style={styles.labelModalData(isDarkMode)}>
-                Nomor Tujuan
+          title="Konfirmasi Pesanan">
+          <View
+            className="w-full p-3 rounded-xl   justify-between flex-col flex-wrap"
+            style={{
+              backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
+            }}>
+            <View
+              className="w-full p-3 rounded-xl flex-col "
+              style={{
+                borderColor: '#464646',
+                borderStyle: 'dashed',
+                borderWidth: 1,
+              }}>
+              <Text
+                className="text-center capitalize  text-sm font-poppins-medium mt-2 mb-4"
+                style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                rincian pembelian
               </Text>
-              <Text style={styles.valueModalData(isDarkMode)}>
-                {nomorTujuan}
-              </Text>
+              <View className="flex-row justify-between items-center my-1 ">
+                <Text
+                  className="text-sm font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  Layanan
+                </Text>
+                <Text
+                  className="text-sm font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  {selectItem?.product_provider}
+                </Text>
+              </View>
+              <View className="flex-row justify-between items-center my-1 ">
+                <Text
+                  className="text-sm font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  Nomor Tujuan
+                </Text>
+                <Text
+                  className="text-sm font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  {nomorTujuan}
+                </Text>
+              </View>
+              <View className="flex-row justify-between items-center my-1 ">
+                <Text
+                  className="text-sm font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  Produk
+                </Text>
+                <Text
+                  className="text-sm font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  {selectItem?.product_name}
+                </Text>
+              </View>
+              <View className="flex-row justify-between items-center my-1 ">
+                <Text
+                  className="text-sm font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  Harga
+                </Text>
+                <Text
+                  className="text-sm font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  {rupiah(selectItem?.product_price)}
+                </Text>
+              </View>
             </View>
-            <View style={styles.modalData(isDarkMode)}>
-              <Text style={styles.labelModalData(isDarkMode)}>Operator</Text>
-              <Text style={styles.valueModalData(isDarkMode)}>
-                {phoneOperator || 'Tidak Dikenali'}
+          </View>
+          <View
+            className="w-full p-3 rounded-xl  mt-5 justify-between flex-col flex-wrap"
+            style={{
+              backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
+            }}>
+            <View
+              className="w-full p-3 rounded-xl flex-col "
+              style={{
+                borderColor: '#464646',
+                borderStyle: 'dashed',
+                borderWidth: 1,
+              }}>
+              <Text
+                className="text-center capitalize text-sm font-poppins-medium mt-2 mb-4"
+                style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                rincian pembayaran
               </Text>
-            </View>
-            <View style={styles.modalData(isDarkMode)}>
-              <Text style={styles.labelModalData(isDarkMode)}>Produk </Text>
-              <Text style={styles.valueModalData(isDarkMode)}>
-                {selectItem?.product_name}
-              </Text>
-            </View>
-            <View style={styles.modalData(isDarkMode)}>
-              <Text style={styles.labelModalData(isDarkMode)}>Harga </Text>
-              <Text style={styles.valueModalData(isDarkMode)}>
-                {rupiah(selectItem?.product_price)}
-              </Text>
+              <View className="flex-row justify-between items-center my-1 ">
+                <Text
+                  className="text-sm font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  Harga Produk
+                </Text>
+                <Text
+                  className="text-sm font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  {rupiah(selectItem?.product_price)}
+                </Text>
+              </View>
+              <View className="flex-row justify-between items-center my-1 ">
+                <Text
+                  className="text-sm font-poppins-semibold"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  Total
+                </Text>
+                <Text
+                  className="text-sm font-poppins-semibold"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  {rupiah(selectItem?.product_price)}
+                </Text>
+              </View>
             </View>
           </View>
           {selectItem && (
             <View style={[styles.bottom(isDarkMode)]}>
               <TouchableOpacity
-                style={[styles.bottomButton, {opacity: isLoading ? 0.5 : 1}]}
+                className="w-full rounded-xl mx-auto px-4 h-12 items-center justify-center"
+                style={{
+                  backgroundColor: BLUE_COLOR,
+                  opacity: isLoading ? 0.7 : 1,
+                }}
+                disabled={isLoading}
                 onPress={() => topup()}>
-                <Text style={styles.buttonLabel}>
-                  {isLoading ? 'Loading...' : 'Bayar'}
-                </Text>
+                {isLoading ? (
+                  <ActivityIndicator color="#ffffff" />
+                ) : (
+                  <Text style={styles.buttonLabel}>Bayar</Text>
+                )}
               </TouchableOpacity>
             </View>
           )}

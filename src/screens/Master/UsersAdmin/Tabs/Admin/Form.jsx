@@ -24,6 +24,7 @@ import axios from '../../../../../libs/axios';
 import {Eye, EyeCrossed} from '../../../../../../assets';
 import BackButton from '../../../../../components/BackButton';
 import ModalAfterProcess from '../../../../../components/ModalAfterProcess';
+import {ActivityIndicator} from 'react-native';
 
 export default function FormAdmin({route, navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
@@ -328,7 +329,7 @@ export default function FormAdmin({route, navigation}) {
                       style={{fontFamily: 'Poppins-Regular'}}
                       placeholder="Password"
                       placeholderTextColor={
-                        isDarkMode ? SLATE_COLOR : GREY_COLOR
+                        isDarkMode ? SLATE_COLOR : LIGHT_COLOR
                       }
                       keyboardType="numeric"
                       className={`h-12 w-full mx-auto px-4 rounded-md border-[0.5px] border-neutral-700 font-poppins-regular ${
@@ -359,11 +360,14 @@ export default function FormAdmin({route, navigation}) {
         </View>
         <View style={[styles.bottom]} className="p-3">
           <TouchableOpacity
-            style={[styles.bottomButton, {opacity: isLoadingData ? 0.5 : 1}]}
-            className="m-3"
+            className="w-full rounded-xl mx-auto px-4 h-12 items-center justify-center"
+            style={{
+              backgroundColor: BLUE_COLOR,
+              opacity: isLoadingData ? 0.7 : 1,
+            }}
             onPress={onSubmit}>
             <Text style={styles.buttonLabel}>
-              {isLoadingData ? 'Loading...' : 'Simpan'}
+              {isLoadingData ? <ActivityIndicator color="white" /> : 'SIMPAN'}
             </Text>
           </TouchableOpacity>
         </View>

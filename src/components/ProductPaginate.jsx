@@ -134,7 +134,7 @@ const ProductPaginate = forwardRef(
             // Membuat baris baru setiap dua item
             if (index % 2 === 0) {
               return (
-                <View key={index} className="flex-row w-full mb-2 px-4">
+                <View key={index} className="flex-row w-full mb-2">
                   {/* Elemen produk pertama */}
                   <View className="w-1/2 px-1" style={{}}>
                     <Skeleton
@@ -184,7 +184,7 @@ const ProductPaginate = forwardRef(
     };
 
     return (
-      <View className="flex-1 p-4" {...props}>
+      <View className="flex-1" {...props}>
         <FlatList
           data={dataList}
           renderItem={enhancedRenderItem}

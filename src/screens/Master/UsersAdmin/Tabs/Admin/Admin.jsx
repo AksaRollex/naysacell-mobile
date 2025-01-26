@@ -59,7 +59,14 @@ export default function Admin({navigation}) {
         <View className="flex-row w-full  my-2 justify-center ">
           <View className="w-full flex-row justify-between items-start">
             <View className="flex-row  items-center justify-center gap-x-2 ">
-              <View className="p-3 items-center rounded-full   bg-[#242424]">
+              <View
+                className="items-center justify-center"
+                style={{
+                  backgroundColor: isDarkMode ? '#242424' : '#fff',
+                  width: 50,
+                  height: 50,
+                  borderRadius: 25,
+                }}>
                 <FontAwesome5Icon
                   name="user-cog"
                   size={25}

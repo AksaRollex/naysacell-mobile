@@ -88,6 +88,7 @@ const CustomTabBar = ({state, descriptors, navigation}) => {
     'FormAdmin',
     'FormPrabayar',
     'FormOrder',
+    'Transaksi',
     'SuccessNotif',
     'Pulsa',
     'Shopeepay',
@@ -99,7 +100,7 @@ const CustomTabBar = ({state, descriptors, navigation}) => {
     'DetailHistoryDeposit',
     'DetailTransaction',
     'LaporanDeposit',
-    'CustomerService'
+    'CustomerService',
   ];
 
   if (hideOnScreens.includes(routeName)) {
@@ -135,7 +136,7 @@ const CustomTabBar = ({state, descriptors, navigation}) => {
     <View
       style={[
         styles.tabBar,
-        {backgroundColor: isDarkMode ? '#252525' : '#fff'},
+        {backgroundColor: isDarkMode ? '#1e1e1e' : '#fff'},
       ]}>
       {state.routes.map((route, index) => {
         const {options} = descriptors[route.key];
@@ -151,9 +152,9 @@ const CustomTabBar = ({state, descriptors, navigation}) => {
                 name={
                   route.name === 'HomeScreen'
                     ? 'home'
-                    : route.name === 'Transaksi'
-                    ? 'receipt'
-                    : route.name === 'Master'
+                    : // : route.name === 'Transaksi'
+                    // ? 'receipt'
+                    route.name === 'Master'
                     ? 'settings'
                     : route.name === 'Profile'
                     ? 'person'
@@ -167,9 +168,9 @@ const CustomTabBar = ({state, descriptors, navigation}) => {
                 className="font-poppins-semibold">
                 {route.name === 'HomeScreen'
                   ? 'Beranda'
-                  : route.name === 'Transaksi'
-                  ? 'Transaksi'
-                  : route.name === 'Master'
+                  : // : route.name === 'Transaksi'
+                  // ? 'Transaksi'
+                  route.name === 'Master'
                   ? 'Master'
                   : route.name === 'Profile'
                   ? 'Profile'
@@ -192,10 +193,12 @@ const HomeScreenNavigator = () => {
         headerStyle: {
           backgroundColor: isDarkMode ? '#252525' : '#fff',
         },
-        headerTintColor: '#fff',
         headerTitleStyle: {
-          fontWeight: 'bold',
+          fontFamily: 'Poppins-SemiBold',
+          fontSize: 18,
+          color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
         },
+        headerTintColor: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
       }}>
       <Stack.Screen
         name="HomeScreen"
@@ -208,7 +211,12 @@ const HomeScreenNavigator = () => {
         options={{
           title: 'Pulsa & Paket Data',
           headerTitleAlign: 'left',
-          headerTitleStyle: {fontFamily: 'Poppins-SemiBold', fontSize: 18},
+          headerTitleStyle: {
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: 18,
+            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+          },
+          headerTintColor: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
         }}
       />
       <Stack.Screen
@@ -217,11 +225,29 @@ const HomeScreenNavigator = () => {
         options={{
           title: 'Layanan Customer',
           headerTitleAlign: 'left',
-          headerTitleStyle: {fontFamily: 'Poppins-SemiBold', fontSize: 18},
+          headerTitleStyle: {
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: 18,
+            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+          },
+          headerTintColor: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
         }}
       />
       <Stack.Screen name="LayananPLN" component={LayananPLN} />
-      <Stack.Screen name="SuccessNotif" component={SuccessNotif} />
+      <Stack.Screen
+        name="SuccessNotif"
+        component={SuccessNotif}
+        options={{
+          title: 'Notifikasi Transaksi',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: 18,
+            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+          },
+          headerTintColor: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+        }}
+      />
       <Stack.Screen name="PLNPascaBayar" component={PLNPascaBayar} />
       <Stack.Screen name="PLNPrabayar" component={PLNPrabayar} />
       <Stack.Screen name="DompetElektronik" component={DompetElektronik} />
@@ -234,17 +260,40 @@ const HomeScreenNavigator = () => {
         options={{
           title: 'Deposit',
           headerTitleAlign: 'left',
-          headerTitleStyle: {fontFamily: 'Poppins-SemiBold', fontSize: 18},
+          headerTitleStyle: {
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: 18,
+            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+          },
+          headerTintColor: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
         }}
       />
-      <Stack.Screen name="HistoryDeposit" component={HistoryDeposit} />
+      <Stack.Screen
+        name="HistoryDeposit"
+        component={HistoryDeposit}
+        options={{
+          title: 'Riwayat Deposit',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: 18,
+            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+          },
+          headerTintColor: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+        }}
+      />
       <Stack.Screen
         name="DetailHistoryDeposit"
         component={DetailHistoryDeposit}
         options={{
           title: 'Detail Deposit',
           headerTitleAlign: 'left',
-          headerTitleStyle: {fontFamily: 'Poppins-SemiBold', fontSize: 18},
+          headerTitleStyle: {
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: 18,
+            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+          },
+          headerTintColor: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
         }}
       />
       <Stack.Screen
@@ -258,33 +307,31 @@ const HomeScreenNavigator = () => {
         options={{
           title: 'ShopeePay',
           headerTitleAlign: 'left',
-          headerTitleStyle: {fontFamily: 'Poppins-SemiBold', fontSize: 18},
+          headerTitleStyle: {
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: 18,
+            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+          },
+          headerTintColor: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
         }}
       />
 
       <Stack.Screen name="Dana" component={Dana} />
       <Stack.Screen name="OVO" component={OVO} />
       <Stack.Screen name="GoPay" component={GoPay} />
-    </Stack.Navigator>
-  );
-};
-const TransactionNavigator = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: isDarkMode ? '#252525' : '#fff',
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        },
-      }}>
       <Stack.Screen
         name="Transaksi"
         component={Transaksi}
-        options={{headerShown: false}}
+        options={{
+          title: 'Riwayat Transaksi',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: 18,
+            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+          },
+          headerTintColor: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+        }}
       />
       <Stack.Screen
         name="DetailTransaction"
@@ -297,6 +344,7 @@ const TransactionNavigator = () => {
             fontSize: 18,
             color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
           },
+          headerTintColor: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
         }}
       />
     </Stack.Navigator>
@@ -315,6 +363,7 @@ const MasterNavigation = () => {
         headerTitleStyle: {
           fontWeight: 'bold',
         },
+        headerTintColor: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
       }}>
       <Stack.Screen
         name="Master"
@@ -332,6 +381,7 @@ const MasterNavigation = () => {
             fontSize: 18,
             color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
           },
+          headerTintColor: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
         }}
       />
       <Stack.Screen
@@ -345,6 +395,7 @@ const MasterNavigation = () => {
             fontSize: 18,
             color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
           },
+          headerTintColor: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
         }}
       />
       <Stack.Screen
@@ -470,7 +521,7 @@ const ProfileNavigation = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="Profile" component={Profile} />
-      <Stack.Screen name="loginPage" component={LoginPage} />
+      <Stack.Screen name="LoginPage" component={LoginPage} />
     </Stack.Navigator>
   );
 };
@@ -520,6 +571,7 @@ export default function MainScreen() {
                 'Order',
                 'SuccessNotif',
                 'Pulsa',
+                'Transaksi',
                 'Shopeepay',
                 'Dana',
                 'OVO',
@@ -551,14 +603,14 @@ export default function MainScreen() {
                 getFocusedRouteNameFromRoute(route) === 'HomeScreen',
             })}
           />
-          <Tab.Screen
+          {/* <Tab.Screen
             name="Transaksi"
             component={TransactionNavigator}
             options={({route}) => ({
               tabBarVisible:
                 getFocusedRouteNameFromRoute(route) === 'Transaksi',
             })}
-          />
+          /> */}
           {isAdmin && (
             <Tab.Screen
               name="Master"

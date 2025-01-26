@@ -1,11 +1,17 @@
-import {Text, useColorScheme, View, Share, Modal, TouchableOpacity} from 'react-native';
-import React, {useState} from 'react';
+import {
+  Text,
+  useColorScheme,
+  View,
+  Share,
+  TouchableOpacity,
+} from 'react-native';
+import React from 'react';
 import {
   DARK_BACKGROUND,
   DARK_COLOR,
   LIGHT_BACKGROUND,
   LIGHT_COLOR,
-  BLUE_COLOR
+  BLUE_COLOR,
 } from '../../../utils/const';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import {rupiah} from '../../../libs/utils';
@@ -13,7 +19,6 @@ import {rupiah} from '../../../libs/utils';
 export default function DetailHistoryDeposit({route}) {
   const {item} = route.params;
   const isDarkMode = useColorScheme() === 'dark';
-  const [shareModalVisible, setShareModalVisible] = useState(true);
 
   const statusColor = status => {
     if (status === 'success') {
@@ -46,7 +51,7 @@ Kode Transaksi : ${item?.deposit_code}
 Jumlah Deposit : ${rupiah(item?.amount)}
 Nomor Tujuan  : ${item?.user_numbe}
 Status Deposit : ${item.status}
-Status Pembayaran : ${(item?.payment_status || 'Pending')}
+Status Pembayaran : ${item?.payment_status || 'Pending'}
 Tanggal Deposit : ${new Date(item?.created_at || '').toLocaleDateString(
         'id-ID',
         {
@@ -62,12 +67,9 @@ Tanggal Deposit : ${new Date(item?.created_at || '').toLocaleDateString(
       });
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
-          // shared with activity type of result
         } else {
-          // shared
         }
       } else if (result.action === Share.dismissedAction) {
-        // dismissed
       }
     } catch (error) {
       console.error('Error sharing transaction:', error);
@@ -158,41 +160,37 @@ Tanggal Deposit : ${new Date(item?.created_at || '').toLocaleDateString(
           </View>
         </View>
       </View>
-      <Modal
-        visible={shareModalVisible}
-        transparent={true}
-        animationType="slide">
-        <View
-          className="mx-3 rounded-t-2xl p-3"
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            backgroundColor: isDarkMode ? '#1e1e1e' : '#fff',
-            shadowColor: '#000',
-            shadowOffset: {width: 0, height: -2},
-            shadowOpacity: 0.2,
-            shadowRadius: 4,
-          }}>
-          <View className="items-center">
-            <TouchableOpacity onPress={shareTransaction}>
-              <View className=" items-center  justify-center">
-                <View
-                  className="p-3 w-full rounded-2xl flex-row space-x-2  items-center justify-center "
-                  style={{backgroundColor: isDarkMode ? '#262626' : '#f8f8f8'}}>
-                  <IonIcons name="share-social" size={25} color={BLUE_COLOR} />
-                  <Text
-                    className="text-sm capitalize font-poppins-medium "
-                    style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                    Bagi bukti bayar
-                  </Text>
-                </View>
+
+      <View
+        className="mx-3 rounded-t-2xl p-3"
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          backgroundColor: isDarkMode ? '#1e1e1e' : '#fff',
+          shadowColor: '#000',
+          shadowOffset: {width: 0, height: -2},
+          shadowOpacity: 0.2,
+          shadowRadius: 4,
+        }}>
+        <View className="items-center">
+          <TouchableOpacity onPress={shareTransaction}>
+            <View className=" items-center  justify-center">
+              <View
+                className="p-3 w-full rounded-2xl flex-row space-x-2  items-center justify-center "
+                style={{backgroundColor: isDarkMode ? '#262626' : '#f8f8f8'}}>
+                <IonIcons name="share-social" size={25} color={BLUE_COLOR} />
+                <Text
+                  className="text-sm capitalize font-poppins-medium "
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  Bagi bukti bayar
+                </Text>
               </View>
-            </TouchableOpacity>
-          </View>
+            </View>
+          </TouchableOpacity>
         </View>
-      </Modal>
+      </View>
     </View>
   );
 }

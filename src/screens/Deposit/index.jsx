@@ -7,24 +7,28 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  Image,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   BLUE_COLOR,
   DARK_BACKGROUND,
   DARK_COLOR,
+  HORIZONTAL_MARGIN,
   LIGHT_BACKGROUND,
   LIGHT_COLOR,
   SLATE_COLOR,
   WHITE_BACKGROUND,
+  GREY_COLOR,
   windowWidth,
 } from '../../utils/const';
 import {rupiah} from '../../libs/utils';
-import HistoryDeposit from './HistoryDeposit';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import axios from '../../libs/axios';
 import ModalAfterProcess from '../../components/ModalAfterProcess';
 import {Controller, useForm} from 'react-hook-form';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import ProductPaginate from '../../components/ProductPaginate';
 
 export default function Deposit({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
@@ -33,6 +37,7 @@ export default function Deposit({navigation}) {
   const [successModal, setSuccessModal] = useState(false);
   const [failedModal, setModalFailed] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const paginateRef = useRef();
 
   const {
     control,
@@ -85,14 +90,81 @@ export default function Deposit({navigation}) {
     handleTopup();
   };
 
+  const paymentOptions = [
+    {
+      id: 'bca',
+      name: 'Bank BCA',
+      logo: require('../../../assets/images/bca-logo.png'),
+      method: 'Transfer Bank',
+    },
+    {
+      id: 'mandiri',
+      name: 'Bank Mandiri',
+      logo: require('../../../assets/images/mandiri-logo.png'),
+      method: 'Transfer Bank',
+    },
+    {
+      id: 'qris',
+      name: 'QRIS',
+      logo: require('../../../assets/images/qris-logo.png'),
+      method: 'QR Code Payment',
+    },
+  ];
+
+  const colorStatusColor = status => {
+    if (status === 'success') {
+      return '#22c55e';
+    } else if (status === 'pending') {
+      return '#3b82f6';
+    } else if (status === 'failed') {
+      return '#ef4444';
+    } else {
+      return '#3b82f6';
+    }
+  };
+
+  const historiDepositCards = ({item}) => {
+    return (
+      <View
+        className="rounded-xl p-2 flex-col"
+        style={{
+          backgroundColor: isDarkMode ? '#232323' : '#f9f9f9',
+          shadowColor: isDarkMode ? '#fff' : '#000',
+        }}>
+        <View
+          id="cardTitle"
+          className="flex-row  justify-between items-center"
+          style={{borderColor: isDarkMode ? GREY_COLOR : LIGHT_COLOR}}>
+          <Text
+            className="font-poppins-semibold text-[13px]"
+            style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+            Jumlah Deposit : {rupiah(item?.amount || 0)}
+          </Text>
+
+          <MaterialCommunityIcons
+            name="transfer"
+            color={colorStatusColor(item?.status)}
+            size={27}
+          />
+        </View>
+      </View>
+    );
+  };
+
   return (
-    <View
+    <ScrollView
       className="w-full h-full"
       style={{
         backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
       }}>
-      <View>
-        <View className="px-4 py-2">
+      <View
+        className="p-3  rounded-xl"
+        style={{
+          backgroundColor: isDarkMode ? '#262626' : '#fff',
+          marginHorizontal: HORIZONTAL_MARGIN,
+          marginTop: 15,
+        }}>
+        <View className="">
           <Controller
             control={control}
             name="depositAmount"
@@ -104,7 +176,12 @@ export default function Deposit({navigation}) {
               },
             }}
             render={({field: {onChange, onBlur, value}}) => (
-              <View className="mt-3">
+              <View>
+                <Text
+                  className="font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  Jumlah Deposit
+                </Text>
                 <TextInput
                   placeholder="Nominal Deposit"
                   value={rupiah(depositAmount)}
@@ -129,28 +206,27 @@ export default function Deposit({navigation}) {
         </View>
         <View
           id="referensi_nominal"
-          className="px-4 py-2 flex flex-row flex-wrap justify-between items-center">
-          {[
-            10000, 25000, 50000, 100000, 150000, 200000, 400000, 600000,
-            1000000,
-          ].map((amount, index) => (
-            <TouchableOpacity
-              key={index}
-              className="px-1 py-4 my-1 rounded-md justify-center items-center"
-              style={{
-                backgroundColor: isDarkMode ? '#262626' : WHITE_BACKGROUND,
-                width: windowWidth * 0.3,
-              }}
-              onPress={() => handlePresetAmount(amount)}>
-              <Text
-                className="font-poppins-regular"
-                style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                {rupiah(amount)}
-              </Text>
-            </TouchableOpacity>
-          ))}
+          className="py-2 flex flex-row flex-wrap justify-between items-center">
+          {[100000, 150000, 200000, 400000, 600000, 900000].map(
+            (amount, index) => (
+              <TouchableOpacity
+                key={index}
+                className="px-1 py-4 my-1 rounded-md justify-center items-center"
+                style={{
+                  backgroundColor: isDarkMode ? '#262626' : '#f9f9f9',
+                  width: windowWidth * 0.255,
+                }}
+                onPress={() => handlePresetAmount(amount)}>
+                <Text
+                  className="font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  {rupiah(amount)}
+                </Text>
+              </TouchableOpacity>
+            ),
+          )}
         </View>
-        <View className="px-4 py-2 ">
+        <View className=" py-2 ">
           <TouchableOpacity
             className="w-full rounded-xl mx-auto px-4 h-12 items-center justify-center"
             style={{
@@ -164,6 +240,90 @@ export default function Deposit({navigation}) {
           </TouchableOpacity>
         </View>
       </View>
+
+      <View
+        className="p-3  rounded-xl"
+        style={{
+          backgroundColor: isDarkMode ? '#262626' : '#fff',
+          marginHorizontal: HORIZONTAL_MARGIN,
+          marginTop: 15,
+        }}>
+        <Text
+          className="font-poppins-regular"
+          style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+          Metode Pembayaran
+        </Text>
+        <View style={styles.paymentGrid}>
+          {paymentOptions.map(option => (
+            <TouchableOpacity
+              key={option.id}
+              className="h-20 px-2 rounded-xl w-full flex-row items-center justify-between my-2"
+              style={[
+                {
+                  backgroundColor: isDarkMode ? '#232323' : '#f9f9f9',
+                },
+              ]}
+              onPress={() => {}}>
+              <Image
+                source={option.logo}
+                style={styles.paymentLogo}
+                resizeMode="contain"
+              />
+              <View className="flex-col items-end">
+                <Text style={[styles.paymentName, {color: BLUE_COLOR}]}>
+                  {option.name}
+                </Text>
+                <Text
+                  className="font-poppins-regular text-xs"
+                  style={[{color: isDarkMode ? SLATE_COLOR : LIGHT_COLOR}]}>
+                  {option.method}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
+      <View
+        className="p-3  rounded-xl"
+        style={{
+          backgroundColor: isDarkMode ? '#262626' : '#fff',
+          marginHorizontal: HORIZONTAL_MARGIN,
+          marginVertical: 15,
+        }}>
+        <Text
+          className="font-poppins-regular"
+          style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+          Riwayat Deposit
+        </Text>
+        <View className="-mx-2">
+          <ProductPaginate
+            url="/auth/histori-deposit"
+            renderItem={historiDepositCards}
+            ref={paginateRef}
+          />
+        </View>
+        <View className="items-end justify-end  w-full ">
+          <TouchableOpacity
+            className="flex-row items-end justify-end"
+            onPress={() => {
+              navigation.navigate('HistoryDeposit');
+            }}>
+            <Text
+              value
+              className="text-xs font-poppins-regular "
+              style={{color: isDarkMode ? SLATE_COLOR : SLATE_COLOR}}>
+              Lihat Semua Riwayat Deposit
+            </Text>
+            <MaterialCommunityIcons
+              name="chevron-double-right"
+              size={17}
+              color={isDarkMode ? SLATE_COLOR : SLATE_COLOR}
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+
       <ModalAfterProcess
         modalVisible={successModal}
         title="Deposit Berhasil"
@@ -181,17 +341,7 @@ export default function Deposit({navigation}) {
         iconColor={'#f43f5e'}
         iconSize={24}
       />
-      <View className=" mx-4 justify-end items-end mt-11 py-2">
-        <Text
-          className="font-poppins-semibold text-end"
-          style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-          Histori Deposit
-        </Text>
-      </View>
-      <ScrollView className="  ">
-        <HistoryDeposit />
-      </ScrollView>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -213,4 +363,13 @@ const styles = StyleSheet.create({
     backgroundColor: BLUE_COLOR,
     borderRadius: 5,
   }),
+  paymentLogo: {
+    width: 80,
+    height: 50,
+  },
+  paymentName: {
+    fontSize: 16,
+    fontFamily: 'Poppins-SemiBold',
+    marginBottom: 5,
+  },
 });
