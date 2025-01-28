@@ -41,6 +41,7 @@ export default function Deposit({navigation}) {
 
   const {
     control,
+    trigger,
     formState: {errors},
   } = useForm();
 
@@ -125,7 +126,8 @@ export default function Deposit({navigation}) {
 
   const historiDepositCards = ({item}) => {
     return (
-      <View
+      <TouchableOpacity
+        onPress={() => navigation.navigate('DetailHistoryDeposit', {item})}
         className="rounded-xl p-2 flex-col"
         style={{
           backgroundColor: isDarkMode ? '#232323' : '#f9f9f9',
@@ -147,7 +149,7 @@ export default function Deposit({navigation}) {
             size={27}
           />
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -171,11 +173,21 @@ export default function Deposit({navigation}) {
             rules={{
               required: 'Nominal Deposit tidak boleh kosong',
               validate: value => {
-                const numericValue = value.replace(/\D/g, '');
-                return numericValue > 0 || 'Nominal Deposit harus lebih dari 0';
+                if (!value) return 'Nominal Deposit tidak boleh kosong';
+                const numericValue = parseInt(value.replace(/\D/g, ''));
+                if (isNaN(numericValue) || numericValue < 1000) {
+                  return 'Minimal deposit adalah Rp 1.000';
+                }
+                if (numericValue > 1000000) {
+                  return 'Maksimal deposit adalah Rp 1.000.000';
+                }
+                return true;
               },
             }}
-            render={({field: {onChange, onBlur, value}}) => (
+            render={({
+              field: {onChange, onBlur, value},
+              fieldState: {error},
+            }) => (
               <View>
                 <Text
                   className="font-poppins-regular"
@@ -184,21 +196,24 @@ export default function Deposit({navigation}) {
                 </Text>
                 <TextInput
                   placeholder="Nominal Deposit"
-                  value={rupiah(depositAmount)}
+                  value={depositAmount}
                   onChangeText={text => {
                     const numericValue = text.replace(/\D/g, '');
                     setDepositAmount(numericValue);
-                    onChange(text);
+                    onChange(numericValue);
                   }}
                   keyboardType="numeric"
                   placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
-                  onBlur={onBlur}
-                  className="h-12 w-full rounded-xl font-poppins-regular  px-4 bg-[#f8f8f8 ] border border-stone-600"
+                  onBlur={() => {
+                    onBlur();
+                    trigger('depositAmount');
+                  }}
+                  className={`h-12 w-full rounded-xl font-poppins-regular px-4  border ${
+                    error ? 'border-red-500' : 'border-stone-600'
+                  }`}
                 />
-                {errors.depositAmount && (
-                  <Text className="text-red-400 mt-1">
-                    {errors.depositAmount.message}
-                  </Text>
+                {error && (
+                  <Text className="text-red-400 mt-1">{error.message}</Text>
                 )}
               </View>
             )}
@@ -211,9 +226,9 @@ export default function Deposit({navigation}) {
             (amount, index) => (
               <TouchableOpacity
                 key={index}
-                className="px-1 py-4 my-1 rounded-md justify-center items-center"
+                className="px-1 py-4 my-1 rounded-xl justify-center items-center"
                 style={{
-                  backgroundColor: isDarkMode ? '#262626' : '#f9f9f9',
+                  backgroundColor: isDarkMode ? '#232323' : '#f9f9f9',
                   width: windowWidth * 0.255,
                 }}
                 onPress={() => handlePresetAmount(amount)}>

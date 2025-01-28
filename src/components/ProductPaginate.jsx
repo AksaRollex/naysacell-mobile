@@ -196,7 +196,7 @@ const ProductPaginate = forwardRef(
           ListFooterComponent={ListFooter}
           columnWrapperStyle={{justifyContent: 'flex-start'}}
           ListEmptyComponent={() => (
-            <View className="flex-1 justify-center items-center mt-20">
+            <View className="flex-1 justify-center items-center my-20">
               <Image
                 source={require('../../assets/images/datanotfound.png')}
                 className="w-60 h-60 opacity-60"

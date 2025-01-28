@@ -87,13 +87,12 @@ export default function LoginPage() {
           </View>
 
           <View className="flex-row items-start justify-start">
-            <Text className="font-poppins-semibold text-white">
+            <Text className="font-poppins-semibold capitalize text-sm text-white">
               Belum punya akun ?
             </Text>
             <TouchableOpacity
-              className="rounded-md"
               onPress={() => navigation.navigate('registerPage')}>
-              <Text className="text-white underline font-poppins-semibold mx-1">
+              <Text className="text-white underline font-poppins-semibold text-sm mx-1">
                 Daftar
               </Text>
             </TouchableOpacity>

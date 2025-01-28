@@ -1,5 +1,13 @@
-import {useColorScheme, View, Text, TouchableOpacity} from 'react-native';
-import React, {useRef} from 'react';
+import {
+  useColorScheme,
+  View,
+  Text,
+  TouchableOpacity,
+  Modal,
+  StyleSheet,
+  ScrollView,
+} from 'react-native';
+import React, {useRef, useEffect} from 'react';
 import {
   BLUE_COLOR,
   DARK_BACKGROUND,
@@ -12,10 +20,18 @@ import {rupiah} from '../../libs/utils';
 import Paginate from '../../components/Paginate';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import IonIcons from 'react-native-vector-icons/Ionicons';
 
 export default function Transaction({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
   const paginateRef = useRef();
+
+  const [transactionStatus, setTransactionStatus] = React.useState('');
+  const [selectedTransactionStatus, setSelectedTransactionStatus] =
+    React.useState('');
+  const [modalTransactionStatus, setModalTransactionStatus] =
+    React.useState(false);
+  const [payload, setPayload] = React.useState({});
 
   const getStatusColor = status => {
     switch (status) {
@@ -42,6 +58,134 @@ export default function Transaction({navigation}) {
       default:
         return 'Gagal';
     }
+  };
+
+  const Plugs = () => {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          setModalTransactionStatus(true);
+          setTransactionStatus(selectedTransactionStatus);
+        }}
+        className=" flex-row items-center rounded-xl mb-4 justify-between p-[14px] min-w-[70px]"
+        style={{backgroundColor: isDarkMode ? '#262626' : '#f8f8f8'}}>
+        <View className="flex-row items-center">
+          <IonIcons
+            name="apps"
+            size={20}
+            color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+          />
+          <Text
+            className=" font-poppins-regular mx-2 text-sm"
+            style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+            {selectedTransactionStatus || 'Status'}
+          </Text>
+        </View>
+        <MaterialIcons
+          name="keyboard-arrow-down"
+          size={20}
+          color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+        />
+      </TouchableOpacity>
+    );
+  };
+  const TypePicker = ({onClose}) => {
+    const status = ['Pending', 'Success', 'Failed'];
+
+    const hasChanges = () => {
+      return transactionStatus !== '';
+    };
+
+    const handleConfirm = () => {
+      setSelectedTransactionStatus(transactionStatus);
+      // Update payload dan trigger refetch
+      setPayload(prev => ({
+        ...prev,
+        transaction_status: transactionStatus,
+      }));
+      // Trigger manual refetch jika diperlukan
+      if (paginateRef.current) {
+        paginateRef.current.refetch();
+      }
+      onClose();
+    };
+
+    useEffect(() => {
+      if (paginateRef.current) {
+        paginateRef.current.refetch();
+      }
+    }, [payload]);
+
+    return (
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalTransactionStatus}
+        onRequestClose={onClose}>
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent(isDarkMode)]}>
+            <View style={[styles.modalHeader(isDarkMode)]}>
+              <Text style={[styles.modalTitle(isDarkMode)]}>Pilih Filter</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  setTransactionStatus('');
+                  onClose();
+                }}>
+                <MaterialIcons
+                  name="close"
+                  size={24}
+                  color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+                />
+              </TouchableOpacity>
+            </View>
+
+            <View className="flex-row justify-between px-4">
+              <View className="flex-1 mr-2">
+                <Text
+                  className="text-black font-poppins-semibold mb-2"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  Status Transaksi
+                </Text>
+                <ScrollView className="max-h-64">
+                  {status.map(statusTransaksi => (
+                    <TouchableOpacity
+                      key={statusTransaksi}
+                      className={`p-3 rounded-md mb-2 ${
+                        transactionStatus === statusTransaksi
+                          ? 'bg-blue-50'
+                          : 'bg-[#ececec]'
+                      }`}
+                      onPress={() => setTransactionStatus(statusTransaksi)}>
+                      <Text
+                        className={`${
+                          transactionStatus === statusTransaksi
+                            ? 'text-blue-500 font-poppins-semibold'
+                            : 'text-black font-poppins-regular'
+                        }`}>
+                        {statusTransaksi}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </View>
+            </View>
+
+            <View className="mt-4 px-4">
+              <TouchableOpacity
+                className={`py-3 rounded-md ${
+                  hasChanges() ? 'bg-blue-500' : 'bg-gray-300'
+                }`}
+                disabled={!hasChanges()}
+                onPress={handleConfirm}>
+                <Text className="text-white text-center font-poppins-semibold">
+                  Terapkan Filter
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
   };
 
   const transactionCard = ({item}) => {
@@ -129,9 +273,42 @@ export default function Transaction({navigation}) {
         ref={paginateRef}
         showSearchSkeleton={false}
         showPaginationInfo={false}
+        Plugin={Plugs}
         showListFooter={false}
+        showTopMargin={false}
+        payload={payload}
         showSearch={false}
+      />
+      <TypePicker
+        visible={modalTransactionStatus}
+        onClose={() => setModalTransactionStatus(false)}
       />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: isDarkMode => ({
+    backgroundColor: isDarkMode ? '#1e1e1e' : '#f9f9f9',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingVertical: 20,
+  }),
+  modalHeader: isDarkMode => ({
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    marginBottom: 15,
+  }),
+  modalTitle: isDarkMode => ({
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+  }),
+});

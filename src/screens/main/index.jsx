@@ -37,6 +37,7 @@ import Dana from '../Dompet_elektronik/Dana';
 import OVO from '../Dompet_elektronik/Ovo';
 import GoPay from '../Dompet_elektronik/Gopay';
 import Master from '../Master';
+import LiveChat from '../Bantuan/component_cs/livechat';
 import CustomerService from '../Bantuan/customer_service';
 // USERS ADMIN
 import IndexUsersAdmin from '../Master/UsersAdmin';
@@ -91,6 +92,7 @@ const CustomTabBar = ({state, descriptors, navigation}) => {
     'Transaksi',
     'SuccessNotif',
     'Pulsa',
+    'LiveChat',
     'Shopeepay',
     'Dana',
     'OVO',
@@ -223,7 +225,7 @@ const HomeScreenNavigator = () => {
         name="CustomerService"
         component={CustomerService}
         options={{
-          title: 'Layanan Customer',
+          title: 'Pusat Bantuan',
           headerTitleAlign: 'left',
           headerTitleStyle: {
             fontFamily: 'Poppins-SemiBold',
@@ -254,6 +256,20 @@ const HomeScreenNavigator = () => {
       <Stack.Screen name="BPJSKesehatan" component={BPJSKesehatan} />
       <Stack.Screen name="PDAM" component={PDAM} />
       <Stack.Screen name="BantuanLogin" component={BantuanLogin} />
+      <Stack.Screen
+        name="LiveChat"
+        component={LiveChat}
+        options={{
+          title: 'Live Chat',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: 18,
+            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+          },
+          headerTintColor: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+        }}
+      />
       <Stack.Screen
         name="Deposit"
         component={Deposit}
@@ -574,6 +590,7 @@ export default function MainScreen() {
                 'Transaksi',
                 'Shopeepay',
                 'Dana',
+                'LiveChat',
                 'OVO',
                 'GoPay',
                 'Deposit',

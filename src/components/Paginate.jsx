@@ -2,7 +2,6 @@ import React, {
   memo,
   useState,
   useEffect,
-  useCallback,
   forwardRef,
   useMemo,
   useImperativeHandle,
@@ -12,7 +11,6 @@ import {
   Text,
   TextInput,
   FlatList,
-  ActivityIndicator,
   TouchableOpacity,
   LayoutAnimation,
   UIManager,
@@ -26,7 +24,6 @@ import {useQuery, useQueryClient} from '@tanstack/react-query';
 import axios from '../libs/axios';
 import {Skeleton} from '@rneui/themed';
 import LinearGradient from 'react-native-linear-gradient';
-import {debounce} from 'lodash';
 import Icons from 'react-native-vector-icons/Feather';
 import {DARK_COLOR, LIGHT_COLOR} from '../utils/const';
 
@@ -51,6 +48,7 @@ const Paginate = forwardRef(
       showPaginationInfo = true,
       showSearchSkeleton = true,
       isExternalLoading = false,
+      showTopMargin = true,
       ...props
     },
     ref,
@@ -78,20 +76,6 @@ const Paginate = forwardRef(
       onSuccess: res => {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         setDataList(res.data);
-        // if (page === 1) {
-        //   setDataList(res.data);
-        // } else {
-        //   setDataList(prevData => {
-        //     const newData = [];
-        //     for (let i = 0; i < prevData.length; i++) {
-        //       newData[i] = prevData[i];
-        //     }
-        //     for (let i = 0; i < res.data.length; i++) {
-        //       newData[prevData.length + i] = res.data[i];
-        //     }
-        //     return newData;
-        //   });
-        // }
       },
     });
 
@@ -154,18 +138,6 @@ const Paginate = forwardRef(
       }
     }, [JSON.stringify(payload)]);
 
-    const handleLoadMore = () => {
-      if (
-        !isFetchingMore &&
-        data?.last_page &&
-        page < data?.last_page &&
-        dataList.length < data?.per_page * page
-      ) {
-        setIsFetchingMore(true);
-        setPage(prevPage => prevPage + 1);
-      }
-    };
-
     useEffect(() => {
       if (isFetchingMore) {
         refetch().finally(() => setIsFetchingMore(false));
@@ -185,63 +157,63 @@ const Paginate = forwardRef(
       refetch();
     };
 
-    const ListHeader = () => (
-      <>
-        {showSearch && (
-          <View className=" mb-1 mt-4 ">
-            <Controller
-              control={control}
-              name="search"
-              render={({field: {onChange, value}}) => (
-                <View
-                  className={`relative ${
-                    Boolean(props.Plugin)
-                      ? 'flex-col justify-center'
-                      : 'flex-row items-center'
-                  }`}>
-                  <View className={props.Plugin ? '' : 'flex-1 relative'}>
-                    <TextInput
-                      className="w-full text-base   pr-12  rounded-xl px-4 "
-                      style={{
-                        backgroundColor: isDarkMode ? '#262626' : '#fff',
-                        color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-                      }}
-                      value={value}
-                      placeholderTextColor={
-                        isDarkMode ? DARK_COLOR : LIGHT_COLOR
-                      }
-                      placeholder="Cari..."
-                      onChangeText={text => {
-                        onChange(text);
-                      }}
-                      onSubmitEditing={() => {
-                        handleSearch(value);
-                      }}
-                    />
-                    <TouchableOpacity
-                      className="absolute right-2 top-2 -translate-y-1/2 p-2 rounded-md"
-                      activeOpacity={0.7}
-                      onPress={() => handleSearch(value)}>
-                      <Icons
-                        name="search"
-                        size={18}
-                        color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                  <View style={Plugin ? {marginLeft: 10} : {}}>
-                    {Plugin && <Plugin />}
-                  </View>
-                </View>
-              )}
+    const SearchComponent = ({control, handleSearch, isDarkMode}) => (
+      <Controller
+        control={control}
+        name="search"
+        render={({field: {onChange, value}}) => (
+          <View className="flex-1 relative">
+            <TextInput
+              className="w-full text-base pr-12 rounded-xl px-4"
+              style={{
+                backgroundColor: isDarkMode ? '#262626' : '#fff',
+                color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+              }}
+              value={value}
+              placeholderTextColor={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+              placeholder="Cari..."
+              onChangeText={text => {
+                onChange(text);
+              }}
+              onSubmitEditing={() => {
+                handleSearch(value);
+              }}
             />
+            <TouchableOpacity
+              className="absolute right-2 top-2 -translate-y-1/2 p-2 rounded-md"
+              activeOpacity={0.7}
+              onPress={() => handleSearch(value)}>
+              <Icons
+                name="search"
+                size={18}
+                color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+              />
+            </TouchableOpacity>
           </View>
         )}
-      </>
+      />
+    );
+
+    const ListHeader = () => (
+      <View className={`mb-1 ${showTopMargin ? 'mt-4' : ''}`}>
+        <View className="flex-row items-center space-x-4">
+          {showSearch && (
+            <SearchComponent
+              control={control}
+              handleSearch={handleSearch}
+              isDarkMode={isDarkMode}
+            />
+          )}
+          {Plugin && (
+            <View className="flex-shrink-0">
+              <Plugin />
+            </View>
+          )}
+        </View>
+      </View>
     );
 
     const ListFooter = () => {
-      // If showListFooter is false, return null
       if (!showListFooter) return null;
 
       return (
@@ -373,8 +345,6 @@ const Paginate = forwardRef(
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
           onScroll={handleScroll}
-          // onEndReached={handleLoadMore}
-          // onEndReachedThreshold={0.5}
           showsVerticalScrollIndicator={false}
           ListFooterComponent={() => (
             <View className="justify-end items-start">
@@ -383,7 +353,7 @@ const Paginate = forwardRef(
             </View>
           )}
           ListEmptyComponent={() => (
-            <View className="flex-1 justify-center items-center mt-20">
+            <View className="flex-1 justify-center items-center my-20">
               <Image
                 source={require('../../assets/images/datanotfound.png')}
                 className="w-60 h-60 opacity-60 "

@@ -7,6 +7,7 @@ import {
   useColorScheme,
   ScrollView,
   ImageBackground,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useState} from 'react';
 import {
@@ -23,6 +24,7 @@ import {Controller, useForm} from 'react-hook-form';
 import ModalAfterProcess from '../../components/ModalAfterProcess';
 import {Eye, EyeCrossed} from '../../../assets';
 import Checkbox from '@react-native-community/checkbox';
+import OTPInputView from '@twotalltotems/react-native-otp-input';
 
 const baseRem = 16;
 const rem = multiplier => baseRem * multiplier;
@@ -33,6 +35,11 @@ export default function RegisterPage({navigation}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalFailed, setModalFailed] = useState(false);
   const [modalTerms, setModalTerms] = useState(false);
+
+  const [showOtpInput, setShowOtpInput] = useState(false);
+  const [registrationData, setRegistrationData] = useState(null);
+  const [otpCode, setOtpCode] = useState('');
+  const [ isFocused, setIsFocused ] = useState(false);
 
   const [showPassword, setShowPassword] = useState(true);
   const [showConfirmPassword, setShowConfirmPassword] = useState(true);
@@ -69,15 +76,19 @@ export default function RegisterPage({navigation}) {
     }
     try {
       setIsLoading(true);
-      const formData = {
-        ...data,
-      };
-      await axios.post(`/auth/user/store`, formData);
-      setModalVisible(true);
-      setTimeout(() => {
-        setModalVisible(false);
-        navigation.navigate('loginPage');
-      }, 2000);
+      // Send all registration data when requesting OTP
+      await axios.post('/auth/send-user-otp-regist', {
+        email: data.email,
+        name: data.name,
+        phone: data.phone,
+        address: data.address,
+        password: data.password,
+      });
+
+      // Store registration data for later use
+      setRegistrationData(data);
+      // Show OTP input
+      setShowOtpInput(true);
     } catch (error) {
       const message =
         error.response?.data?.message || 'Terjadi kesalahan saat mendaftar';
@@ -97,6 +108,171 @@ export default function RegisterPage({navigation}) {
       setIsLoading(false);
     }
   };
+
+  const handleVerifyButtonPress = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.post('/auth/verify-user-otp-regist', {
+        email: registrationData.email,
+        otp: otpCode,
+      });
+
+      console.log('Response:', response.data); // Tambahkan ini
+
+      if (response.data.status) {
+        console.log('Verifikasi sukses, akan navigasi ke login'); // Tambahkan ini
+        setModalVisible(true);
+        setTimeout(() => {
+          setModalVisible(false);
+          navigation.replace('loginPage');
+        }, 2000);
+      } else {
+        console.log('Status tidak true:', response.data); // Tambahkan ini
+      }
+    } catch (error) {
+      console.error('Error detail:', error); // Tambahkan ini
+      const message = error.response?.data?.message || 'Verifikasi OTP gagal';
+      setErrorMessage(message);
+      setModalFailed(true);
+      setTimeout(() => {
+        setModalFailed(false);
+      }, 2000);
+    }
+  };
+
+  const handleResendOTP = async () => {
+    try {
+      setIsLoading(true);
+      await axios.post('/auth/user/send-otp-regist', {
+        email: registrationData.email,
+        name: registrationData.name,
+        phone: registrationData.phone,
+        address: registrationData.address,
+        password: registrationData.password,
+      });
+      // Show success message
+      setModalVisible(true);
+      setTimeout(() => {
+        setModalVisible(false);
+      }, 2000);
+    } catch (error) {
+      const message =
+        error.response?.data?.message || 'Gagal mengirim ulang OTP';
+      setErrorMessage(message);
+      setModalFailed(true);
+      setTimeout(() => {
+        setModalFailed(false);
+      }, 2000);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (showOtpInput) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
+        }}>
+        <ImageBackground
+          source={require('../../../assets/images/headerBg.jpg')}
+          className="w-full h-[200px] items-start justify-start ">
+          <View className="p-4">
+            <View className="justify-start flex-col items-start">
+              <Text className="text-white capitalize text-2xl font-poppins-semibold">
+                Verifikasi Email
+              </Text>
+              <Text className="text-white capitalize text-sm font-poppins-medium">
+                Masukkan kode OTP yang telah dikirim ke email Anda
+              </Text>
+            </View>
+          </View>
+        </ImageBackground>
+        <View className="my-4 w-full ">
+          <View className="flex-row flex-wrap mb-2 px-3 gap-x-1">
+            <Text
+              className="text-sm text-start capitalize font-poppins-regular"
+              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+              Kode OTP telah dikirim ke email :
+            </Text>
+            <Text
+              className="text-sm text-start font-poppins-regular"
+              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+              {registrationData?.email}
+            </Text>
+          </View>
+          <View className="px-3" pointerEvents='auto'>
+            <OTPInputView
+              style={{
+                width: '100%',
+                height: 60,
+                alignSelf: 'center',
+                zIndex: 1,
+                justifyContent: 'center',
+              }}
+              pinCount={6}
+              autoFocusOnLoad
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+              codeInputFieldStyle={{
+                width: 60,
+                height: 50,
+                borderWidth: 1,
+                borderColor: isDarkMode ? SLATE_COLOR : GREY_COLOR,
+                borderRadius: 12,
+                color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+                fontSize: 20,
+              }}
+              codeInputHighlightStyle={{
+                borderColor: BLUE_COLOR,
+              }}
+              onCodeChanged={code => setOtpCode(code)}
+            />
+          </View>
+          <View className="items-start flex-row justify-start px-3 mt-2 gap-x-2">
+            <Text
+              className="text-sm text-start capitalize font-poppins-regular"
+              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+              Tidak menerima email ?
+            </Text>
+            <TouchableOpacity onPress={handleResendOTP} disabled={isLoading}>
+              <Text
+                style={{
+                  color: BLUE_COLOR,
+                  fontFamily: 'Poppins-Regular',
+                  opacity: isLoading ? 0.7 : 1,
+                }}>
+                {isLoading ? (
+                  <ActivityIndicator color="white" size="small" />
+                ) : (
+                  'Kirim Ulang'
+                )}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View className="flex mx-3 my-4">
+            <TouchableOpacity
+              className="w-full rounded-xl mx-auto px-4 h-12 items-center justify-center"
+              onPress={handleVerifyButtonPress}
+              disabled={isLoading}
+              style={{
+                backgroundColor: BLUE_COLOR,
+                opacity: isLoading ? 0.7 : 1,
+              }}>
+              {isLoading ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <Text className="text-white text-sm font-poppins-bold">
+                  VERIFIKASI
+                </Text>
+              )}
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View className="flex-1 ">
@@ -439,14 +615,13 @@ export default function RegisterPage({navigation}) {
                 onPress={handleSubmit(onSubmit)}
                 disabled={isLoading}>
                 <Text className="text-white text-sm font-poppins-bold">
-                  {isLoading ? 'MENDAFTAR...' : 'DAFTAR'}
+                  {isLoading ? <ActivityIndicator color="#fff" /> : 'DAFTAR'}
                 </Text>
               </TouchableOpacity>
             </View>
           </View>
           {/* CLOSE FORM */}
 
-          {/* OPEN REGIST BUTTON TEXT & S&K */}
           <View className="flex-row items-center justify-center my-8 ">
             <Text
               style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}
@@ -461,7 +636,6 @@ export default function RegisterPage({navigation}) {
               </Text>
             </TouchableOpacity>
           </View>
-          {/* CLOSE REGIST BUTTON TEXT & S&K */}
 
           <View className="mb-8">
             <TouchableOpacity
@@ -469,7 +643,7 @@ export default function RegisterPage({navigation}) {
               <Text
                 className="text-center  text-sm font-poppins-regular "
                 style={{color: BLUE_COLOR}}>
-                Butuh bantuan?
+                Butuh Bantuan ?
               </Text>
             </TouchableOpacity>
           </View>

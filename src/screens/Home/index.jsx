@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
   ImageBackground,
-  Linking,
   ScrollView,
   StyleSheet,
   Text,
@@ -9,7 +8,7 @@ import {
   View,
   useColorScheme,
 } from 'react-native';
-import {AddIkon, BellIkon, HeaderBG, Headset, Mail} from '../../../assets';
+import {AddIkon, BellIkon, HeaderBG, Headset} from '../../../assets';
 import mainMenu from '../../data/mainMenu';
 import axios from '../../libs/axios';
 import {rupiah} from '../../libs/utils';
@@ -76,12 +75,11 @@ export default function HomeScreen({navigation}) {
 
   const transactionCard = ({item}) => {
     return (
-      <View
+      <TouchableOpacity
+        onPress={() => navigation.navigate('DetailTransaction', {item})}
         className="w-full p-2 flex-col  rounded-xl mb-4"
         style={{backgroundColor: isDarkMode ? '#232323' : '#f9f9f9'}}>
-        <View
-          className="rounded-xl  w-full p-2 flex-row justify-between "
-          onPress={() => navigation.navigate('DetailTransaction', {item})}>
+        <View className="rounded-xl  w-full p-2 flex-row justify-between ">
           <View
             className="items-center justify-center"
             style={{
@@ -111,7 +109,7 @@ export default function HomeScreen({navigation}) {
             </Text>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -122,19 +120,6 @@ export default function HomeScreen({navigation}) {
 
     return () => clearInterval(timer);
   }, []);
-
-  const openWhatsApp = ({route}) => {
-    const phoneNumber = '+6285336970707';
-    const message = 'Halo Admin NAYSA CELL !';
-    const url = `whatsapp://send?phone=${phoneNumber}&text=${encodeURIComponent(
-      message,
-    )}`;
-
-    Linking.openURL(url).catch(err => {
-      console.error('Error occurred', err);
-      alert('WhatsApp is not installed or there is an issue.');
-    });
-  };
 
   useEffect(() => {
     axios
@@ -206,13 +191,6 @@ export default function HomeScreen({navigation}) {
                 <TouchableOpacity
                   onPress={() => navigation.navigate('CustomerService')}>
                   <Headset
-                    width={24}
-                    height={24}
-                    fill={isDarkMode ? 'white' : 'black'}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={openWhatsApp}>
-                  <Mail
                     width={24}
                     height={24}
                     fill={isDarkMode ? 'white' : 'black'}
@@ -364,7 +342,7 @@ export default function HomeScreen({navigation}) {
               <Text
                 className="text-sm font-poppins-medium mx-3 "
                 style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                Histori Transaksi Terakhir
+                Riwayat Transaksi Terakhir
               </Text>
             </View>
             <Paginate

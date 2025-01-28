@@ -145,11 +145,11 @@ export default function ForgotPasswordScreen() {
 
   const renderOTPPhase = () => (
     <>
-      <View className="flex-row mb-2 px-3 gap-x-2">
+      <View className="flex-row flex-wrap mb-2 px-3 gap-x-1">
         <Text
           className="text-sm text-start capitalize font-poppins-regular"
           style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-          Kode OTP telah dikirim ke email
+          Kode OTP telah dikirim ke email : 
         </Text>
         <Text
           className="text-sm text-start ms-2 font-poppins-regular"
@@ -158,44 +158,43 @@ export default function ForgotPasswordScreen() {
         </Text>
       </View>
       <View className="px-3">
-
-      <Controller
-        name="otp"
-        control={control}
-        rules={{
-          required: 'Kode OTP tidak boleh kosong',
-          minLength: {
-            value: 6,
-            message: 'Kode OTP harus 6 digit',
-          },
-        }}
-        render={({field: {onChange, onBlur, value}}) => (
-          <OTPInputView
-            style={{
-              width: '100%',
-              height: 60,
-              alignSelf: 'center',
-              justifyContent: 'center',
-            }}
-            pinCount={6}
-            code={value}
-            onCodeChanged={onChange}
-            autoFocusOnLoad
-            codeInputFieldStyle={{
-              width: 60,
-              height: 50,
-              borderWidth: 1,
-              borderColor: isDarkMode ? SLATE_COLOR : GREY_COLOR,
-              borderRadius: 12,
-              color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-              fontSize: 20,
-            }}
-            codeInputHighlightStyle={{
-              borderColor: BLUE_COLOR,
-            }}
-          />
-        )}
-      />
+        <Controller
+          name="otp"
+          control={control}
+          rules={{
+            required: 'Kode OTP tidak boleh kosong',
+            minLength: {
+              value: 6,
+              message: 'Kode OTP harus 6 digit',
+            },
+          }}
+          render={({field: {onChange, onBlur, value}}) => (
+            <OTPInputView
+              style={{
+                width: '100%',
+                height: 60,
+                alignSelf: 'center',
+                justifyContent: 'center',
+              }}
+              pinCount={6}
+              code={value}
+              onCodeChanged={onChange}
+              autoFocusOnLoad
+              codeInputFieldStyle={{
+                width: 60,
+                height: 50,
+                borderWidth: 1,
+                borderColor: isDarkMode ? SLATE_COLOR : GREY_COLOR,
+                borderRadius: 12,
+                color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+                fontSize: 20,
+              }}
+              codeInputHighlightStyle={{
+                borderColor: BLUE_COLOR,
+              }}
+            />
+          )}
+        />
       </View>
 
       <View className="items-start flex-row justify-start px-3 mt-2 gap-x-2">
