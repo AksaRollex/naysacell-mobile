@@ -92,8 +92,8 @@ export default function Laporan({navigation}) {
           setModalTransactionStatus(true);
           setTransactionStatus(selectedTransactionStatus);
         }}
-        className=" flex-row items-center rounded-md justify-between p-[14px] min-w-[70px]"
-        style={{backgroundColor: isDarkMode ? '#262626' : '#f8f8f8'}}>
+        className=" flex-row items-center rounded-xl border-[0.5px] border-stone-600 justify-between p-[14px] min-w-[70px]"
+        style={{backgroundColor: isDarkMode ? '#262626' : '#fff'}}>
         <View className="flex-row items-center">
           <IonIcons
             name="apps"

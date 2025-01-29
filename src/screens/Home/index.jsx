@@ -78,7 +78,7 @@ export default function HomeScreen({navigation}) {
       <TouchableOpacity
         onPress={() => navigation.navigate('DetailTransaction', {item})}
         className="w-full p-2 flex-col  rounded-xl mb-4"
-        style={{backgroundColor: isDarkMode ? '#232323' : '#f9f9f9'}}>
+        style={{backgroundColor: isDarkMode ? '#242424' : '#F3F4F6'}}>
         <View className="rounded-xl  w-full p-2 flex-row justify-between ">
           <View
             className="items-center justify-center"
@@ -352,6 +352,7 @@ export default function HomeScreen({navigation}) {
               showSearchSkeleton={false}
               showListFooter={false}
               showPaginationInfo={false}
+              widthSkeleton={true}
               showSearch={false}
             />
             <View className=" flex-row  items-end justify-end px-2 w-full ">

@@ -7,11 +7,11 @@ import RegisterPage from './register';
 import BantuanLogin from '../Bantuan/bantuan_login';
 import SyaratDanKetentuan from '../S&K';
 import ForgotPassScreen from './forgotPassword/ForgotPassScreen';
-import { useColorScheme } from 'react-native';
+import {useColorScheme} from 'react-native';
+import { DARK_COLOR, LIGHT_COLOR } from '../../utils/const';
 
 export default memo(function Auth() {
-
-  const isDarkMode = useColorScheme() === 'dark'
+  const isDarkMode = useColorScheme() === 'dark';
   return (
     <Navigator
       screenOptions={{
@@ -44,7 +44,12 @@ export default memo(function Auth() {
         options={{
           title: 'Bantuan Login / Daftar Akun',
           headerTitleAlign: 'left',
-          headerTitleStyle: {fontFamily: 'Poppins-SemiBold', fontSize: 18},
+          headerTitleStyle: {
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: 18,
+            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+          },
+          headerTintColor: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
         }}
       />
       <Screen name="S&K" component={SyaratDanKetentuan} />

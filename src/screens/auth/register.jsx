@@ -14,6 +14,7 @@ import {
   BLUE_COLOR,
   DARK_BACKGROUND,
   DARK_COLOR,
+  LIGHT_BACKGROUND,
   LIGHT_COLOR,
   SLATE_COLOR,
   WHITE_BACKGROUND,
@@ -39,7 +40,7 @@ export default function RegisterPage({navigation}) {
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [registrationData, setRegistrationData] = useState(null);
   const [otpCode, setOtpCode] = useState('');
-  const [ isFocused, setIsFocused ] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
 
   const [showPassword, setShowPassword] = useState(true);
   const [showConfirmPassword, setShowConfirmPassword] = useState(true);
@@ -202,34 +203,53 @@ export default function RegisterPage({navigation}) {
               {registrationData?.email}
             </Text>
           </View>
-          <View className="px-3" pointerEvents='auto'>
-            <OTPInputView
-              style={{
-                width: '100%',
-                height: 60,
-                alignSelf: 'center',
-                zIndex: 1,
-                justifyContent: 'center',
-              }}
-              pinCount={6}
-              autoFocusOnLoad
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
-              codeInputFieldStyle={{
-                width: 60,
-                height: 50,
-                borderWidth: 1,
-                borderColor: isDarkMode ? SLATE_COLOR : GREY_COLOR,
-                borderRadius: 12,
-                color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-                fontSize: 20,
-              }}
-              codeInputHighlightStyle={{
-                borderColor: BLUE_COLOR,
-              }}
-              onCodeChanged={code => setOtpCode(code)}
-            />
-          </View>
+          <Controller
+            name="otp"
+            control={control}
+            rules={{
+              required: 'Kode OTP tidak boleh kosong',
+              minLength: {
+                value: 6,
+                message: 'Kode OTP harus 6 digit',
+              },
+            }}
+            render={({field: {onChange, onBlur, value}}) => (
+              <View className="px-3" pointerEvents="auto">
+                <OTPInputView
+                  style={{
+                    width: '100%',
+                    height: 60,
+                    alignSelf: 'center',
+                    zIndex: 1,
+                    justifyContent: 'center',
+                  }}
+                  pinCount={6}
+                  autoFocusOnLoad
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => setIsFocused(false)}
+                  codeInputFieldStyle={{
+                    width: 60,
+                    height: 50,
+                    borderWidth: 1,
+                    borderColor: errors.otp ? '#ef4444' : '#404040',
+                    borderRadius: 12,
+                    color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+                    fontSize: 20,
+                    backgroundColor: isDarkMode ? '#262626' : '#f8f8f8',
+                  }}
+                  codeInputHighlightStyle={{
+                    borderColor: BLUE_COLOR,
+                  }}
+                  onCodeChanged={code => setOtpCode(code)}
+                />
+              </View>
+            )}
+          />
+          {errors.otp && (
+            <Text className="text-red-500 text-sm mt-1 font-poppins-regular">
+              {errors.otp.message}
+            </Text>
+          )}
           <View className="items-start flex-row justify-start px-3 mt-2 gap-x-2">
             <Text
               className="text-sm text-start capitalize font-poppins-regular"
@@ -276,9 +296,9 @@ export default function RegisterPage({navigation}) {
 
   return (
     <View className="flex-1 ">
-      <ScrollView
+      <View
         style={{
-          backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
+          backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
         }}
         className="h-[100vh]">
         <ImageBackground
@@ -295,11 +315,11 @@ export default function RegisterPage({navigation}) {
             </View>
           </View>
         </ImageBackground>
-        <View>
+        <ScrollView>
           {/* OPEN FORM */}
           <View>
             {/* NAME */}
-            <View className="mt-6">
+            <View className="mt-2">
               <Controller
                 name="name"
                 control={control}
@@ -307,22 +327,25 @@ export default function RegisterPage({navigation}) {
                 render={({field: {onChange, onBlur, value}}) => (
                   <View className="mx-3">
                     <Text
-                      className="font-poppins-regular "
+                      className="font-poppins-medium "
                       style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                       Nama
                     </Text>
                     <TextInput
                       placeholder="Username"
                       label="name"
-                      style={{fontFamily: 'Poppins-Regular'}}
+                      style={{
+                        fontFamily: 'Poppins-Regular',
+                        backgroundColor: isDarkMode ? '#262626' : '#fff',
+                      }}
+                      className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                        errors.name ? 'border-red-500' : 'border-stone-600'
+                      }`}
                       value={value}
                       onChangeText={onChange}
                       onBlur={onBlur}
                       keyboardType="default"
-                      placeholderTextColor={
-                        isDarkMode ? SLATE_COLOR : LIGHT_COLOR
-                      }
-                      className="h-12 w-full rounded-xl mx-auto  px-4  border border-stone-600"></TextInput>
+                      placeholderTextColor={SLATE_COLOR}></TextInput>
                   </View>
                 )}
               />
@@ -335,7 +358,7 @@ export default function RegisterPage({navigation}) {
               )}
             </View>
             {/* EMAIL */}
-            <View className="mt-6">
+            <View className="mt-2">
               <Controller
                 name="email"
                 control={control}
@@ -349,7 +372,7 @@ export default function RegisterPage({navigation}) {
                 render={({field: {onChange, onBlur, value}}) => (
                   <View className="mx-3">
                     <Text
-                      className="font-poppins-regular "
+                      className="font-poppins-medium "
                       style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                       Email
                     </Text>
@@ -359,12 +382,15 @@ export default function RegisterPage({navigation}) {
                       onBlur={onBlur}
                       placeholder="email@example.com"
                       keyboardType="email-address"
-                      style={{fontFamily: 'Poppins-Regular'}}
                       autoCapitalize="none"
-                      placeholderTextColor={
-                        isDarkMode ? SLATE_COLOR : LIGHT_COLOR
-                      }
-                      className="h-12 w-full rounded-xl mx-auto px-4 border border-stone-600"
+                      placeholderTextColor={SLATE_COLOR}
+                      style={{
+                        fontFamily: 'Poppins-Regular',
+                        backgroundColor: isDarkMode ? '#262626' : '#fff',
+                      }}
+                      className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                        errors.email ? 'border-red-500' : 'border-stone-600'
+                      }`}
                     />
                   </View>
                 )}
@@ -376,7 +402,7 @@ export default function RegisterPage({navigation}) {
               )}
             </View>
             {/* ADDRESS */}
-            <View className="mt-6">
+            <View className="mt-2">
               <Controller
                 name="address"
                 control={control}
@@ -386,7 +412,7 @@ export default function RegisterPage({navigation}) {
                 render={({field: {onChange, onBlur, value}}) => (
                   <View className="mx-3">
                     <Text
-                      className="font-poppins-regular "
+                      className="font-poppins-medium "
                       style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                       Alamat
                     </Text>
@@ -396,12 +422,15 @@ export default function RegisterPage({navigation}) {
                       onBlur={onBlur}
                       placeholder="Alamat"
                       keyboardType="default"
-                      style={{fontFamily: 'Poppins-Regular'}}
                       autoCapitalize="none"
-                      placeholderTextColor={
-                        isDarkMode ? SLATE_COLOR : LIGHT_COLOR
-                      }
-                      className="h-12 w-full rounded-xl mx-auto px-4 border border-stone-600"
+                      placeholderTextColor={SLATE_COLOR}
+                      style={{
+                        fontFamily: 'Poppins-Regular',
+                        backgroundColor: isDarkMode ? '#262626' : '#fff',
+                      }}
+                      className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                        errors.address ? 'border-red-500' : 'border-stone-600'
+                      }`}
                     />
                   </View>
                 )}
@@ -413,7 +442,7 @@ export default function RegisterPage({navigation}) {
               )}
             </View>
             {/* PHONE */}
-            <View className="mt-6">
+            <View className="mt-2">
               <Controller
                 name="phone"
                 control={control}
@@ -427,7 +456,7 @@ export default function RegisterPage({navigation}) {
                 render={({field: {onChange, onBlur, value}}) => (
                   <View className="mx-3">
                     <Text
-                      className="font-poppins-regular "
+                      className="font-poppins-medium "
                       style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                       Nomor Telepon
                     </Text>
@@ -436,12 +465,15 @@ export default function RegisterPage({navigation}) {
                       onChangeText={onChange}
                       onBlur={onBlur}
                       placeholder="Nomor Telepon"
-                      style={{fontFamily: 'Poppins-Regular'}}
                       keyboardType="numeric"
-                      placeholderTextColor={
-                        isDarkMode ? SLATE_COLOR : LIGHT_COLOR
-                      }
-                      className="h-12 w-full rounded-xl px-4 border border-stone-600"
+                      placeholderTextColor={SLATE_COLOR}
+                      style={{
+                        fontFamily: 'Poppins-Regular',
+                        backgroundColor: isDarkMode ? '#262626' : '#fff',
+                      }}
+                      className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                        errors.phone ? 'border-red-500' : 'border-stone-600'
+                      }`}
                     />
                   </View>
                 )}
@@ -453,7 +485,7 @@ export default function RegisterPage({navigation}) {
               )}
             </View>
             {/* PASSWORD */}
-            <View className="mt-6">
+            <View className="mt-2">
               <Controller
                 name="password"
                 control={control}
@@ -467,7 +499,7 @@ export default function RegisterPage({navigation}) {
                 render={({field: {onChange, onBlur, value}}) => (
                   <View className="relative mx-3">
                     <Text
-                      className="font-poppins-regular "
+                      className="font-poppins-medium "
                       style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                       Password
                     </Text>
@@ -475,13 +507,16 @@ export default function RegisterPage({navigation}) {
                       value={value}
                       onChangeText={onChange}
                       onBlur={onBlur}
-                      style={{fontFamily: 'Poppins-Regular'}}
                       placeholder="Password"
-                      placeholderTextColor={
-                        isDarkMode ? SLATE_COLOR : LIGHT_COLOR
-                      }
+                      placeholderTextColor={SLATE_COLOR}
                       keyboardType="numeric"
-                      className="h-12 w-full rounded-xl mx-auto px-4 border border-stone-600"
+                      style={{
+                        fontFamily: 'Poppins-Regular',
+                        backgroundColor: isDarkMode ? '#262626' : '#fff',
+                      }}
+                      className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                        errors.password ? 'border-red-500' : 'border-stone-600'
+                      }`}
                       secureTextEntry={showPassword}
                     />
                     <TouchableOpacity
@@ -504,7 +539,7 @@ export default function RegisterPage({navigation}) {
               )}
             </View>
             {/* PASSWORD CONFIRMATION */}
-            <View className="mt-6">
+            <View className="mt-2">
               <View className="relative">
                 <Controller
                   name="password_confirmation"
@@ -517,7 +552,7 @@ export default function RegisterPage({navigation}) {
                   render={({field: {onChange, onBlur, value}}) => (
                     <View className="relative mx-3">
                       <Text
-                        className="font-poppins-regular "
+                        className="font-poppins-medium "
                         style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                         Konfirmasi Password
                       </Text>
@@ -526,14 +561,20 @@ export default function RegisterPage({navigation}) {
                         onChangeText={onChange}
                         onBlur={onBlur}
                         placeholder="Konfirmasi Password"
-                        style={{fontFamily: 'Poppins-Regular'}}
                         keyboardType="numeric"
-                        placeholderTextColor={
-                          isDarkMode ? SLATE_COLOR : LIGHT_COLOR
-                        }
+                        placeholderTextColor={SLATE_COLOR}
                         secureTextEntry={showConfirmPassword}
-                        className="h-12 w-full rounded-xl mx-auto px-4 border border-stone-600"
+                        style={{
+                          fontFamily: 'Poppins-Regular',
+                          backgroundColor: isDarkMode ? '#262626' : '#fff',
+                        }}
+                        className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                          errors.password_confirmation
+                            ? 'border-red-500'
+                            : 'border-stone-600'
+                        }`}
                       />
+
                       <TouchableOpacity
                         onPress={() =>
                           setShowConfirmPassword(!showConfirmPassword)
@@ -622,7 +663,7 @@ export default function RegisterPage({navigation}) {
           </View>
           {/* CLOSE FORM */}
 
-          <View className="flex-row items-center justify-center my-8 ">
+          <View className="flex-row items-center justify-start my-8 mx-3 ">
             <Text
               style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}
               className="font-poppins-regular capitalize">
@@ -637,18 +678,18 @@ export default function RegisterPage({navigation}) {
             </TouchableOpacity>
           </View>
 
-          <View className="mb-8">
+          <View className="-mt-7 mb-8 mx-3">
             <TouchableOpacity
               onPress={() => navigation.navigate('bantuanLogin')}>
               <Text
-                className="text-center  text-sm font-poppins-regular "
+                className="text-start  text-sm font-poppins-regular "
                 style={{color: BLUE_COLOR}}>
                 Butuh Bantuan ?
               </Text>
             </TouchableOpacity>
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
 
       <ModalAfterProcess
         url={require('../../../assets/lottie/success-animation.json')}

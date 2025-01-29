@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   useColorScheme,
 } from 'react-native';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {
   NavigationContainer,
@@ -90,6 +91,7 @@ const CustomTabBar = ({state, descriptors, navigation}) => {
     'FormPrabayar',
     'FormOrder',
     'Transaksi',
+    'Notifikasi',
     'SuccessNotif',
     'Pulsa',
     'LiveChat',
@@ -138,7 +140,7 @@ const CustomTabBar = ({state, descriptors, navigation}) => {
     <View
       style={[
         styles.tabBar,
-        {backgroundColor: isDarkMode ? '#1e1e1e' : '#fff'},
+        {backgroundColor: isDarkMode ? '#1e1e1e' : Colors.lighter},
       ]}>
       {state.routes.map((route, index) => {
         const {options} = descriptors[route.key];
@@ -417,12 +419,28 @@ const MasterNavigation = () => {
       <Stack.Screen
         name="FormUser"
         component={FormUser}
-        options={{headerShown: false}}
+        options={({route}) => ({
+          title: route.params?.id ? 'Form Edit User' : 'Form Tambah User',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: 18,
+            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+          },
+        })}
       />
       <Stack.Screen
         name="FormAdmin"
         component={FormAdmin}
-        options={{headerShown: false}}
+        options={({route}) => ({
+          title: route.params?.id ? 'Form Edit Admin' : 'Form Tambah Admin',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: 18,
+            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+          },
+        })}
       />
       <Stack.Screen
         name="User"
@@ -456,7 +474,15 @@ const MasterNavigation = () => {
       <Stack.Screen
         name="FormPrabayar"
         component={FormPrabayar}
-        options={{headerShown: false}}
+        options={({route}) => ({
+          title: route.params?.id ? 'Form Edit Produk' : 'Form Tambah Produk',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: 18,
+            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+          },
+        })}
       />
       <Stack.Screen name="Pascabayar" component={Pascabayar} />
       <Stack.Screen
@@ -514,7 +540,15 @@ const MasterNavigation = () => {
       <Stack.Screen
         name="FormOrder"
         component={FormOrder}
-        options={{headerShown: false}}
+        options={({route}) => ({
+          title: route.params?.id ? 'Form Edit Pesanan' : 'Form Tambah Pesanan',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: 18,
+            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+          },
+        })}
       />
       <Stack.Screen
         name="LaporanDeposit"
@@ -592,6 +626,7 @@ export default function MainScreen() {
                 'Dana',
                 'LiveChat',
                 'OVO',
+                'Notifikasi',
                 'GoPay',
                 'Deposit',
                 'HistoryDeposit',

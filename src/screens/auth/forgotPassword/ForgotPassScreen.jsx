@@ -98,7 +98,7 @@ export default function ForgotPasswordScreen() {
       });
 
       if (response.data.status) {
-        navigation.navigate('LoginScreen');
+        navigation.navigate('loginPage');
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Terjadi kesalahan');
@@ -122,7 +122,7 @@ export default function ForgotPasswordScreen() {
         render={({field: {onChange, onBlur, value}}) => (
           <View className="mx-3 justify-center flex-col items-start">
             <Text
-              className="font-poppins-regular "
+              className="font-poppins-medium "
               style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
               Email
             </Text>
@@ -130,9 +130,14 @@ export default function ForgotPasswordScreen() {
               placeholder="Masukkan Email"
               label="Email"
               color={isDarkMode ? DARK_COLOR : '#000'}
-              placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
-              className="h-12 w-full rounded-xl px-4 border border-stone-600"
-              style={{fontFamily: 'Poppins-Regular'}}
+              placeholderTextColor={SLATE_COLOR}
+              style={{
+                fontFamily: 'Poppins-Regular',
+                backgroundColor: isDarkMode ? '#262626' : '#fff',
+              }}
+              className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                errors.email ? 'border-red-500' : 'border-stone-600'
+              }`}
               onBlur={onBlur}
               value={value}
               onChangeText={onChange}
@@ -140,6 +145,11 @@ export default function ForgotPasswordScreen() {
           </View>
         )}
       />
+      {errors.email && (
+        <Text className="text-red-500 text-sm mt-1 mx-3 font-poppins-regular">
+          {errors.email.message}
+        </Text>
+      )}
     </>
   );
 
@@ -149,7 +159,7 @@ export default function ForgotPasswordScreen() {
         <Text
           className="text-sm text-start capitalize font-poppins-regular"
           style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-          Kode OTP telah dikirim ke email : 
+          Kode OTP telah dikirim ke email :
         </Text>
         <Text
           className="text-sm text-start ms-2 font-poppins-regular"
@@ -184,10 +194,11 @@ export default function ForgotPasswordScreen() {
                 width: 60,
                 height: 50,
                 borderWidth: 1,
-                borderColor: isDarkMode ? SLATE_COLOR : GREY_COLOR,
+                borderColor: errors.otp ? '#ef4444' : '#404040',
                 borderRadius: 12,
                 color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
                 fontSize: 20,
+                backgroundColor: isDarkMode ? '#262626' : '#f8f8f8',
               }}
               codeInputHighlightStyle={{
                 borderColor: BLUE_COLOR,
@@ -195,6 +206,11 @@ export default function ForgotPasswordScreen() {
             />
           )}
         />
+        {errors.otp && (
+          <Text className="text-red-500 text-sm mt-1 font-poppins-regular">
+            {errors.otp.message}
+          </Text>
+        )}
       </View>
 
       <View className="items-start flex-row justify-start px-3 mt-2 gap-x-2">
@@ -249,7 +265,7 @@ export default function ForgotPasswordScreen() {
         render={({field: {onChange, onBlur, value}}) => (
           <View className="mx-3 relative justify-center items-start">
             <Text
-              className="font-poppins-regular"
+              className="font-poppins-medium"
               style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
               Password Baru
             </Text>
@@ -258,19 +274,25 @@ export default function ForgotPasswordScreen() {
               label="Password"
               secureTextEntry={passwordIsSecure}
               color={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
-              placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
-              className="h-12 w-full rounded-xl mx-auto px-4 border border-stone-600 mb-4"
-              style={{fontFamily: 'Poppins-Regular'}}
+              placeholderTextColor={SLATE_COLOR}
+              style={{
+                fontFamily: 'Poppins-Regular',
+                backgroundColor: isDarkMode ? '#262626' : '#fff',
+              }}
+              className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                errors.password ? 'border-red-500' : 'border-stone-600'
+              }`}
               onBlur={onBlur}
               value={value}
               onChangeText={onChange}
             />
+
             <TouchableOpacity
               onPress={() => setPasswordIsSecure(!passwordIsSecure)}
               style={{
                 position: 'absolute',
                 right: 10,
-                top: '55%',
+                top: '65%',
                 transform: [{translateY: -12}],
               }}>
               {passwordIsSecure ? <Eye /> : <EyeCrossed />}
@@ -278,48 +300,67 @@ export default function ForgotPasswordScreen() {
           </View>
         )}
       />
-      <Controller
-        name="password_confirmation"
-        control={control}
-        rules={{
-          required: 'Konfirmasi password tidak boleh kosong',
-          validate: (value, formValues) =>
-            value === formValues.password || 'Password tidak sama',
-        }}
-        render={({field: {onChange, onBlur, value}}) => (
-          <View className="relative mx-3 justify-center items-start">
-            <Text
-              className="font-poppins-regular "
-              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-              Konfirmasi Password
-            </Text>
-            <TextInput
-              placeholder="Konfirmasi Password Baru"
-              label="Konfirmasi Password"
-              color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
-              placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
-              className="h-12 w-full rounded-xl mx-auto px-4 border border-stone-600"
-              style={{fontFamily: 'Poppins-Regular'}}
-              onBlur={onBlur}
-              value={value}
-              secureTextEntry={confirmPasswordIsSecure}
-              onChangeText={onChange}
-            />
-            <TouchableOpacity
-              onPress={() =>
-                setConfirmPasswordIsSecure(!confirmPasswordIsSecure)
-              }
-              style={{
-                position: 'absolute',
-                right: 10,
-                top: '65%',
-                transform: [{translateY: -12}],
-              }}>
-              {confirmPasswordIsSecure ? <Eye /> : <EyeCrossed />}
-            </TouchableOpacity>
-          </View>
+      {errors.password && (
+        <Text className="text-red-500 text-sm mt-1 mx-3 font-poppins-regular">
+          {errors.password.message}
+        </Text>
+      )}
+      <View className="mt-2">
+        <Controller
+          name="password_confirmation"
+          control={control}
+          rules={{
+            required: 'Konfirmasi password tidak boleh kosong',
+            validate: (value, formValues) =>
+              value === formValues.password || 'Password tidak sama',
+          }}
+          render={({field: {onChange, onBlur, value}}) => (
+            <View className="relative mx-3 justify-center items-start">
+              <Text
+                className="font-poppins-medium "
+                style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                Konfirmasi Password
+              </Text>
+              <TextInput
+                placeholder="Konfirmasi Password Baru"
+                label="Konfirmasi Password"
+                color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+                placeholderTextColor={SLATE_COLOR}
+                style={{
+                  fontFamily: 'Poppins-Regular',
+                  backgroundColor: isDarkMode ? '#262626' : '#fff',
+                }}
+                className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                  errors.password_confirmation
+                    ? 'border-red-500'
+                    : 'border-stone-600'
+                }`}
+                onBlur={onBlur}
+                value={value}
+                secureTextEntry={confirmPasswordIsSecure}
+                onChangeText={onChange}
+              />
+              <TouchableOpacity
+                onPress={() =>
+                  setConfirmPasswordIsSecure(!confirmPasswordIsSecure)
+                }
+                style={{
+                  position: 'absolute',
+                  right: 10,
+                  top: '65%',
+                  transform: [{translateY: -12}],
+                }}>
+                {confirmPasswordIsSecure ? <Eye /> : <EyeCrossed />}
+              </TouchableOpacity>
+            </View>
+          )}
+        />
+        {errors.password_confirmation && (
+          <Text className="text-red-500 text-sm mt-1 mx-3 font-poppins-regular">
+            {errors.password_confirmation.message}
+          </Text>
         )}
-      />
+      </View>
     </>
   );
 
@@ -386,14 +427,14 @@ export default function ForgotPasswordScreen() {
           {phase === PHASES.OTP && renderOTPPhase()}
           {phase === PHASES.NEW_PASSWORD && renderPasswordPhase()}
 
-          {errors[Object.keys(errors)[0]] && (
-            <Text className="mt-2 mx-3 text-red-400 font-poppins-regular text-start">
+          {/* {errors[Object.keys(errors)[0]] && (
+            <Text className="mt-2 mx-3 text-red-500 font-poppins-regular text-start">
               {errors[Object.keys(errors)[0]].message}
             </Text>
-          )}
+          )} */}
 
           {error && (
-            <Text className="mt-2 mx-3 capitalize text-red-400 font-poppins-regular text-start">
+            <Text className="mt-2 mx-3 capitalize text-red-500 font-poppins-regular text-start">
               {error}
             </Text>
           )}
@@ -421,12 +462,12 @@ export default function ForgotPasswordScreen() {
 
       {phase === PHASES.EMAIL && (
         <View>
-          <View className="flex-row justify-center my-6">
+          <View className="flex-row justify-start my-4 mx-3">
             <TouchableOpacity
-              onPress={() => navigation.navigate('LoginScreen')}
+              onPress={() => navigation.navigate('loginPage')}
               className="ms-1 flex-row">
               <Text
-                className="text-sm font-poppins-medium text-center"
+                className="text-sm font-poppins-regular text-start"
                 style={{
                   color: isDarkMode ? BLUE_COLOR : BLUE_COLOR,
                 }}>
@@ -434,13 +475,6 @@ export default function ForgotPasswordScreen() {
               </Text>
             </TouchableOpacity>
           </View>
-          {/* <TouchableOpacity onPress={() => navigation.navigate('bantuanLogin')}>
-            <Text
-              className="text-center capitalize text-sm font-poppins-regular"
-              style={{color: BLUE_COLOR}}>
-              Butuh bantuan ?
-            </Text>
-          </TouchableOpacity> */}
         </View>
       )}
     </View>

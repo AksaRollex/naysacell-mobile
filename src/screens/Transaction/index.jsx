@@ -67,11 +67,11 @@ export default function Transaction({navigation}) {
           setModalTransactionStatus(true);
           setTransactionStatus(selectedTransactionStatus);
         }}
-        className=" flex-row items-center rounded-xl mb-4 justify-between p-[14px] min-w-[70px]"
+        className=" flex-row items-center rounded-xl border-[0.5px] border-stone-600 justify-between p-[14px] min-w-[70px] mb-4"
         style={{backgroundColor: isDarkMode ? '#262626' : '#f8f8f8'}}>
         <View className="flex-row items-center">
           <IonIcons
-            name="apps"
+            name="bag-check"
             size={20}
             color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
           />
@@ -90,6 +90,21 @@ export default function Transaction({navigation}) {
     );
   };
   const TypePicker = ({onClose}) => {
+    const statusMapping = {
+      Pending: {
+        display: 'Menunggu',
+        value: 'pending',
+      },
+      Success: {
+        display: 'Berhasil',
+        value: 'success',
+      },
+      Failed: {
+        display: 'Gagal',
+        value: 'failed',
+      },
+    };
+
     const status = ['Pending', 'Success', 'Failed'];
 
     const hasChanges = () => {
@@ -97,13 +112,16 @@ export default function Transaction({navigation}) {
     };
 
     const handleConfirm = () => {
-      setSelectedTransactionStatus(transactionStatus);
-      // Update payload dan trigger refetch
+      const selectedValue =
+        statusMapping[transactionStatus]?.value || transactionStatus;
+      setSelectedTransactionStatus(
+        statusMapping[transactionStatus]?.display || transactionStatus,
+      );
       setPayload(prev => ({
         ...prev,
-        transaction_status: transactionStatus,
+        transaction_status: selectedValue.toLowerCase(),
       }));
-      // Trigger manual refetch jika diperlukan
+
       if (paginateRef.current) {
         paginateRef.current.refetch();
       }
@@ -152,17 +170,22 @@ export default function Transaction({navigation}) {
                       key={statusTransaksi}
                       className={`p-3 rounded-md mb-2 ${
                         transactionStatus === statusTransaksi
-                          ? 'bg-blue-50'
-                          : 'bg-[#ececec]'
+                          ? 'bg-blue-100'
+                          : isDarkMode
+                          ? 'bg-[#262626]'
+                          : 'bg-[#f8f8f8]'
                       }`}
                       onPress={() => setTransactionStatus(statusTransaksi)}>
                       <Text
                         className={`${
                           transactionStatus === statusTransaksi
                             ? 'text-blue-500 font-poppins-semibold'
+                            : isDarkMode
+                            ? 'text-white font-poppins-regular'
                             : 'text-black font-poppins-regular'
                         }`}>
-                        {statusTransaksi}
+                        {statusMapping[statusTransaksi]?.display ||
+                          statusTransaksi}
                       </Text>
                     </TouchableOpacity>
                   ))}
@@ -172,13 +195,14 @@ export default function Transaction({navigation}) {
 
             <View className="mt-4 px-4">
               <TouchableOpacity
-                className={`py-3 rounded-md ${
-                  hasChanges() ? 'bg-blue-500' : 'bg-gray-300'
-                }`}
+                className="w-full rounded-xl mx-auto px-4 h-12 items-center justify-center"
+                style={{
+                  backgroundColor: BLUE_COLOR,
+                }}
                 disabled={!hasChanges()}
                 onPress={handleConfirm}>
                 <Text className="text-white text-center font-poppins-semibold">
-                  Terapkan Filter
+                  TERAPKAN
                 </Text>
               </TouchableOpacity>
             </View>
@@ -294,7 +318,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalContent: isDarkMode => ({
-    backgroundColor: isDarkMode ? '#1e1e1e' : '#f9f9f9',
+    backgroundColor: isDarkMode ? '#1e1e1e' : '#fff',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingVertical: 20,

@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import React from 'react';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
@@ -21,14 +22,19 @@ import {
 } from '../../../../../utils/const';
 import axios from '../../../../../libs/axios';
 import {Controller, useForm} from 'react-hook-form';
-import BackButton from '../../../../../components/BackButton';
 
 export default function FormPrabayar({route, navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
   const {id} = route.params || {};
   const queryClient = useQueryClient();
 
-  const {control, setError, setValue, handleSubmit} = useForm();
+  const {
+    control,
+    setError,
+    formState: {errors},
+    setValue,
+    handleSubmit,
+  } = useForm();
   const {data, isFetching: isLoadingData} = useQuery(
     ['prabayar', id],
     () =>
@@ -108,30 +114,18 @@ export default function FormPrabayar({route, navigation}) {
       style={{
         backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
       }}>
-      <View
+      <ScrollView
         className=" w-full h-full rounded-lg"
         style={{backgroundColor: isDarkMode ? '#262626' : '#f8f8f8'}}>
-        <View className="w-full my-2  p-3 rounded-lg flex-row justify-between">
-          <BackButton
-            color={isDarkMode ? WHITE_COLOR : LIGHT_COLOR}
-            size={25}
-            action={() => navigation.goBack()}
-          />
-          <Text
-            className="font-poppins-semibold text-lg text-end  "
-            style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
-            {id ? 'Edit' : 'Tambah'} Produk
-          </Text>
-        </View>
-        <ScrollView  className="p-3">
+        <View className="px-3 pb-3 pt-2">
           <Controller
             control={control}
             name="product_name"
-            rules={{required: 'Harap Lengkapi Nama Produk'}}
+            rules={{required: 'Nama Produk harus diisi'}}
             render={({field: {onChange, onBlur, value}}) => (
               <>
                 <Text
-                  className="font-poppins-semibold my-1"
+                  className="font-poppins-medium mt-2"
                   style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
                   Nama Produk
                 </Text>
@@ -141,26 +135,31 @@ export default function FormPrabayar({route, navigation}) {
                   onBlur={onBlur}
                   editable={!isLoadingData}
                   placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
-                  className={`h-12 w-full mx-auto px-4 rounded-md border-[0.5px] border-neutral-700 font-poppins-regular 
-                    ${!isLoadingData ? '' : 'bg-gray-100'}`}
-                  placeholder="Harap Lengkapi Nama Produk"
+                  style={{
+                    fontFamily: 'Poppins-Regular',
+                    backgroundColor: isDarkMode ? '#262626' : '#fff',
+                  }}
+                  className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                    errors.product_name ? 'border-red-500' : 'border-stone-600'
+                  }`}
+                  placeholder="Nama Produk"
                 />
-                {setError.product_name && (
-                  <Text className="text-red-500 text-sm mt-1">
-                    {setError.product_name.message}
-                  </Text>
-                )}
               </>
             )}
           />
+          {errors.product_name && (
+            <Text className="mt-1  text-red-400 font-poppins-regular">
+              {errors.product_name.message}
+            </Text>
+          )}
           <Controller
             control={control}
             name="product_price"
-            rules={{required: 'Harap Lengkapi Harga Produk'}}
+            rules={{required: 'Harga Produk harus diisi'}}
             render={({field: {onChange, onBlur, value}}) => (
               <>
                 <Text
-                  className="font-poppins-semibold my-1"
+                  className="font-poppins-medium mt-2"
                   style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
                   Harga Produk
                 </Text>
@@ -176,26 +175,31 @@ export default function FormPrabayar({route, navigation}) {
                   editable={!isLoadingData}
                   keyboardType="numeric"
                   placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
-                  className={`h-12 w-full mx-auto px-4 rounded-md border-[0.5px] border-neutral-700 font-poppins-regular 
-                    ${!isLoadingData ? '' : 'bg-gray-100'}`}
-                  placeholder="Harap Lengkapi Harga Produk"
+                  style={{
+                    fontFamily: 'Poppins-Regular',
+                    backgroundColor: isDarkMode ? '#262626' : '#fff',
+                  }}
+                  className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                    errors.product_price ? 'border-red-500' : 'border-stone-600'
+                  }`}
+                  placeholder="Harga Produk"
                 />
-                {setError.product_price && (
-                  <Text className="text-red-500 text-sm mt-1">
-                    {setError.product_price.message}
-                  </Text>
-                )}
               </>
             )}
           />
+          {errors.product_price && (
+            <Text className="mt-1  text-red-400 font-poppins-regular">
+              {errors.product_price.message}
+            </Text>
+          )}
           <Controller
             control={control}
             name="product_desc"
-            rules={{required: 'Harap Lengkapi Harga Produk'}}
+            rules={{required: 'Harga Produk diisi'}}
             render={({field: {onChange, onBlur, value}}) => (
               <>
                 <Text
-                  className="font-poppins-semibold my-1"
+                  className="font-poppins-medium mt-2"
                   style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
                   Deskripsi Produk
                 </Text>
@@ -206,26 +210,32 @@ export default function FormPrabayar({route, navigation}) {
                   editable={!isLoadingData}
                   keyboardType="default"
                   placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
-                  className={`h-12 w-full mx-auto px-4 rounded-md border-[0.5px] border-neutral-700 font-poppins-regular 
-                    ${!isLoadingData ? '' : 'bg-gray-100'}`}
-                  placeholder="Harap Lengkapi Deskripsi Produk"
+                  style={{
+                    fontFamily: 'Poppins-Regular',
+                    backgroundColor: isDarkMode ? '#262626' : '#fff',
+                  }}
+                  className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                    errors.product_desc ? 'border-red-500' : 'border-stone-600'
+                  }`}
+                  placeholder="Deskripsi Produk"
                 />
-                {setError.product_desc && (
-                  <Text className="text-red-500 text-sm mt-1">
-                    {setError.product_desc.message}
-                  </Text>
-                )}
               </>
             )}
           />
+
+          {errors.product_desc && (
+            <Text className="mt-1  text-red-400 font-poppins-regular">
+              {errors.product_desc.message}
+            </Text>
+          )}
           <Controller
             control={control}
             name="product_provider"
-            rules={{required: 'Harap Lengkapi Produk Provider'}}
+            rules={{required: 'Produk Provider harus diisi'}}
             render={({field: {onChange, onBlur, value}}) => (
               <>
                 <Text
-                  className="font-poppins-semibold my-1"
+                  className="font-poppins-medium mt-2"
                   style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
                   Produk Provider
                 </Text>
@@ -235,26 +245,33 @@ export default function FormPrabayar({route, navigation}) {
                   onBlur={onBlur}
                   editable={!isLoadingData}
                   placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
-                  className={`h-12 w-full mx-auto px-4 rounded-md border-[0.5px] border-neutral-700 font-poppins-regular 
-                    ${!isLoadingData ? '' : 'bg-gray-100'}`}
-                  placeholder="Harap Lengkapi Produk Provider"
+                  style={{
+                    fontFamily: 'Poppins-Regular',
+                    backgroundColor: isDarkMode ? '#262626' : '#fff',
+                  }}
+                  className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                    errors.product_provider
+                      ? 'border-red-500'
+                      : 'border-stone-600'
+                  }`}
+                  placeholder="Produk Provider"
                 />
-                {setError.product_provider && (
-                  <Text className="text-red-500 text-sm mt-1">
-                    {setError.product_provider.message}
-                  </Text>
-                )}
               </>
             )}
           />
+          {errors.product_provider && (
+            <Text className="mt-1  text-red-400 font-poppins-regular">
+              {errors.product_provider.message}
+            </Text>
+          )}
           <Controller
             control={control}
             name="product_category"
-            rules={{required: 'Harap Lengkapi Produk Provider'}}
+            rules={{required: 'Produk Kategori harus diisi'}}
             render={({field: {onChange, onBlur, value}}) => (
               <>
                 <Text
-                  className="font-poppins-semibold my-1"
+                  className="font-poppins-medium mt-2"
                   style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
                   Kategori Produk
                 </Text>
@@ -264,26 +281,33 @@ export default function FormPrabayar({route, navigation}) {
                   onBlur={onBlur}
                   editable={!isLoadingData}
                   placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
-                  className={`h-12 w-full mx-auto px-4 rounded-md border-[0.5px] border-neutral-700 font-poppins-regular 
-                    ${!isLoadingData ? '' : 'bg-gray-100'}`}
-                  placeholder="Harap Lengkapi Kategori Produk"
+                  style={{
+                    fontFamily: 'Poppins-Regular',
+                    backgroundColor: isDarkMode ? '#262626' : '#fff',
+                  }}
+                  className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                    errors.product_category
+                      ? 'border-red-500'
+                      : 'border-stone-600'
+                  }`}
+                  placeholder="Kategori Produk"
                 />
-                {setError.product_category && (
-                  <Text className="text-red-500 text-sm mt-1">
-                    {setError.product_category.message}
-                  </Text>
-                )}
               </>
             )}
           />
+          {errors.product_category && (
+            <Text className="mt-1  text-red-400 font-poppins-regular">
+              {errors.product_category.message}
+            </Text>
+          )}
           <Controller
             control={control}
             name="product_sku"
-            rules={{required: 'Harap Lengkapi SKU Produk'}}
+            rules={{required: 'SKU Produk harus diisi'}}
             render={({field: {onChange, onBlur, value}}) => (
               <>
                 <Text
-                  className="font-poppins-semibold my-1"
+                  className="font-poppins-medium mt-2"
                   style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
                   Kode SKU Produk
                 </Text>
@@ -293,48 +317,52 @@ export default function FormPrabayar({route, navigation}) {
                   onBlur={onBlur}
                   editable={!isLoadingData}
                   placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
-                  className={`h-12 w-full mx-auto px-4 rounded-md border-[0.5px] border-neutral-700 font-poppins-regular 
-                    ${!isLoadingData ? '' : 'bg-gray-100'}`}
-                  placeholder="Harap Lengkapi SKU Produk"
+                  style={{
+                    fontFamily: 'Poppins-Regular',
+                    backgroundColor: isDarkMode ? '#262626' : '#fff',
+                  }}
+                  className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                    errors.product_sku ? 'border-red-500' : 'border-stone-600'
+                  }`}
+                  placeholder="SKU Produk"
                 />
-                {setError.product_sku && (
-                  <Text className="text-red-500 text-sm mt-1">
-                    {setError.product_sku.message}
-                  </Text>
-                )}
               </>
             )}
           />
-        </ScrollView>
-        <View style={[styles.bottom]} className="m-3">
+          {errors.product_sku && (
+            <Text className="mt-1  text-red-400 font-poppins-regular">
+              {errors.product_sku.message}
+            </Text>
+          )}
+        </View>
+        <View style={[styles.bottom]} className="p-3">
           <TouchableOpacity
-            style={[
-              styles.bottomButton,
-              {opacity: isLoadingData || isSaving ? 0.5 : 1},
-            ]}
+            className="w-full rounded-xl mx-auto px-4 h-12 items-center justify-center"
+            style={{
+              backgroundColor: BLUE_COLOR,
+              opacity: isLoadingData ? 0.7 : 1,
+            }}
             disabled={isLoadingData || isSaving}
             onPress={onSubmit}>
             <Text style={styles.buttonLabel}>
-              {isLoadingData || isSaving ? 'Loading...' : 'Simpan'}
+              {isLoadingData || isSaving ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                'SIMPAN'
+              )}
             </Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   bottom: {
-    position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-  },
-  bottomButton: {
-    backgroundColor: BLUE_COLOR,
-    padding: 10,
-    borderRadius: 5,
   },
   buttonLabel: {
     color: WHITE_BACKGROUND,

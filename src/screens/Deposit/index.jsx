@@ -203,12 +203,12 @@ export default function Deposit({navigation}) {
                     onChange(numericValue);
                   }}
                   keyboardType="numeric"
-                  placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
+                  placeholderTextColor={SLATE_COLOR}
                   onBlur={() => {
                     onBlur();
                     trigger('depositAmount');
                   }}
-                  className={`h-12 w-full rounded-xl font-poppins-regular px-4  border ${
+                  className={`h-12 w-full rounded-xl font-poppins-regular px-4  border-[0.5px] ${
                     error ? 'border-red-500' : 'border-stone-600'
                   }`}
                 />

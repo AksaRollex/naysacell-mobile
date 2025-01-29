@@ -24,7 +24,6 @@ const Notifikasi = () => {
           message: 'Pembelian Kamu Berhasil di BPJS Kesehatan!',
           time: '10:30',
           type: 'transaction',
-          isRead: false,
           icon: <Package size={24} color={isDarkMode ? '#fff' : '#000'} />,
         },
         {
@@ -34,59 +33,35 @@ const Notifikasi = () => {
             'Pembayaran BPJS Kesehatan periode Januari 2025 telah diterima',
           time: '09:15',
           type: 'payment',
-          isRead: false,
           icon: <Wallet size={24} color={isDarkMode ? '#fff' : '#000'} />,
-        },
-      ],
-    },
-    {
-      id: 2,
-      date: '28 Januari 2025',
-      data: [
-        {
-          id: 3,
-          title: 'Pengingat Pembayaran',
-          message:
-            'Jangan lupa bayar BPJS Kesehatan untuk periode Februari 2025',
-          time: '15:45',
-          type: 'reminder',
-          isRead: true,
-          icon: <Clock size={24} color={isDarkMode ? '#fff' : '#000'} />,
         },
       ],
     },
   ];
 
-  const getBackgroundColor = (type, isRead, isDarkMode) => {
-    if (isDarkMode) {
-      return isRead ? '#1e1e1e' : '#1e1e1e'; // Tambahkan variasi jika dibutuhkan
-    }
-    return isRead ? '#1e1e1e' : '#1e1e1e'; // Variasi untuk mode terang
-  };
-
   const NotificationItem = ({item}) => (
     <TouchableOpacity
       className="w-full p-4 rounded-xl mb-3"
-      style={{backgroundColor: getBackgroundColor(item.type, item.isRead)}}>
+      style={{backgroundColor: isDarkMode ? '#262626' : '#fff'}}>
       <View className="flex-row">
         <View className="mr-3 justify-center">{item.icon}</View>
         <View className="flex-1">
           <View className="flex-row justify-between items-center mb-1">
             <Text
-              className={`font-semibold ${
+              className={`font-poppins-semibold ${
                 isDarkMode ? 'text-white' : 'text-black'
               }`}>
               {item.title}
             </Text>
             <Text
-              className={`text-xs ${
+              className={`text-xs font-poppins-regular ${
                 isDarkMode ? 'text-gray-400' : 'text-gray-600'
               }`}>
               {item.time}
             </Text>
           </View>
           <Text
-            className={`text-sm ${
+            className={`text-[13px] font-poppins-regular ${
               isDarkMode ? 'text-gray-300' : 'text-gray-600'
             }`}>
             {item.message}

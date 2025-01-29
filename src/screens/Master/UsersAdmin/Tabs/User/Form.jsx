@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   ScrollView,
   StyleSheet,
   Text,
@@ -17,7 +18,6 @@ import {
   WHITE_BACKGROUND,
   WHITE_COLOR,
   LIGHT_COLOR,
-  GREY_COLOR,
 } from '../../../../../utils/const';
 import Toast from 'react-native-toast-message';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
@@ -133,10 +133,10 @@ export default function FormUser({route, navigation}) {
         style={{
           backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
         }}>
-        <View
-          className=" w-full h-full rounded-lg "
+        <ScrollView
+          className=" w-full h-full rounded-xl "
           style={{backgroundColor: isDarkMode ? '#262626' : '#f8f8f8'}}>
-          <View className="w-full my-2  p-3 rounded-lg flex-row justify-between">
+          {/* <View className="w-full my-2  p-3 rounded-lg flex-row justify-between">
             <BackButton
               color={isDarkMode ? WHITE_COLOR : LIGHT_COLOR}
               size={25}
@@ -147,8 +147,8 @@ export default function FormUser({route, navigation}) {
               style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
               {id ? 'Edit' : 'Tambah'} User
             </Text>
-          </View>
-          <ScrollView className="p-3">
+          </View> */}
+          <View className="px-3 pt-2 pb-3 ">
             <Controller
               control={control}
               name="name"
@@ -158,7 +158,7 @@ export default function FormUser({route, navigation}) {
               render={({field: {onChange, value, onBlur}}) => (
                 <>
                   <Text
-                    className="font-poppins-semibold my-1"
+                    className="font-poppins-medium mt-2"
                     style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
                     Nama Lengkap
                   </Text>
@@ -168,10 +168,14 @@ export default function FormUser({route, navigation}) {
                     onBlur={onBlur}
                     editable={!isLoadingData}
                     placeholderTextColor={
-                      isDarkMode ? SLATE_COLOR : LIGHT_COLOR
+                      isDarkMode ? SLATE_COLOR : SLATE_COLOR
                     }
-                    className={`h-12 w-full mx-auto px-4 rounded-md border-[0.5px] border-neutral-700 font-poppins-regular ${
-                      !isLoadingData ? '' : 'bg-gray-100'
+                    style={{
+                      fontFamily: 'Poppins-Regular',
+                      backgroundColor: isDarkMode ? '#262626' : '#fff',
+                    }}
+                    className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                      errors.name ? 'border-red-500' : 'border-stone-600'
                     }`}
                     placeholder="Harap Lengkapi Nama Lengkap"
                   />
@@ -196,7 +200,7 @@ export default function FormUser({route, navigation}) {
               render={({field: {onChange, value, onBlur}}) => (
                 <>
                   <Text
-                    className="font-poppins-semibold my-1"
+                    className="font-poppins-medium mt-2"
                     style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
                     Email
                   </Text>
@@ -206,10 +210,14 @@ export default function FormUser({route, navigation}) {
                     onBlur={onBlur}
                     editable={!isLoadingData}
                     placeholderTextColor={
-                      isDarkMode ? SLATE_COLOR : LIGHT_COLOR
+                      isDarkMode ? SLATE_COLOR : SLATE_COLOR
                     }
-                    className={`h-12 w-full mx-auto px-4 rounded-md border-[0.5px] border-neutral-700 font-poppins-regular ${
-                      !isLoadingData ? '' : 'bg-gray-100'
+                    style={{
+                      fontFamily: 'Poppins-Regular',
+                      backgroundColor: isDarkMode ? '#262626' : '#fff',
+                    }}
+                    className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                      errors.email ? 'border-red-500' : 'border-stone-600'
                     }`}
                     placeholder="Harap Lengkapi Email"
                   />
@@ -234,7 +242,7 @@ export default function FormUser({route, navigation}) {
               render={({field: {onChange, value, onBlur}}) => (
                 <>
                   <Text
-                    className="font-poppins-semibold my-1"
+                    className="font-poppins-medium mt-2"
                     style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
                     Nomor Telepon
                   </Text>
@@ -250,10 +258,14 @@ export default function FormUser({route, navigation}) {
                     keyboardType="numeric"
                     editable={!isLoadingData}
                     placeholderTextColor={
-                      isDarkMode ? SLATE_COLOR : LIGHT_COLOR
+                      isDarkMode ? SLATE_COLOR : SLATE_COLOR
                     }
-                    className={`h-12 w-full mx-auto px-4 rounded-md border-[0.5px] border-neutral-700 font-poppins-regular ${
-                      !isLoadingData ? '' : 'bg-gray-100'
+                    style={{
+                      fontFamily: 'Poppins-Regular',
+                      backgroundColor: isDarkMode ? '#262626' : '#fff',
+                    }}
+                    className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                      errors.phone ? 'border-red-500' : 'border-stone-600'
                     }`}
                     placeholder="Harap Lengkapi Nomor Telepon"
                   />
@@ -274,7 +286,7 @@ export default function FormUser({route, navigation}) {
               render={({field: {onChange, value, onBlur}}) => (
                 <>
                   <Text
-                    className="font-poppins-semibold my-1"
+                    className="font-poppins-medium mt-2"
                     style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
                     Alamat
                   </Text>
@@ -284,10 +296,14 @@ export default function FormUser({route, navigation}) {
                     onBlur={onBlur}
                     editable={!isLoadingData}
                     placeholderTextColor={
-                      isDarkMode ? SLATE_COLOR : LIGHT_COLOR
+                      isDarkMode ? SLATE_COLOR : SLATE_COLOR
                     }
-                    className={`h-12 w-full mx-auto px-4 rounded-md border-[0.5px] border-neutral-700 font-poppins-regular ${
-                      !isLoadingData ? '' : 'bg-gray-100'
+                    style={{
+                      fontFamily: 'Poppins-Regular',
+                      backgroundColor: isDarkMode ? '#262626' : '#fff',
+                    }}
+                    className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                      errors.address ? 'border-red-500' : 'border-stone-600'
                     }`}
                     placeholder="Harap Lengkapi Alamat"
                   />
@@ -314,7 +330,7 @@ export default function FormUser({route, navigation}) {
                   <>
                     <View className="relative">
                       <Text
-                        className="font-poppins-semibold my-1"
+                        className="font-poppins-medium mt-2"
                         style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
                         Password
                       </Text>
@@ -322,14 +338,19 @@ export default function FormUser({route, navigation}) {
                         value={value}
                         onChangeText={onChange}
                         onBlur={onBlur}
-                        style={{fontFamily: 'Poppins-Regular'}}
                         placeholder="Password"
                         placeholderTextColor={
-                          isDarkMode ? SLATE_COLOR : LIGHT_COLOR
+                          isDarkMode ? SLATE_COLOR : SLATE_COLOR
                         }
                         keyboardType="numeric"
-                        className={`h-12 w-full mx-auto px-4 rounded-md border-[0.5px] border-neutral-700 font-poppins-regular ${
-                          !isLoadingData ? '' : 'bg-gray-100'
+                        style={{
+                          fontFamily: 'Poppins-Regular',
+                          backgroundColor: isDarkMode ? '#262626' : '#fff',
+                        }}
+                        className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                          errors.password
+                            ? 'border-red-500'
+                            : 'border-stone-600'
                         }`}
                         secureTextEntry={showPassword}
                       />
@@ -355,18 +376,25 @@ export default function FormUser({route, navigation}) {
                 )}
               />
             )}
-          </ScrollView>
-        </View>
-        <View style={[styles.bottom]} className="p-3">
-          <TouchableOpacity
-            style={[styles.bottomButton, {opacity: isLoadingData ? 0.5 : 1}]}
-            className="m-3"
-            onPress={onSubmit}>
-            <Text style={styles.buttonLabel}>
-              {isLoadingData ? 'Loading...' : 'Simpan'}
-            </Text>
-          </TouchableOpacity>
-        </View>
+          </View>
+          <View style={[styles.bottom]} className="p-3">
+            <TouchableOpacity
+              className="w-full rounded-xl mx-auto px-4 h-12 items-center justify-center"
+              style={{
+                backgroundColor: BLUE_COLOR,
+                opacity: isLoadingData ? 0.7 : 1,
+              }}
+              onPress={onSubmit}>
+              <Text style={styles.buttonLabel}>
+                {isLoadingData ? (
+                  <ActivityIndicator color="#ffffff" />
+                ) : (
+                  'SIMPAN'
+                )}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
       </View>
       <ModalAfterProcess
         url={require('../../../../../../assets/lottie/success-animation.json')}
@@ -394,15 +422,9 @@ export default function FormUser({route, navigation}) {
 
 const styles = StyleSheet.create({
   bottom: {
-    position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-  },
-  bottomButton: {
-    backgroundColor: BLUE_COLOR,
-    padding: 10,
-    borderRadius: 5,
   },
   buttonLabel: {
     color: WHITE_BACKGROUND,

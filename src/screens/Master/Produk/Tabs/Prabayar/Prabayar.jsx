@@ -50,7 +50,7 @@ export default function Prabayar({navigation}) {
           setTempCategory(selectedCategory);
           setTempProvider(selectedProvider);
         }}
-        className=" flex-row items-center rounded-xl justify-between p-[14px] min-w-[70px]"
+        className=" flex-row items-center rounded-xl border-[0.5px] border-stone-600 justify-between p-[14px] min-w-[70px]"
         style={{backgroundColor: isDarkMode ? '#262626' : '#fff'}}>
         <View className="flex-row items-center">
           <IonIcons
@@ -93,9 +93,7 @@ export default function Prabayar({navigation}) {
     ];
     const emoneyType = ['Gopay', 'Ovo', 'Dana', 'Shopeepay'];
 
-    const hasChanges = () => {
-      return tempCategory !== '' || tempProvider !== '';
-    };
+    const hasChanges = () => tempCategory !== '' || tempProvider !== '';
 
     const handleConfirm = () => {
       setSelectedCategory(tempCategory);
@@ -117,13 +115,14 @@ export default function Prabayar({navigation}) {
           <View
             style={[
               styles.modalContent,
-              {backgroundColor: isDarkMode ? '#262626' : '#fff'},
+              {backgroundColor: isDarkMode ? '#1e1e1e' : '#fff'},
             ]}>
+            {/* Header */}
             <View style={styles.modalHeader}>
               <Text
                 style={[
                   styles.modalTitle,
-                  {color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR},
+                  {color: isDarkMode ? WHITE_COLOR : DARK_COLOR},
                 ]}>
                 Pilih Filter
               </Text>
@@ -136,32 +135,38 @@ export default function Prabayar({navigation}) {
                 <MaterialIcons
                   name="close"
                   size={24}
-                  color={isDarkMode ? WHITE_COLOR : LIGHT_COLOR}
+                  color={isDarkMode ? WHITE_COLOR : DARK_COLOR}
                 />
               </TouchableOpacity>
             </View>
 
+            {/* Kategori & Provider */}
             <View className="flex-row justify-between px-4">
+              {/* Pilihan Kategori */}
               <View className="flex-1 mr-2">
                 <Text
                   className="font-poppins-semibold mb-2"
-                  style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
+                  style={{color: isDarkMode ? WHITE_COLOR : DARK_COLOR}}>
                   Kategori
                 </Text>
                 <ScrollView className="max-h-64">
                   {categories.map(category => (
                     <TouchableOpacity
                       key={category}
-                      className={`p-3 rounded-md mb-2 ${
+                      className={`p-3 rounded-xl mb-2 ${
                         tempCategory === category
                           ? 'bg-blue-100'
-                          : 'bg-[#ececec]'
+                          : isDarkMode
+                          ? 'bg-[#262626]'
+                          : 'bg-[#f8f8f8]'
                       }`}
                       onPress={() => setTempCategory(category)}>
                       <Text
                         className={`${
                           tempCategory === category
                             ? 'text-blue-500 font-poppins-semibold'
+                            : isDarkMode
+                            ? 'text-white font-poppins-regular'
                             : 'text-black font-poppins-regular'
                         }`}>
                         {category}
@@ -171,10 +176,11 @@ export default function Prabayar({navigation}) {
                 </ScrollView>
               </View>
 
+              {/* Pilihan Provider untuk Pulsa/Data */}
               {(tempCategory === 'Pulsa' || tempCategory === 'Data') && (
                 <View className="flex-1 ml-2">
                   <Text
-                    className=" font-poppins-semibold mb-2"
+                    className="font-poppins-semibold mb-2"
                     style={{color: isDarkMode ? WHITE_COLOR : DARK_COLOR}}>
                     Provider
                   </Text>
@@ -182,16 +188,20 @@ export default function Prabayar({navigation}) {
                     {providers.map(provider => (
                       <TouchableOpacity
                         key={provider}
-                        className={`p-3 rounded-md mb-2 ${
+                        className={`p-3 rounded-xl mb-2 ${
                           tempProvider === provider
                             ? 'bg-blue-100'
-                            : 'bg-[#ececec]'
+                            : isDarkMode
+                            ? 'bg-[#262626]'
+                            : 'bg-[#f8f8f8]'
                         }`}
                         onPress={() => setTempProvider(provider)}>
                         <Text
                           className={`${
                             tempProvider === provider
                               ? 'text-blue-500 font-poppins-semibold'
+                              : isDarkMode
+                              ? 'text-white font-poppins-regular'
                               : 'text-black font-poppins-regular'
                           }`}>
                           {provider}
@@ -201,10 +211,12 @@ export default function Prabayar({navigation}) {
                   </ScrollView>
                 </View>
               )}
+
+              {/* Pilihan Provider untuk E-Money */}
               {tempCategory === 'E-Money' && (
                 <View className="flex-1 ml-2">
                   <Text
-                    className=" font-poppins-semibold mb-2"
+                    className="font-poppins-semibold mb-2"
                     style={{color: isDarkMode ? WHITE_COLOR : DARK_COLOR}}>
                     Provider
                   </Text>
@@ -212,16 +224,20 @@ export default function Prabayar({navigation}) {
                     {emoneyType.map(emoney => (
                       <TouchableOpacity
                         key={emoney}
-                        className={`p-3 rounded-md mb-2 ${
+                        className={`p-3 rounded-xl mb-2 ${
                           tempProvider === emoney
                             ? 'bg-blue-100'
-                            : 'bg-[#ececec]'
+                            : isDarkMode
+                            ? 'bg-[#262626]'
+                            : 'bg-[#f8f8f8]'
                         }`}
                         onPress={() => setTempProvider(emoney)}>
                         <Text
                           className={`${
                             tempProvider === emoney
                               ? 'text-blue-500 font-poppins-semibold'
+                              : isDarkMode
+                              ? 'text-white font-poppins-regular'
                               : 'text-black font-poppins-regular'
                           }`}>
                           {emoney}
@@ -235,13 +251,14 @@ export default function Prabayar({navigation}) {
 
             <View className="mt-4 px-4">
               <TouchableOpacity
-                className={`py-3 rounded-md ${
-                  hasChanges() ? 'bg-blue-500' : 'bg-gray-300'
-                }`}
+                className="w-full rounded-xl mx-auto px-4 h-12 items-center justify-center"
+                style={{
+                  backgroundColor: BLUE_COLOR,
+                }}
                 disabled={!hasChanges()}
                 onPress={handleConfirm}>
                 <Text className="text-white text-center font-poppins-semibold">
-                  Terapkan Filter
+                  TERAPKAN
                 </Text>
               </TouchableOpacity>
             </View>
@@ -250,6 +267,7 @@ export default function Prabayar({navigation}) {
       </Modal>
     );
   };
+
   const {
     delete: deletePrabayar,
     DeleteConfirmationModal,
@@ -295,14 +313,19 @@ export default function Prabayar({navigation}) {
         <View className="flex-row w-full  my-2 justify-center ">
           <View className="w-full flex-row justify-between items-start">
             <View className="flex-row  items-center justify-start gap-x-2 ">
-              <View  className="items-center justify-center"
+              <View
+                className="items-center justify-center"
                 style={{
                   backgroundColor: isDarkMode ? '#242424' : '#fff',
                   width: 50,
                   height: 50,
                   borderRadius: 25,
                 }}>
-                <MaterialIcons name="shopping-cart" size={25} color={BLUE_COLOR} />
+                <MaterialIcons
+                  name="shopping-cart"
+                  size={25}
+                  color={BLUE_COLOR}
+                />
               </View>
               <View className="flex-col  w-64 items-start justify-start ">
                 <Text

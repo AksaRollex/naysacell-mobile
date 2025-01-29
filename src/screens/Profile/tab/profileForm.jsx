@@ -5,9 +5,9 @@ import {
   useColorScheme,
   TextInput,
   TouchableOpacity,
-  Image,
   ScrollView,
   RefreshControl,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {
@@ -15,16 +15,12 @@ import {
   WHITE_COLOR,
   LIGHT_COLOR,
   BLUE_COLOR,
-  GREY_COLOR,
 } from '../../../utils/const';
 import axios from '../../../libs/axios';
 import Toast from 'react-native-toast-message';
 import ModalAfterProcess from '../../../components/ModalAfterProcess';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Controller, useForm} from 'react-hook-form';
 import {useQueryClient} from '@tanstack/react-query';
-import {launchImageLibrary} from 'react-native-image-picker';
-import {APP_URL} from '@env';
 
 export default function ProfileForm({route}) {
   const isDarkMode = useColorScheme() === 'dark';
@@ -33,11 +29,23 @@ export default function ProfileForm({route}) {
   const [modalFailed, setModalFailed] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [file, setFile] = React.useState(null);
-  const [currentPhotoUrl, setCurrentPhotoUrl] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const query = useQueryClient();
-  const {control} = useForm();
+  const {
+    control,
+    handleSubmit,
+    formState: {errors},
+    setValue,
+    reset,
+  } = useForm({
+    defaultValues: {
+      name: '',
+      phone: '',
+      address: '',
+    },
+    mode: 'onChange',
+  });
 
   const onRefresh = React.useCallback(() => {
     fetchUserData();
@@ -52,12 +60,6 @@ export default function ProfileForm({route}) {
     phone: '',
     address: '',
   });
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    address: '',
-  });
 
   useEffect(() => {
     fetchUserData();
@@ -67,13 +69,14 @@ export default function ProfileForm({route}) {
     setIsLoading(true);
     try {
       const response = await axios.get('/auth/me');
-      setData(response.data.user);
-      setFormData({
-        name: response.data.user.name,
-        email: response.data.user.email,
-        phone: response.data.user.phone,
-        address: response.data.user.address,
-      });
+      const userData = response.data.user;
+
+      setValue('name', userData.name);
+      setValue('phone', userData.phone);
+      setValue('address', userData.address);
+      setValue('email', userData.email);
+
+      setData(userData);
     } catch (error) {
       console.error('Error fetching data:', error);
       Toast.show({
@@ -92,22 +95,6 @@ export default function ProfileForm({route}) {
     return value || '';
   };
 
-  // FETCH PHOTO
-  useEffect(() => {
-    axios
-      .get('/auth/me')
-      .then(response => {
-        setData(response.data);
-        if (response.data.user.photo) {
-          const photoUrl = `${APP_URL}${response.data.user.photo}`;
-          setCurrentPhotoUrl(photoUrl);
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
-  }, []);
-
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
       ...prev,
@@ -117,129 +104,57 @@ export default function ProfileForm({route}) {
 
   const handleUpdate = async () => {
     if (isEditing) {
-      try {
-        await axios.post(`/auth/user/update`, {
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          address: formData.address,
-        });
+      handleSubmit(async formData => {
+        try {
+          const requestData = {
+            name: formData.name,
+            phone: formData.phone,
+            address: formData.address,
+          };
 
-        if (file) {
-          const photoFormData = new FormData();
-          photoFormData.append('name', formData.name);
-          photoFormData.append('phone', formData.phone);
-          photoFormData.append('address', formData.address);
-          photoFormData.append('photo', {
-            uri: file.uri,
-            type: file.type || 'image/jpeg',
-            name: file.fileName || 'profile_photo.jpg',
-          });
+          await axios.post(`/auth/user/update`, requestData);
 
-          try {
-            const photoUploadResponse = await axios.post(
-              '/auth/user/update',
-              photoFormData,
-              {
-                headers: {
-                  'Content-Type': 'multipart/form-data',
-                },
-              },
-            );
-            const updatedImageUrl = file
-              ? file.uri
-              : `${APP_URL}${photoUploadResponse.data.photo}`;
-            setCurrentPhotoUrl(updatedImageUrl);
-          } catch (error) {
-            console.error('Photo upload error:', error.response?.data);
-            setErrorMessage(
-              error.response?.data?.message ||
-                'Gagal Memperbarui Foto, Silahkan Coba Lagi',
-            );
-            setModalFailed(true);
-            setTimeout(() => {
-              setModalFailed(false);
-            }, 2000);
-          }
+          setIsEditing(false);
+          fetchUserData();
+          setModalSuccess(true);
+          setTimeout(() => {
+            setModalSuccess(false);
+          }, 2000);
+          query.invalidateQueries(['auth', 'user']);
+        } catch (error) {
+          console.error('Update error:', error.response?.data);
+          setErrorMessage(
+            error.response?.data?.message ||
+              'Gagal Memperbarui Data, Silahkan Coba Lagi',
+          );
+          setModalFailed(true);
+          setTimeout(() => {
+            setModalFailed(false);
+          }, 2000);
         }
-        setIsEditing(false);
-        fetchUserData();
-        setModalSuccess(true);
-        setTimeout(() => {
-          setModalSuccess(false);
-        }, 2000);
-        query.invalidateQueries(['auth', 'user']);
-      } catch (error) {
-        console.error('Update error:', error.response?.data);
-        setErrorMessage(
-          error.response?.data?.message ||
-            'Gagal Memperbarui Data, Silahkan Coba Lagi',
-        );
-        setModalFailed(true);
-        setTimeout(() => {
-          setModalFailed(false);
-        }, 2000);
-      }
+      })();
     } else {
       setIsEditing(true);
     }
   };
 
-  const handleChoosePhoto = () => {
-    if (!isEditing) {
-      Toast.show({
-        type: 'info',
-        text1: 'Edit Data Pribadi Terlebih Dahulu',
-        text2: 'Tekan tombol "Edit Data Pribadi" untuk mengubah foto',
-      });
-      return;
+  useEffect(() => {
+    if (data?.user) {
+      setValue('name', data.user.name);
+      setValue('phone', data.user.phone);
+      setValue('address', data.user.address);
+      setValue('email', data.user.email);
     }
-
-    launchImageLibrary({mediaType: 'photo'}, response => {
-      if (response.errorMessage) {
-        console.log('Image Error : ', response.errorMessage);
-      } else if (response.assets && response.assets.length > 0) {
-        const file = response.assets[0];
-        const fileSizeInBytes = file.fileSize;
-        const fileSizeInKB = fileSizeInBytes / 1024;
-
-        if (fileSizeInKB > 2048) {
-          Toast.show({
-            type: 'error',
-            text1: 'Ukuran file terlalu besar',
-            text2: 'Ukuran file tidak boleh melebihi 2048 KB (2 MB)',
-          });
-        } else {
-          console.log('Chosen file:', file);
-          setFile(file);
-        }
-      }
-    });
-  };
-
-  const handleDeletePhoto = () => {
-    if (!isEditing) {
-      Toast.show({
-        type: 'info',
-        text1: 'Edit Data Pribadi Terlebih Dahulu',
-        text2: 'Tekan tombol "Edit Data Pribadi" untuk menghapus foto',
-      });
-      return;
-    }
-    setFile(null);
-    setCurrentPhotoUrl(null);
-  };
+  }, [data, setValue]);
 
   const handleCancel = () => {
     setIsEditing(false);
-    setFormData({
-      name: data.user?.name || data.name || '',
-      email: data.user?.email || data.email || '',
-      phone: data.user?.phone || data.phone || '',
-      address: data.user?.address || data.address || '',
-      photo: data.user?.photo || data.photo || null,
+    reset({
+      name: data.name,
+      phone: data.phone,
+      address: data.address,
+      email: data.email,
     });
-    setFile(null);
   };
 
   return (
@@ -247,76 +162,23 @@ export default function ProfileForm({route}) {
       <ScrollView refreshControl={<RefreshControl onRefresh={onRefresh} />}>
         {data && (
           <View>
-            {/* <View className="px-4 py-2">
-              <Text
-                className="font-poppins-semibold my-1"
-                style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
-                Foto Profil
-              </Text>
-              <View className="border-[0.5px] border-dashed border-neutral-700  rounded-md p-4">
-                <View className="items-center ">
-                  {(file || currentPhotoUrl) && (
-                    <TouchableOpacity
-                      className={`absolute top-0 right-0  rounded-full w-8 h-8 items-center justify-center shadow-lg border  ${
-                        isEditing ? 'bg-white' : 'bg-white opacity-25'
-                      }`}
-                      onPress={handleDeletePhoto}>
-                      <AntDesign name="close" size={20} color="red" />
-                    </TouchableOpacity>
-                  )}
-                  <View className="relative  rounded-md">
-                    <Image
-                      source={
-                        file
-                          ? {uri: file.uri}
-                          : currentPhotoUrl
-                          ? {uri: currentPhotoUrl}
-                          : require('../../../../assets/images/blank.png')
-                      }
-                      className="w-48 h-48 rounded-lg "
-                      defaultSource={require('../../../../assets/images/blank.png')}
-                      onError={() => {
-                        setCurrentPhotoUrl(null);
-                      }}
-                    />
-                    <TouchableOpacity
-                      className={`absolute bottom-0 right-0 rounded-full w-10 h-10 items-center justify-center shadow-lg ${
-                        isEditing ? 'bg-indigo-600' : 'bg-indigo-600 opacity-25'
-                      }`}
-                      onPress={handleChoosePhoto}
-                      disabled={!isEditing}>
-                      <AntDesign
-                        name="camera"
-                        size={20}
-                        color={isEditing ? 'white' : 'black'}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                  <Text
-                    className="font-poppins-medium text-sm mt-3"
-                    style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
-                    Ketuk ikon kamera untuk mengubah foto
-                  </Text>
-                </View>
-              </View>
-            </View> */}
-
             <View className="px-4 py-2">
               <Controller
                 control={control}
                 name="name"
+                defaultValue={data?.user?.name || ''}
                 rules={{
                   required: 'Nama Harus Diisi',
                   pattern: {
-                    value: /^[A-Za-z\s]+$/, 
+                    value: /^[A-Za-z\s]+$/,
                     message: 'Nama Tidak Boleh Mengandung Angka atau Simbol',
                   },
                   maxLength: {
-                    value: 17, 
+                    value: 17,
                     message: 'Nama Tidak Boleh Lebih Dari 17 Karakter',
                   },
                 }}
-                render={({field: {onBlur}}) => (
+                render={({field: {value, onChange, onBlur}}) => (
                   <>
                     <Text
                       className="font-poppins-semibold my-1"
@@ -324,21 +186,31 @@ export default function ProfileForm({route}) {
                       Nama Lengkap
                     </Text>
                     <TextInput
-                      value={renderLoadingOrValue(formData.name)}
-                      onChangeText={value => handleInputChange('name', value)}
+                      value={renderLoadingOrValue(value, 'Memuat...')}
+                      onChangeText={onChange}
                       onBlur={onBlur}
                       editable={isEditing}
                       placeholderTextColor={
                         isDarkMode ? SLATE_COLOR : LIGHT_COLOR
                       }
-                      className={`h-12 w-full mx-auto px-4 rounded-md border-[0.5px] border-neutral-700 font-poppins-regular ${
-                        isEditing ? '' : ''
+                      style={{
+                        fontFamily: 'Poppins-Regular',
+                        backgroundColor: isDarkMode ? '#262626' : '#fff',
+                      }}
+                      className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                        errors.name ? 'border-red-500' : 'border-stone-600'
                       }`}
-                      maxLength={17} // Maksimal karakter di level input
+                      placeholder="Nama Lengkap"
+                      maxLength={17}
                     />
                   </>
                 )}
               />
+              {errors.name && (
+                <Text className="text-red-500 text-sm mt-1">
+                  {errors.name.message}
+                </Text>
+              )}
             </View>
 
             <View className="px-4 py-2">
@@ -348,10 +220,11 @@ export default function ProfileForm({route}) {
                 rules={{
                   pattern: {
                     value: /^[0-9]+$/,
+                    message: 'Nomor Telepon Harus Diisi dengan Angka',
                   },
                   required: 'Nomor Telepon Harus Diisi',
                 }}
-                render={({field: {onBlur}}) => (
+                render={({field: {value, onChange, onBlur}}) => (
                   <>
                     <Text
                       className="font-poppins-semibold my-1"
@@ -359,21 +232,31 @@ export default function ProfileForm({route}) {
                       Nomor Telepon
                     </Text>
                     <TextInput
-                      value={renderLoadingOrValue(formData.phone)}
+                      value={renderLoadingOrValue(value, 'Memuat...')}
+                      onChangeText={onChange}
                       onBlur={onBlur}
+                      placeholder="Nomor Telepon"
                       keyboardType="numeric"
-                      onChangeText={value => handleInputChange('phone', value)}
                       editable={isEditing}
                       placeholderTextColor={
-                        isDarkMode ? SLATE_COLOR : LIGHT_COLOR
+                        isDarkMode ? SLATE_COLOR : SLATE_COLOR
                       }
-                      className={`h-12 w-full mx-auto px-4 rounded-md border-[0.5px] border-neutral-700  font-poppins-regular ${
-                        isEditing ? '' : ''
+                      style={{
+                        fontFamily: 'Poppins-Regular',
+                        backgroundColor: isDarkMode ? '#262626' : '#fff',
+                      }}
+                      className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                        errors.phone ? 'border-red-500' : 'border-stone-600'
                       }`}
                     />
                   </>
                 )}
               />
+              {errors.phone && (
+                <Text className="text-red-500 text-sm mt-1">
+                  {errors.phone.message}
+                </Text>
+              )}
             </View>
 
             <View className="px-4 py-2">
@@ -381,7 +264,7 @@ export default function ProfileForm({route}) {
                 control={control}
                 name="address"
                 rules={{required: 'Alamat Harus Diisi'}}
-                render={({field: {onBlur}}) => (
+                render={({field: {value, onChange, onBlur}}) => (
                   <>
                     <Text
                       className="font-poppins-semibold my-1"
@@ -389,22 +272,30 @@ export default function ProfileForm({route}) {
                       Alamat Lengkap
                     </Text>
                     <TextInput
-                      value={renderLoadingOrValue(formData.address)}
+                      value={renderLoadingOrValue(value, 'Memuat...')}
+                      onChangeText={onChange}
                       onBlur={onBlur}
-                      onChangeText={value =>
-                        handleInputChange('address', value)
-                      }
                       editable={isEditing}
+                      placeholder="Alamat"
                       placeholderTextColor={
                         isDarkMode ? SLATE_COLOR : LIGHT_COLOR
                       }
-                      className={`h-12 w-full mx-auto px-4 rounded-md border-[0.5px] border-neutral-700  font-poppins-regular ${
-                        isEditing ? '' : ''
+                      style={{
+                        fontFamily: 'Poppins-Regular',
+                        backgroundColor: isDarkMode ? '#262626' : '#fff',
+                      }}
+                      className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                        errors.address ? 'border-red-500' : 'border-stone-600'
                       }`}
                     />
                   </>
                 )}
               />
+              {errors.address && (
+                <Text className="text-red-500 text-sm mt-1">
+                  {errors.address.message}
+                </Text>
+              )}
             </View>
 
             <View className="px-4 py-2">
@@ -414,13 +305,15 @@ export default function ProfileForm({route}) {
                 Email
               </Text>
               <TextInput
-                value={renderLoadingOrValue(formData.email)}
+                value={renderLoadingOrValue(data.email)}
                 onChangeText={value => handleInputChange('email', value)}
                 editable={false}
                 placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
-                className={`h-12 w-full mx-auto px-4 rounded-md border-[0.5px] border-neutral-700  font-poppins-regular ${
-                  isEditing ? '' : ''
-                }`}
+                style={{
+                  fontFamily: 'Poppins-Regular',
+                  backgroundColor: isDarkMode ? '#262626' : '#fff',
+                }}
+                className="h-12 w-full rounded-xl px-4 border-[0.5px] border-stone-600"
               />
             </View>
 
@@ -442,7 +335,11 @@ export default function ProfileForm({route}) {
                 )}
                 editable={false}
                 placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
-                className="h-12 w-full mx-auto px-4  rounded-md border-[0.5px] border-neutral-700  font-poppins-regular"
+                style={{
+                  fontFamily: 'Poppins-Regular',
+                  backgroundColor: isDarkMode ? '#262626' : '#fff',
+                }}
+                className="h-12 w-full rounded-xl px-4 border-[0.5px] border-stone-600"
               />
             </View>
 
@@ -454,7 +351,7 @@ export default function ProfileForm({route}) {
                     style={{backgroundColor: 'gray'}}
                     onPress={handleCancel}>
                     <Text className="font-poppins-semibold text-center text-white">
-                      Batal
+                      BATAL
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
@@ -462,7 +359,11 @@ export default function ProfileForm({route}) {
                     style={{backgroundColor: BLUE_COLOR}}
                     onPress={handleUpdate}>
                     <Text className="font-poppins-semibold text-center text-white">
-                      Simpan
+                      {isLoading ? (
+                        <ActivityIndicator color="#fff" />
+                      ) : (
+                        'SIMPAN'
+                      )}
                     </Text>
                   </TouchableOpacity>
                 </>
@@ -472,7 +373,7 @@ export default function ProfileForm({route}) {
                   style={{backgroundColor: BLUE_COLOR}}
                   onPress={handleUpdate}>
                   <Text className="font-poppins-semibold text-center text-white">
-                    Edit Data Pribadi
+                    EDIT DATA PRIBADI
                   </Text>
                 </TouchableOpacity>
               )}

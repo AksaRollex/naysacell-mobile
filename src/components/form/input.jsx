@@ -46,12 +46,13 @@ export default function Input({
           const sanitizedText = text.replace(/[^a-zA-Z0-9 ]/g, '').slice(0, 13);
           onChange(sanitizedText);
         }}
+        className="h-12 w-full rounded-xl px-4 border-[0.5px] border-stone-600"
         style={{
           width: lebar ? lebar : '100%',
-          paddingHorizontal: 10,
           color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR,
           fontFamily: 'Poppins-Medium',
           textTransform: 'capitalize',
+          backgroundColor: isDarkMode ? '#262626' : '#fff',
         }}></TextInput>
       {value && value !== '' && (
         <TouchableOpacity

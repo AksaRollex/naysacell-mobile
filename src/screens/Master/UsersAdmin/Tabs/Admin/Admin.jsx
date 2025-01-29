@@ -47,7 +47,7 @@ export default function Admin({navigation}) {
     ];
     return (
       <View
-        className="w-full p-2 flex-col mt-4 rounded-lg"
+        className="w-full p-2 flex-col mt-4 rounded-xl"
         style={{
           elevation: 4,
           shadowColor: '#000',

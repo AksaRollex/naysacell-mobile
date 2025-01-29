@@ -115,7 +115,7 @@ Tanggal: ${new Date(item?.created_at || '').toLocaleDateString('id-ID', {
           <View className="justify-center  flex-col items-center gap-y-2">
             <View
               className="p-3 rounded-full "
-              style={{backgroundColor: isDarkMode ? '#242424' : '#ececec'}}>
+              style={{backgroundColor: isDarkMode ? '#242424' : '#F3F4F6'}}>
               <IonIcons name="receipt" size={35} color={BLUE_COLOR} />
             </View>
             <Text
@@ -255,7 +255,7 @@ Tanggal: ${new Date(item?.created_at || '').toLocaleDateString('id-ID', {
             <View className=" items-center  justify-center">
               <View
                 className="p-3 w-full rounded-2xl flex-row space-x-2  items-center justify-center "
-                style={{backgroundColor: isDarkMode ? '#262626' : '#f8f8f8'}}>
+                style={{backgroundColor: isDarkMode ? '#262626' : '#F3F4F6'}}>
                 <IonIcons name="share-social" size={25} color={BLUE_COLOR} />
                 <Text
                   className="text-sm capitalize font-poppins-medium "

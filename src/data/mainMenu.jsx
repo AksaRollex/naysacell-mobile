@@ -24,21 +24,21 @@ export default mainMenu = [
     path: 'Shopeepay',
     ikon: 'wallet',
   },
-  {
-    label: 'Dana',
-    path: 'Dana',
-    ikon: 'wallet',
-  },
-  {
-    label: 'GoPay',
-    ikon: 'wallet',
-    ikon: 'wallet',
-  },
-  {
-    label: 'OVO',
-    path: 'OVO',
-    ikon: 'wallet',
-  },
+  // {
+  //   label: 'Dana',
+  //   path: 'Dana',
+  //   ikon: 'wallet',
+  // },
+  // {
+  //   label: 'GoPay',
+  //   ikon: 'wallet',
+  //   ikon: 'wallet',
+  // },
+  // {
+  //   label: 'OVO',
+  //   path: 'OVO',
+  //   ikon: 'wallet',
+  // },
 ];
 
 export const gameMenu = [

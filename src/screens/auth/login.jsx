@@ -14,6 +14,7 @@ import {
   BLUE_COLOR,
   DARK_BACKGROUND,
   DARK_COLOR,
+  LIGHT_BACKGROUND,
   LIGHT_COLOR,
   SLATE_COLOR,
   WHITE_BACKGROUND,
@@ -101,7 +102,7 @@ export default function LoginPage() {
       </ImageBackground>
       <View
         style={{
-          backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
+          backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
         }}
         className="h-full">
         {/* OPEN FORM */}
@@ -120,7 +121,7 @@ export default function LoginPage() {
               render={({field: {onChange, onBlur, value}}) => (
                 <View className="mx-3 justify-center flex-col items-start">
                   <Text
-                    className="font-poppins-regular"
+                    className="font-poppins-medium"
                     style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                     Email
                   </Text>
@@ -128,11 +129,14 @@ export default function LoginPage() {
                     placeholder="Masukkan Email"
                     label="Email"
                     color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
-                    placeholderTextColor={
-                      isDarkMode ? SLATE_COLOR : LIGHT_COLOR
-                    }
-                    style={{fontFamily: 'Poppins-Regular'}}
-                    className="h-12 w-full rounded-xl   px-4 bg-[#f8f8f8 ] border border-stone-600"
+                    placeholderTextColor={SLATE_COLOR}
+                    style={{
+                      fontFamily: 'Poppins-Regular',
+                      backgroundColor: isDarkMode ? '#262626' : '#fff',
+                    }}
+                    className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                      errors.email ? 'border-red-500' : 'border-stone-600'
+                    }`}
                     onBlur={onBlur}
                     value={value}
                     onChangeText={onChange}></TextInput>
@@ -145,7 +149,7 @@ export default function LoginPage() {
               </Text>
             )}
           </View>
-          <View className="mt-6">
+          <View className="mt-2">
             <Controller
               name="password"
               control={control}
@@ -153,19 +157,22 @@ export default function LoginPage() {
               render={({field: {onChange, onBlur, value}}) => (
                 <View className="relative mx-3">
                   <Text
-                    className="font-poppins-regular "
+                    className="font-poppins-medium "
                     style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                     Password
                   </Text>
                   <TextInput
                     placeholder="Masukkan Password"
                     label="Password"
-                    style={{fontFamily: 'Poppins-Regular'}}
                     color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
-                    placeholderTextColor={
-                      isDarkMode ? SLATE_COLOR : LIGHT_COLOR
-                    }
-                    className="h-12 w-full rounded-xl mx-auto px-4 pr-10 border border-stone-600"
+                    placeholderTextColor={SLATE_COLOR}
+                    style={{
+                      fontFamily: 'Poppins-Regular',
+                      backgroundColor: isDarkMode ? '#262626' : '#fff',
+                    }}
+                    className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                      errors.password ? 'border-red-500' : 'border-stone-600'
+                    }`}
                     onBlur={onBlur}
                     value={value}
                     keyboardType="number-pad"
@@ -195,9 +202,9 @@ export default function LoginPage() {
           <TouchableOpacity
             onPress={() => navigation.navigate('ForgotPassScreen')}>
             <Text
-              className="text-right my-4 mx-3  text-black text-sm"
+              className="text-start my-4 mx-3  text-black text-sm"
               style={{color: BLUE_COLOR, fontFamily: 'Poppins-Regular'}}>
-              Lupa Kata Sandi?
+              Lupa Kata Sandi ?
             </Text>
           </TouchableOpacity>
           <View className="flex mx-3">
@@ -216,9 +223,9 @@ export default function LoginPage() {
           </View>
           <TouchableOpacity
             onPress={() => navigation.navigate('bantuanLogin')}
-            className="my-6">
+            className="my-4 mx-3" >
             <Text
-              className="text-center capitalize text-sm font-poppins-regular"
+              className="text-start capitalize text-sm font-poppins-regular"
               style={{color: BLUE_COLOR}}>
               Butuh bantuan ?
             </Text>

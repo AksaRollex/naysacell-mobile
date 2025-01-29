@@ -27,7 +27,7 @@ export default function Order({navigation}) {
       return 'bg-green-100';
     } else if (order_status === 'processing') {
       return 'bg-yellow-100';
-    } else if (order_status === 'failed') {
+    } else if (order_status === 'cancelled') {
       return 'bg-red-100';
     } else {
       return 'bg-blue-100';
@@ -41,7 +41,7 @@ export default function Order({navigation}) {
       return 'text-green-500';
     } else if (order_status === 'processing') {
       return 'text-yellow-500';
-    } else if (order_status === 'failed') {
+    } else if (order_status === 'cancelled') {
       return 'text-red-500';
     } else {
       return 'text-blue-500';
@@ -55,7 +55,7 @@ export default function Order({navigation}) {
       return 'Sukses';
     } else if (order_status === 'processing') {
       return 'Dalam Proses';
-    } else if (order_status === 'failed') {
+    } else if (order_status === 'cancelled') {
       return 'Gagal';
     } else {
       return 'Pending';
@@ -69,7 +69,7 @@ export default function Order({navigation}) {
       return '#22c55e';
     } else if (order_status === 'processing') {
       return '#eab308';
-    } else if (order_status === 'failed') {
+    } else if (order_status === 'cancelled') {
       return '#ef4444';
     } else {
       return '##3b82f6';
@@ -108,7 +108,7 @@ export default function Order({navigation}) {
     ];
     return (
       <View
-        className="w-full p-2 flex-col  rounded-lg mt-4"
+        className="w-full p-2 flex-col  rounded-xl mt-4"
         style={{
           elevation: 4,
           shadowColor: '#000',

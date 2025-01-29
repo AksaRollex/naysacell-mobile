@@ -49,7 +49,7 @@ export default function User({navigation}) {
     ];
     return (
       <View
-        className="w-full p-2 flex-col  rounded-lg mt-4"
+        className="w-full p-2 flex-col  rounded-xl mt-4"
         style={{
           elevation: 4,
           shadowColor: '#000',
@@ -61,7 +61,14 @@ export default function User({navigation}) {
         <View className="flex-row w-full  my-2 justify-center ">
           <View className="w-full flex-row justify-between items-start">
             <View className="flex-row  items-center justify-start gap-x-2 ">
-              <View className="p-3 items-center rounded-full   bg-[#242424]">
+              <View
+                className="items-center justify-center"
+                style={{
+                  backgroundColor: isDarkMode ? '#242424' : '#fff',
+                  width: 50,
+                  height: 50,
+                  borderRadius: 25,
+                }}>
                 <FontAwesome5Icon
                   name="user-alt"
                   size={25}
@@ -81,7 +88,11 @@ export default function User({navigation}) {
                 </Text>
                 <View className="flex-row gap-x-2">
                   <View className="bg-yellow-100 rounded-md pl-2   mt-1 justify-center  items-center flex-row  py-1 max-w-[120px]">
-                    <FontAwesome5Icon name="universal-access" color="#cb8c18" size={15} />
+                    <FontAwesome5Icon
+                      name="universal-access"
+                      color="#cb8c18"
+                      size={15}
+                    />
                     <Text className="font-poppins-medium text-xs mx-2 text-[#cb8c18]">
                       {item?.role?.full_name}
                     </Text>

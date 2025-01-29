@@ -67,12 +67,12 @@ export default function BantuanLogin() {
     <ScrollView
       className="w-full h-full"
       style={{
-        backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
+        backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
       }}>
       {/* Section 1: Cara Daftar */}
       <View
         className="m-3 p-3 my-5 rounded-xl"
-        style={{backgroundColor: isDarkMode ? '#1e1e1e' : '#fff'}}>
+        style={{backgroundColor: isDarkMode ? '#262626' : '#fff'}}>
         <Text
           className="text-base text-center my-2"
           style={{
@@ -129,7 +129,7 @@ export default function BantuanLogin() {
             <TouchableOpacity
               key={index}
               className="w-[48%] p-4 mb-4 rounded-xl"
-              style={{backgroundColor: isDarkMode ? '#232323' : '#F3F4F6'}}
+              style={{backgroundColor: isDarkMode ? '#242424' : '#F3F4F6'}}
               onPress={option.action}>
               <View className="mb-3">{option.icon}</View>
               <Text
@@ -151,7 +151,7 @@ export default function BantuanLogin() {
         {/* Contact Card */}
         <View
           className="p-4 mt-2 rounded-xl"
-          style={{backgroundColor: isDarkMode ? '#232323' : '#F3F4F6'}}>
+          style={{backgroundColor: isDarkMode ? '#242424' : '#F3F4F6'}}>
           <View className="flex-row items-center mb-3">
             <User size={20} color={isDarkMode ? BLUE_COLOR : '#000'} />
             <Text

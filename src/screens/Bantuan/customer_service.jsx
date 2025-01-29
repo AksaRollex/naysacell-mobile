@@ -76,94 +76,90 @@ const CustomerService = ({route, navigation}) => {
 
   return (
     <ScrollView
-      className="w-full h-full p-4"
+      className="w-full h-full p-3"
       style={{
         backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
       }}>
-      {/* Header */}
-      {/* <View className="mb-6">
-        <Text
-          className={`text-2xl font-bold mb-2 ${
-            isDarkMode ? 'text-white' : 'text-black'
-          }`}>
-          Pusat Bantuan
-        </Text>
-        <Text
-          className={`text-base ${
-            isDarkMode ? 'text-gray-300' : 'text-gray-600'
-          }`}>
-          Bagaimana kami dapat membantu Anda hari ini?
-        </Text>
-      </View> */}
-
-      {/* Status Card */}
-      <View
-        className="p-4 mb-6 rounded-xl"
-        style={{backgroundColor: isDarkMode ? '#1e1e1e' : '#F3F4F6'}}>
-        <View className="flex-row items-center justify-between mb-3">
-          <View className="flex-row items-center">
-            <Clock size={20} color={isDarkMode ? BLUE_COLOR : '#000'} />
-            <Text
-              className={`ml-2 font-poppins-semibold text-sm ${
-                isDarkMode ? 'text-white' : 'text-black'
-              }`}>
-              Status Layanan
-            </Text>
+      <View className="p-4 rounded-xl" style={{  backgroundColor : isDarkMode ? '#262626' : '#fff' }}>
+        {/* Status Card */}
+        <View
+          className="p-4 mb-6 rounded-xl"
+          style={{backgroundColor: isDarkMode ? '#242424' : '#F3F4F6'}}>
+          <View className="flex-row items-center justify-between mb-3">
+            <View className="flex-row items-center">
+              <Clock size={20} color={isDarkMode ? BLUE_COLOR : '#000'} />
+              <Text
+                className={`ml-2 font-poppins-semibold text-sm ${
+                  isDarkMode ? 'text-white' : 'text-black'
+                }`}>
+                Status Layanan
+              </Text>
+            </View>
+            <View className="px-2 py-1 bg-green-500 rounded-xl">
+              <Text className="text-white text-xs font-poppins-medium ">
+                Online
+              </Text>
+            </View>
           </View>
-          <View className="px-2 py-1 bg-green-500 rounded-xl">
-            <Text className="text-white text-xs font-poppins-medium ">Online</Text>
-          </View>
-        </View>
-        <Text className={`${isDarkMode ? 'text-gray-300' : 'text-gray-600'} font-poppins-regular text-xs`}>
-          Waktu respons rata-rata: 10-15 menit
-        </Text>
-      </View>
-
-      {/* Support Options */}
-      <View className="flex-row flex-wrap justify-between">
-        {supportOptions.map((option, index) => (
-          <TouchableOpacity
-            key={index}
-            className="w-[48%] p-4 mb-4 rounded-xl"
-            style={{backgroundColor: isDarkMode ? '#1e1e1e' : '#F3F4F6'}}
-            onPress={option.action}>
-            <View className="mb-3">{option.icon}</View>
-            <Text
-              className={`font-poppins-semibold text-sm mb-1 ${
-                isDarkMode ? 'text-white' : 'text-black'
-              }`}>
-              {option.title}
-            </Text>
-            <Text
-              className={`text-xs font-poppins-regular ${
-                isDarkMode ? 'text-gray-300' : 'text-gray-600'
-              }`}>
-              {option.description}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      {/* Contact Card */}
-      <View
-        className="p-4 mt-2 rounded-xl"
-        style={{backgroundColor: isDarkMode ? '#1e1e1e' : '#F3F4F6'}}>
-        <View className="flex-row items-center mb-3">
-          <User size={20} color={isDarkMode ? BLUE_COLOR : '#000'} />
           <Text
-            className={`ml-2 font-poppins-semibold ${
-              isDarkMode ? 'text-white' : 'text-black'
-            }`}>
-            Kontak Langsung
+            className={`${
+              isDarkMode ? 'text-gray-300' : 'text-gray-600'
+            } font-poppins-regular text-xs`}>
+            Waktu respons rata-rata: 10-15 menit
           </Text>
         </View>
-        <Text
-          className={`${isDarkMode ? 'text-gray-300' : 'text-gray-600'} mb-2 font-poppins-regular text-xs`}>
-          Telepon: +62 8533 - 3697 - 7070
-        </Text>
-        <Text className={`${isDarkMode ? 'text-gray-300' : 'text-gray-600'} font-poppins-regular text-xs`}>
-          Email: naysacell837@gmail.com
-        </Text>
+
+        {/* Support Options */}
+        <View className="flex-row flex-wrap justify-between">
+          {supportOptions.map((option, index) => (
+            <TouchableOpacity
+              key={index}
+              className="w-[48%] p-4 mb-4 rounded-xl"
+              style={{backgroundColor: isDarkMode ? '#242424' : '#F3F4F6'}}
+              onPress={option.action}>
+              <View className="mb-3">{option.icon}</View>
+              <Text
+                className={`font-poppins-semibold text-sm mb-1 ${
+                  isDarkMode ? 'text-white' : 'text-black'
+                }`}>
+                {option.title}
+              </Text>
+              <Text
+                className={`text-xs font-poppins-regular ${
+                  isDarkMode ? 'text-gray-300' : 'text-gray-600'
+                }`}>
+                {option.description}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* Contact Card */}
+        <View
+          className="p-4 mt-2 rounded-xl"
+          style={{backgroundColor: isDarkMode ? '#242424' : '#F3F4F6'}}>
+          <View className="flex-row items-center mb-3">
+            <User size={20} color={isDarkMode ? BLUE_COLOR : '#000'} />
+            <Text
+              className={`ml-2 font-poppins-semibold ${
+                isDarkMode ? 'text-white' : 'text-black'
+              }`}>
+              Kontak Langsung
+            </Text>
+          </View>
+          <Text
+            className={`${
+              isDarkMode ? 'text-gray-300' : 'text-gray-600'
+            } mb-2 font-poppins-regular text-xs`}>
+            Telepon: +62 853 - 3697 - 0707
+          </Text>
+          <Text
+            className={`${
+              isDarkMode ? 'text-gray-300' : 'text-gray-600'
+            } font-poppins-regular text-xs`}>
+            Email: naysacell837@gmail.com
+          </Text>
+        </View>
       </View>
     </ScrollView>
   );

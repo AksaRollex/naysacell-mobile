@@ -49,6 +49,7 @@ const Paginate = forwardRef(
       showSearchSkeleton = true,
       isExternalLoading = false,
       showTopMargin = true,
+      widthSkeleton = false,
       ...props
     },
     ref,
@@ -164,7 +165,7 @@ const Paginate = forwardRef(
         render={({field: {onChange, value}}) => (
           <View className="flex-1 relative">
             <TextInput
-              className="w-full text-base pr-12 rounded-xl px-4"
+              className="w-full font-poppins-medium pr-12 h-12 rounded-xl border-[0.5px] border-stone-600  px-4"
               style={{
                 backgroundColor: isDarkMode ? '#262626' : '#fff',
                 color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
@@ -297,7 +298,7 @@ const Paginate = forwardRef(
                   }}>
                   <Skeleton
                     animation="wave"
-                    width={390}
+                    width={widthSkeleton ? 350 : 390}
                     LinearGradientComponent={LinearGradient}
                     height={120}
                     style={{borderRadius: 12}}
@@ -310,23 +311,52 @@ const Paginate = forwardRef(
                     }}>
                     <Skeleton
                       animation="wave"
-                      width={360}
-                      height={30}
+                      width={100}
+                      height={28}
                       LinearGradientComponent={LinearGradient}
+                      style={{marginTop: 6}}
                     />
                     <Skeleton
                       animation="wave"
                       width={100}
                       height={28}
                       LinearGradientComponent={LinearGradient}
-                      style={{marginTop: 10}}
+                      style={{marginTop: 6}}
                     />
                     <Skeleton
                       animation="wave"
                       width={100}
                       height={28}
                       LinearGradientComponent={LinearGradient}
-                      style={{marginTop: 10}}
+                      style={{marginTop: 6}}
+                    />
+                  </View>
+                  <View
+                    style={{
+                      position: 'absolute',
+                      top: '5%',
+                      right: '5%',
+                    }}>
+                    <Skeleton
+                      animation="wave"
+                      width={100}
+                      height={28}
+                      LinearGradientComponent={LinearGradient}
+                      style={{marginTop: 6}}
+                    />
+                    <Skeleton
+                      animation="wave"
+                      width={100}
+                      height={28}
+                      LinearGradientComponent={LinearGradient}
+                      style={{marginTop: 6}}
+                    />
+                    <Skeleton
+                      animation="wave"
+                      width={100}
+                      height={28}
+                      LinearGradientComponent={LinearGradient}
+                      style={{marginTop: 6}}
                     />
                   </View>
                 </View>
