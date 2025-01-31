@@ -8,6 +8,7 @@ import {
   ScrollView,
   ActivityIndicator,
   Image,
+  Modal,
 } from 'react-native';
 import React, {useRef, useState} from 'react';
 import {
@@ -29,6 +30,9 @@ import ModalAfterProcess from '../../components/ModalAfterProcess';
 import {Controller, useForm} from 'react-hook-form';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ProductPaginate from '../../components/ProductPaginate';
+import {WebView} from 'react-native-webview';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function Deposit({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
@@ -38,6 +42,10 @@ export default function Deposit({navigation}) {
   const [failedModal, setModalFailed] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const paginateRef = useRef();
+
+  // State untuk Midtrans
+  const [showPayment, setShowPayment] = useState(false);
+  const [snapToken, setSnapToken] = useState('');
 
   const {
     control,
@@ -51,26 +59,43 @@ export default function Deposit({navigation}) {
 
   const queryClient = useQueryClient();
 
+  // Modifikasi mutation handler
   const {mutate: handleTopup, isLoading} = useMutation(
     async () => {
+      // Pastikan format request sesuai
       const requestData = {
         amount: parseInt(depositAmount.replace(/\D/g, '')) || 0,
       };
 
-      const response = await axios.post('/auth/topup', requestData);
-      return response.data.data;
+      // Tambahkan headers authorization jika diperlukan
+      const response = await axios.post('/auth/topup', requestData, {
+        headers: {
+          Authorization: `Bearer ${await AsyncStorage.getItem('userToken')}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      // Log response untuk debugging
+      console.log('Topup Response:', response.data);
+
+      return response.data;
     },
     {
       onSuccess: data => {
-        queryClient.invalidateQueries('/auth/check-saldo');
-        queryClient.invalidateQueries('/auth/histori');
-        setSuccessModal(true);
-        setTimeout(() => {
-          navigation.navigate('HomeScreen', {refresh: true});
-          setSuccessModal(false);
-        }, 2000);
+        console.log('Snap Token:', data.snap_token);
+        if (data.snap_token) {
+          setSnapToken(data.snap_token);
+          setShowPayment(true);
+        }
       },
       onError: error => {
+        // Log error detail untuk debugging
+        console.error('Topup Error:', {
+          message: error.message,
+          response: error.response?.data,
+          status: error.response?.status,
+        });
+
         const errorMsg = error.response?.data?.message || 'Deposit gagal';
         setErrorMessage(errorMsg);
         setModalFailed(true);
@@ -80,6 +105,56 @@ export default function Deposit({navigation}) {
       },
     },
   );
+
+  // Perbaiki WebView component
+  if (showPayment && snapToken) {
+    return (
+      <Modal
+        visible={true}
+        onRequestClose={() => setShowPayment(false)}
+        animationType="slide">
+        <View style={{flex: 1}}>
+          <WebView
+            source={{
+              uri: `https://app.sandbox.midtrans.com/snap/v2/vtweb/${snapToken}`,
+            }}
+            onMessage={onMessage}
+            startInLoadingState={true}
+            renderLoading={() => (
+              <View style={{flex: 1, justifyContent: 'center'}}>
+                <ActivityIndicator size="large" color={BLUE_COLOR} />
+              </View>
+            )}
+          />
+        </View>
+      </Modal>
+    );
+  }
+  const onMessage = event => {
+    try {
+      const data = JSON.parse(event.nativeEvent.data);
+      if (data.status_code === '200' || data.status_code === '201') {
+        queryClient.invalidateQueries('/auth/check-saldo');
+        queryClient.invalidateQueries('/auth/histori');
+        setShowPayment(false);
+        setSuccessModal(true);
+        setTimeout(() => {
+          navigation.navigate('HomeScreen', {refresh: true});
+          setSuccessModal(false);
+        }, 2000);
+      } else {
+        setErrorMessage('Pembayaran gagal atau dibatalkan');
+        setModalFailed(true);
+        setShowPayment(false);
+        setTimeout(() => {
+          setModalFailed(false);
+        }, 2000);
+      }
+    } catch (error) {
+      console.error('Error parsing WebView message:', error);
+      setShowPayment(false);
+    }
+  };
 
   const onSubmit = () => {
     if (!depositAmount) {

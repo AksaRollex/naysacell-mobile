@@ -223,7 +223,7 @@ export default function LoginPage() {
           </View>
           <TouchableOpacity
             onPress={() => navigation.navigate('bantuanLogin')}
-            className="my-4 mx-3" >
+            className="my-4 mx-3">
             <Text
               className="text-start capitalize text-sm font-poppins-regular"
               style={{color: BLUE_COLOR}}>
