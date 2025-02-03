@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  Modal,
 } from 'react-native';
 import React from 'react';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
@@ -18,21 +19,25 @@ import {
   WHITE_COLOR,
   SLATE_COLOR,
   BLUE_COLOR,
+  DARK_COLOR,
   WHITE_BACKGROUND,
 } from '../../../../../utils/const';
 import axios from '../../../../../libs/axios';
 import {Controller, useForm} from 'react-hook-form';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 export default function FormPrabayar({route, navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
   const {id} = route.params || {};
   const queryClient = useQueryClient();
+  const [modalType, setModalType] = React.useState(null);
+  const [selectedCategory, setSelectedCategory] = React.useState('');
 
   const {
     control,
-    setError,
     formState: {errors},
     setValue,
+    watch,
     handleSubmit,
   } = useForm();
   const {data, isFetching: isLoadingData} = useQuery(
@@ -47,7 +52,6 @@ export default function FormPrabayar({route, navigation}) {
         setValue('product_name', data.product_name);
         setValue('product_price', data.product_price);
         setValue('product_provider', data.product_provider);
-        setValue('product_sku', data.product_sku);
         setValue('product_desc', data.product_desc);
         setValue('product_category', data.product_category);
         console.log(data);
@@ -68,7 +72,6 @@ export default function FormPrabayar({route, navigation}) {
         product_name: data.product_name,
         product_price: data.product_price,
         product_provider: data.product_provider,
-        product_sku: data.product_sku,
         product_desc: data.product_desc,
         product_category: data.product_category,
       };
@@ -108,6 +111,123 @@ export default function FormPrabayar({route, navigation}) {
     createOrUpdate(data);
   });
 
+  const providerOptions = {
+    Pulsa: ['Axis', 'Telkomsel', 'Indosat', 'XL', 'Three'],
+    Data: ['Axis', 'Telkomsel', 'Indosat', 'XL', 'Three'],
+    'e-money': ['Shopeepay', 'OVO', 'Dana', 'Gopay'],
+  };
+
+  const TypePicker = ({onClose}) => {
+    const [tempSelectedCategory, setTempSelectedCategory] =
+      React.useState(selectedCategory);
+    const [tempSelectedProvider, setTempSelectedProvider] = React.useState(
+      watch('product_provider'),
+    );
+
+    const isCategory = modalType === 'category';
+    const options = isCategory
+      ? Object.keys(providerOptions)
+      : providerOptions[selectedCategory] || [];
+
+    const handleConfirm = () => {
+      if (isCategory) {
+        setSelectedCategory(tempSelectedCategory);
+        setValue('product_category', tempSelectedCategory);
+        setValue('product_provider', '');
+      } else {
+        setValue('product_provider', tempSelectedProvider);
+      }
+      setModalType(null);
+    };
+    return (
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalType !== null}
+        onRequestClose={onClose}>
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent(isDarkMode)]}>
+            <View style={[styles.modalHeader(isDarkMode)]}>
+              <Text style={[styles.modalTitle(isDarkMode)]}>
+                {isCategory ? 'Pilih Kategori' : 'Pilih Provider'}
+              </Text>
+              <TouchableOpacity onPress={onClose}>
+                <MaterialIcons
+                  name="close"
+                  size={24}
+                  color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+                />
+              </TouchableOpacity>
+            </View>
+            <View className="flex-row justify-between px-4">
+              <View className="flex-1 mr-2">
+                <Text
+                  className="font-poppins-semibold mb-2"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  {isCategory ? 'Kategori' : 'Provider'}
+                </Text>
+                <ScrollView className="max-h-64">
+                  {options.map(option => (
+                    <TouchableOpacity
+                      key={option}
+                      className={`p-3 rounded-xl mb-2 ${
+                        isCategory
+                          ? tempSelectedCategory === option
+                            ? 'bg-blue-100'
+                            : isDarkMode
+                            ? 'bg-[#262626]'
+                            : 'bg-[#f8f8f8]'
+                          : tempSelectedProvider === option
+                          ? 'bg-blue-100'
+                          : isDarkMode
+                          ? 'bg-[#262626]'
+                          : 'bg-[#f8f8f8]'
+                      }`}
+                      onPress={() => {
+                        if (isCategory) {
+                          setTempSelectedCategory(option);
+                        } else {
+                          setTempSelectedProvider(option);
+                        }
+                      }}>
+                      <Text
+                        className={`${
+                          isCategory
+                            ? tempSelectedCategory === option
+                              ? 'text-blue-600 font-poppins-semibold'
+                              : isDarkMode
+                              ? 'text-white font-poppins-regular'
+                              : 'text-black font-poppins-regular'
+                            : tempSelectedProvider === option
+                            ? 'text-blue-600 font-poppins-semibold'
+                            : isDarkMode
+                            ? 'text-white font-poppins-regular'
+                            : 'text-black font-poppins-regular'
+                        }`}>
+                        {option.toUpperCase()}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </View>
+            </View>
+            <View className="mt-4 px-4">
+              <TouchableOpacity
+                className="w-full rounded-xl mx-auto px-4 h-12 items-center justify-center"
+                style={{
+                  backgroundColor: BLUE_COLOR,
+                }}
+                onPress={handleConfirm}>
+                <Text className="text-white text-center font-poppins-semibold">
+                  TERAPKAN
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
   return (
     <View
       className="w-full h-full p-3"
@@ -155,7 +275,10 @@ export default function FormPrabayar({route, navigation}) {
           <Controller
             control={control}
             name="product_price"
-            rules={{required: 'Harga Produk harus diisi'}}
+            rules={{
+              required: 'Harga Produk harus diisi',
+              pattern: {value: /[0-9]{3,10}$/},
+            }}
             render={({field: {onChange, onBlur, value}}) => (
               <>
                 <Text
@@ -168,7 +291,7 @@ export default function FormPrabayar({route, navigation}) {
                   onChangeText={text => {
                     const sanitizedText = text
                       .replace(/[^a-zA-Z0-9 ]/g, '')
-                      .slice(0, 13);
+                      .slice(0, 10);
                     onChange(sanitizedText);
                   }}
                   onBlur={onBlur}
@@ -222,7 +345,42 @@ export default function FormPrabayar({route, navigation}) {
               </>
             )}
           />
-
+          <Controller
+            control={control}
+            name="product_category"
+            rules={{required: 'Kategori Produk harus diisi'}}
+            render={({field: {value}}) => (
+              <>
+                <Text
+                  className="font-poppins-medium mt-2"
+                  style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
+                  Kategori Produk
+                </Text>
+                <TouchableOpacity
+                  onPress={() => setModalType('category')}
+                  style={{
+                    fontFamily: 'Poppins-Regular',
+                    backgroundColor: isDarkMode ? '#262626' : '#fff',
+                  }}
+                  className={`h-12 w-full rounded-xl justify-center  items-start px-4 border-[0.5px] ${
+                    errors.product_provider
+                      ? 'border-red-500'
+                      : 'border-stone-600'
+                  }`}>
+                  <Text
+                    className="font-poppins-regular normal-case"
+                    style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                    {value || 'Pilih Kategori'}
+                  </Text>
+                </TouchableOpacity>
+              </>
+            )}
+          />
+          {errors.product_category && (
+            <Text className="mt-1  text-red-400 font-poppins-regular">
+              {errors.product_category.message}
+            </Text>
+          )}
           {errors.product_desc && (
             <Text className="mt-1  text-red-400 font-poppins-regular">
               {errors.product_desc.message}
@@ -232,30 +390,40 @@ export default function FormPrabayar({route, navigation}) {
             control={control}
             name="product_provider"
             rules={{required: 'Produk Provider harus diisi'}}
-            render={({field: {onChange, onBlur, value}}) => (
+            render={({field: {value}}) => (
               <>
                 <Text
                   className="font-poppins-medium mt-2"
                   style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
                   Produk Provider
                 </Text>
-                <TextInput
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  editable={!isLoadingData}
-                  placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
+                <TouchableOpacity
+                  onPress={() => {
+                    if (!watch('product_category')) {
+                      Toast.show({
+                        type: 'error',
+                        text1: 'Error',
+                        text2: 'Pilih kategori terlebih dahulu',
+                      });
+                      return;
+                    }
+                    setModalType('provider');
+                  }}
                   style={{
                     fontFamily: 'Poppins-Regular',
                     backgroundColor: isDarkMode ? '#262626' : '#fff',
                   }}
-                  className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                  className={`h-12 w-full rounded-xl justify-center  items-start px-4 border-[0.5px] ${
                     errors.product_provider
                       ? 'border-red-500'
                       : 'border-stone-600'
-                  }`}
-                  placeholder="Produk Provider"
-                />
+                  }`}>
+                  <Text
+                    className="font-poppins-regular normal-case"
+                    style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                    {value || 'Pilih Provider'}
+                  </Text>
+                </TouchableOpacity>
               </>
             )}
           />
@@ -264,76 +432,8 @@ export default function FormPrabayar({route, navigation}) {
               {errors.product_provider.message}
             </Text>
           )}
-          <Controller
-            control={control}
-            name="product_category"
-            rules={{required: 'Produk Kategori harus diisi'}}
-            render={({field: {onChange, onBlur, value}}) => (
-              <>
-                <Text
-                  className="font-poppins-medium mt-2"
-                  style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
-                  Kategori Produk
-                </Text>
-                <TextInput
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  editable={!isLoadingData}
-                  placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
-                  style={{
-                    fontFamily: 'Poppins-Regular',
-                    backgroundColor: isDarkMode ? '#262626' : '#fff',
-                  }}
-                  className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
-                    errors.product_category
-                      ? 'border-red-500'
-                      : 'border-stone-600'
-                  }`}
-                  placeholder="Kategori Produk"
-                />
-              </>
-            )}
-          />
-          {errors.product_category && (
-            <Text className="mt-1  text-red-400 font-poppins-regular">
-              {errors.product_category.message}
-            </Text>
-          )}
-          <Controller
-            control={control}
-            name="product_sku"
-            rules={{required: 'SKU Produk harus diisi'}}
-            render={({field: {onChange, onBlur, value}}) => (
-              <>
-                <Text
-                  className="font-poppins-medium mt-2"
-                  style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
-                  Kode SKU Produk
-                </Text>
-                <TextInput
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  editable={!isLoadingData}
-                  placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
-                  style={{
-                    fontFamily: 'Poppins-Regular',
-                    backgroundColor: isDarkMode ? '#262626' : '#fff',
-                  }}
-                  className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
-                    errors.product_sku ? 'border-red-500' : 'border-stone-600'
-                  }`}
-                  placeholder="SKU Produk"
-                />
-              </>
-            )}
-          />
-          {errors.product_sku && (
-            <Text className="mt-1  text-red-400 font-poppins-regular">
-              {errors.product_sku.message}
-            </Text>
-          )}
+
+          <TypePicker onClose={() => setModalType(null)} />
         </View>
         <View style={[styles.bottom]} className="p-3">
           <TouchableOpacity
@@ -369,4 +469,27 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'Poppins-SemiBold',
   },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: isDarkMode => ({
+    backgroundColor: isDarkMode ? '#1e1e1e' : '#fff',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingVertical: 20,
+  }),
+  modalHeader: isDarkMode => ({
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    marginBottom: 15,
+  }),
+  modalTitle: isDarkMode => ({
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+  }),
 });

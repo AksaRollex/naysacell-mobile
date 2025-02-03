@@ -83,7 +83,7 @@ export default function BantuanLogin() {
         </Text>
         <View className="mx-auto mb-5">
           <Text
-            className="text-sm capitalize text-justify"
+            className="text-sm normal-case text-justify"
             style={{
               color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR,
               fontFamily: 'Poppins-Regular',
@@ -91,7 +91,7 @@ export default function BantuanLogin() {
             1. Pertama klik dulu tombol daftar di halaman awal
           </Text>
           <Text
-            className="text-sm capitalize text-justify"
+            className="text-sm normal-case text-justify"
             style={{
               color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR,
               fontFamily: 'Poppins-Regular',
@@ -99,7 +99,7 @@ export default function BantuanLogin() {
             2. Lalu lengkapi form data
           </Text>
           <Text
-            className="text-sm capitalize text-justify"
+            className="text-sm normal-case text-justify"
             style={{
               color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR,
               fontFamily: 'Poppins-Regular',
@@ -107,7 +107,7 @@ export default function BantuanLogin() {
             3. Lalu klik tombol daftar
           </Text>
           <Text
-            className="text-sm capitalize text-justify"
+            className="text-sm normal-case text-justify"
             style={{
               color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR,
               fontFamily: 'Poppins-Regular',
@@ -115,7 +115,7 @@ export default function BantuanLogin() {
             4. Masukkan data yang telah kamu daftarkan di halaman login
           </Text>
           <Text
-            className="text-sm capitalize text-justify"
+            className="text-sm normal-case text-justify"
             style={{
               color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR,
               fontFamily: 'Poppins-Regular',

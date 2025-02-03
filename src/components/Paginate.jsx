@@ -92,7 +92,7 @@ const Paginate = forwardRef(
 
       return (
         <View className="mt-2 mb-6">
-          <Text className=" text-sm text-start text-gray-500 font-poppins-regular capitalize">
+          <Text className=" text-sm text-start text-gray-500 font-poppins-regular normal-case">
             Menampilkan {startIndex} sampai {endIndex} dari {totalItems} data
           </Text>
         </View>

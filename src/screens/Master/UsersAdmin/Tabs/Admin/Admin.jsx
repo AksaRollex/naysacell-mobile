@@ -84,23 +84,21 @@ export default function Admin({navigation}) {
                   style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                   {item.email}
                 </Text>
-                <View className="flex-row gap-x-2">
-                  <View className="bg-yellow-100 rounded-md pl-2   mt-1 justify-center  items-center flex-row  py-1 max-w-[120px]">
-                    <FontAwesome5Icon
-                      name="universal-access"
-                      color="#cb8c18"
-                      size={15}
-                    />
-                    <Text className="font-poppins-medium text-xs mx-2 text-[#cb8c18]">
-                      {item?.role?.full_name}
-                    </Text>
-                  </View>
-                  <View className="bg-green-100 rounded-md pl-2   mt-1 justify-center  items-center flex-row  py-1 max-w-[120px]">
-                    <IonIcons name="call" color="#658844" size={15} />
-                    <Text className="font-poppins-medium text-xs mx-2 text-[#658844]">
-                      {item?.phone}
-                    </Text>
-                  </View>
+                <View className="bg-yellow-100 rounded-md pl-2   mt-1 justify-center  items-center flex-row  py-1 max-w-[120px]">
+                  <FontAwesome5Icon
+                    name="universal-access"
+                    color="#cb8c18"
+                    size={15}
+                  />
+                  <Text className="font-poppins-medium text-xs mx-2 text-[#cb8c18]">
+                    {item?.role?.full_name}
+                  </Text>
+                </View>
+                <View className="bg-green-100 rounded-md pl-2   mt-1 justify-center  items-center flex-row  py-1 ">
+                  <IonIcons name="call" color="#658844" size={15} />
+                  <Text className="font-poppins-medium text-xs mx-2 text-[#658844]">
+                    {item?.phone}
+                  </Text>
                 </View>
                 <View className="bg-blue-100 rounded-md pl-2   mt-1 justify-center  items-center flex-row  py-1 max-w-[260px]">
                   <IonIcons name="location-sharp" color="#138EE9" size={15} />

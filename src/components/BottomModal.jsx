@@ -55,7 +55,7 @@ export default function BottomModal({visible, onDismiss, title, children}) {
           }}
           className="py-2 mb-4">
           <Text
-            className="font-poppins-semibold text-lg text-start capitalize"
+            className="font-poppins-semibold text-lg text-start normal-case"
             style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
             {title}
           </Text>

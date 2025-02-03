@@ -23,8 +23,8 @@ import {
 import axios from '../../libs/axios';
 import {Controller, useForm} from 'react-hook-form';
 import ModalAfterProcess from '../../components/ModalAfterProcess';
-import {Eye, EyeCrossed} from '../../../assets';
 import Checkbox from '@react-native-community/checkbox';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
 
 const baseRem = 16;
@@ -181,10 +181,10 @@ export default function RegisterPage({navigation}) {
           className="w-full h-[200px] items-start justify-start ">
           <View className="p-4">
             <View className="justify-start flex-col items-start">
-              <Text className="text-white capitalize text-2xl font-poppins-semibold">
+              <Text className="text-white normal-case text-2xl font-poppins-semibold">
                 Verifikasi Email
               </Text>
-              <Text className="text-white capitalize text-sm font-poppins-medium">
+              <Text className="text-white normal-case text-sm font-poppins-medium">
                 Masukkan kode OTP yang telah dikirim ke email Anda
               </Text>
             </View>
@@ -193,7 +193,7 @@ export default function RegisterPage({navigation}) {
         <View className="my-4 w-full ">
           <View className="flex-row flex-wrap mb-2 px-3 gap-x-1">
             <Text
-              className="text-sm text-start capitalize font-poppins-regular"
+              className="text-sm text-start normal-case font-poppins-regular"
               style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
               Kode OTP telah dikirim ke email :
             </Text>
@@ -246,13 +246,13 @@ export default function RegisterPage({navigation}) {
             )}
           />
           {errors.otp && (
-            <Text className="text-red-500 text-sm mt-1 font-poppins-regular">
+            <Text className="text-red-400 text-xs mt-1 font-poppins-regular">
               {errors.otp.message}
             </Text>
           )}
           <View className="items-start flex-row justify-start px-3 mt-2 gap-x-2">
             <Text
-              className="text-sm text-start capitalize font-poppins-regular"
+              className="text-sm text-start normal-case font-poppins-regular"
               style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
               Tidak menerima email ?
             </Text>
@@ -306,10 +306,10 @@ export default function RegisterPage({navigation}) {
           className="w-full h-[200px] items-start justify-start ">
           <View className="p-4">
             <View className="justify-start flex-col items-start">
-              <Text className="text-white capitalize text-2xl font-poppins-semibold">
+              <Text className="text-white normal-case text-2xl font-poppins-semibold">
                 Daftar Akun
               </Text>
-              <Text className="text-white capitalize text-sm font-poppins-medium">
+              <Text className="text-white normal-case text-sm font-poppins-medium">
                 Silahkan lengkapi form berikut untuk mendaftar
               </Text>
             </View>
@@ -323,7 +323,17 @@ export default function RegisterPage({navigation}) {
               <Controller
                 name="name"
                 control={control}
-                rules={{required: 'Nama Harus Diisi'}}
+                rules={{
+                  required: 'Nama harus diisi',
+                  pattern: {
+                    value: /^[a-zA-Z0-9\s]+$/,
+                    message: 'Hanya huruf dan angka yang diperbolehkan',
+                  },
+                  maxLength: {
+                    value: 17,
+                    message: 'Nama Tidak Boleh Lebih Dari 17 Karakter',
+                  },
+                }}
                 render={({field: {onChange, onBlur, value}}) => (
                   <View className="mx-3">
                     <Text
@@ -351,7 +361,7 @@ export default function RegisterPage({navigation}) {
               />
               {errors.name && (
                 <Text
-                  className="mt-1  text-red-400 font-poppins-regular"
+                  className="mt-1  text-red-400 text-xs font-poppins-regular"
                   style={{marginLeft: rem(1)}}>
                   {errors.name.message}
                 </Text>
@@ -363,7 +373,7 @@ export default function RegisterPage({navigation}) {
                 name="email"
                 control={control}
                 rules={{
-                  required: 'Email Harus Diisi',
+                  required: 'Email harus diisi',
                   pattern: {
                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                     message: 'Email tidak valid',
@@ -382,7 +392,7 @@ export default function RegisterPage({navigation}) {
                       onBlur={onBlur}
                       placeholder="email@example.com"
                       keyboardType="email-address"
-                      autoCapitalize="none"
+                      autonormal-case="none"
                       placeholderTextColor={SLATE_COLOR}
                       style={{
                         fontFamily: 'Poppins-Regular',
@@ -396,7 +406,7 @@ export default function RegisterPage({navigation}) {
                 )}
               />
               {errors.email && (
-                <Text className="mt-1 text-red-400 ml-4 font-poppins-regular">
+                <Text className="mt-1 text-red-400 text-xs mx-3 font-poppins-regular">
                   {errors.email.message}
                 </Text>
               )}
@@ -407,7 +417,7 @@ export default function RegisterPage({navigation}) {
                 name="address"
                 control={control}
                 rules={{
-                  required: 'Alamat Harus Diisi',
+                  required: 'Alamat harus diisi',
                 }}
                 render={({field: {onChange, onBlur, value}}) => (
                   <View className="mx-3">
@@ -422,7 +432,7 @@ export default function RegisterPage({navigation}) {
                       onBlur={onBlur}
                       placeholder="Alamat"
                       keyboardType="default"
-                      autoCapitalize="none"
+                      autonormal-case="none"
                       placeholderTextColor={SLATE_COLOR}
                       style={{
                         fontFamily: 'Poppins-Regular',
@@ -436,7 +446,7 @@ export default function RegisterPage({navigation}) {
                 )}
               />
               {errors.address && (
-                <Text className="mt-1 text-red-400 ml-4 font-poppins-regular">
+                <Text className="mt-1 text-red-400 text-xs mx-3 font-poppins-regular">
                   {errors.address.message}
                 </Text>
               )}
@@ -447,22 +457,27 @@ export default function RegisterPage({navigation}) {
                 name="phone"
                 control={control}
                 rules={{
-                  required: 'Nomor Telepon Harus Diisi',
+                  required: 'Nomor Telepon harus diisi',
                   pattern: {
-                    value: /^[0-9]{10,13}$/,
-                    message: 'Nomor telepon tidak valid',
+                    value: /^08[0-9]{8,13}$/,
+                    message:
+                      'Nomor telepon harus diawali 08 dan memiliki 10-15 digit',
                   },
                 }}
                 render={({field: {onChange, onBlur, value}}) => (
                   <View className="mx-3">
                     <Text
-                      className="font-poppins-medium "
+                      className="font-poppins-medium"
                       style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                       Nomor Telepon
                     </Text>
                     <TextInput
                       value={value}
-                      onChangeText={onChange}
+                      onChangeText={text => {
+                        if (text.length <= 15 && /^[0-9]*$/.test(text)) {
+                          onChange(text);
+                        }
+                      }}
                       onBlur={onBlur}
                       placeholder="Nomor Telepon"
                       keyboardType="numeric"
@@ -479,7 +494,7 @@ export default function RegisterPage({navigation}) {
                 )}
               />
               {errors.phone && (
-                <Text className="mt-1 text-red-400 ml-4 font-poppins-regular">
+                <Text className="mt-1 text-red-400 text-xs mx-3 font-poppins-regular">
                   {errors.phone.message}
                 </Text>
               )}
@@ -490,7 +505,7 @@ export default function RegisterPage({navigation}) {
                 name="password"
                 control={control}
                 rules={{
-                  required: 'Password Harus Diisi',
+                  required: 'Password harus diisi',
                   minLength: {
                     value: 8,
                     message: 'Password minimal 8 karakter',
@@ -527,13 +542,17 @@ export default function RegisterPage({navigation}) {
                         right: 10,
                         transform: [{translateY: -12}],
                       }}>
-                      {showPassword ? <Eye /> : <EyeCrossed />}
+                      {showPassword ? (
+                        <MaterialCommunityIcons name="eye" size={25} />
+                      ) : (
+                        <MaterialCommunityIcons name="eye-off" size={25} />
+                      )}
                     </TouchableOpacity>
                   </View>
                 )}
               />
               {errors.password && (
-                <Text className="mt-1 text-red-400 ml-4 font-poppins-regular">
+                <Text className="mt-1 text-red-400 text-xs mx-3 font-poppins-regular">
                   {errors.password.message}
                 </Text>
               )}
@@ -545,7 +564,7 @@ export default function RegisterPage({navigation}) {
                   name="password_confirmation"
                   control={control}
                   rules={{
-                    required: 'Konfirmasi Password Harus Diisi',
+                    required: 'Konfirmasi Password harus diisi',
                     validate: value =>
                       value === password || 'Password tidak cocok',
                   }}
@@ -585,14 +604,18 @@ export default function RegisterPage({navigation}) {
                           right: 10,
                           transform: [{translateY: -12}],
                         }}>
-                        {showConfirmPassword ? <Eye /> : <EyeCrossed />}
+                        {showConfirmPassword ? (
+                          <MaterialCommunityIcons name="eye" size={25} />
+                        ) : (
+                          <MaterialCommunityIcons name="eye-off" size={25} />
+                        )}
                       </TouchableOpacity>
                     </View>
                   )}
                 />
               </View>
               {errors.password_confirmation && (
-                <Text className="mt-1 text-red-400 ml-4 font-poppins-regular">
+                <Text className="mt-1 text-red-400 text-xs mx-3 font-poppins-regular">
                   {errors.password_confirmation.message}
                 </Text>
               )}
@@ -666,7 +689,7 @@ export default function RegisterPage({navigation}) {
           <View className="flex-row items-center justify-start my-8 mx-3 ">
             <Text
               style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}
-              className="font-poppins-regular capitalize">
+              className="font-poppins-regular normal-case">
               Sudah punya akun ?
             </Text>
             <TouchableOpacity onPress={() => navigation.navigate('loginPage')}>

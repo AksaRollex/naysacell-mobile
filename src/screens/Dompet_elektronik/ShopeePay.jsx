@@ -12,7 +12,6 @@ import {
   DARK_COLOR,
   FONT_NORMAL,
   GREY_COLOR,
-  HORIZONTAL_MARGIN,
   LIGHT_BACKGROUND,
   LIGHT_COLOR,
   SLATE_COLOR,
@@ -88,11 +87,11 @@ export default function Shopeepay({navigation}) {
   return (
     <>
       <View
-        className="w-full h-full"
+        className="w-full h-full p-3"
         style={{
           backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
         }}>
-        <View style={styles.container}>
+        <View>
           <View
             className="p-3  rounded-xl"
             style={{backgroundColor: isDarkMode ? '#262626' : '#fff'}}>
@@ -117,20 +116,28 @@ export default function Shopeepay({navigation}) {
             />
           </View>
 
-          {message !== '' && <Text style={styles.errorMessage}>{message}</Text>}
+          {message !== '' && (
+            <Text className="text-red-500 mt-1 text-sm font-poppins-regular">
+              {message}
+            </Text>
+          )}
 
           {isValidNumber && !showProducts && (
             <TouchableOpacity
-              style={[styles.bottomButton, {marginTop: 10}]}
+              className="w-full rounded-xl mx-auto my-3 px-4 h-12 items-center justify-center"
+              style={{
+                backgroundColor: BLUE_COLOR,
+                // opacity: isLoading ? 0.7 : 1,
+              }}
               onPress={handleNext}>
-              <Text style={styles.buttonText}>Lanjut</Text>
+              <Text className="text-white text-sm font-poppins-bold">
+                LANJUTKAN
+              </Text>
             </TouchableOpacity>
           )}
         </View>
         {showProducts && (
-          <View
-            style={{flex: 0.32, marginHorizontal: HORIZONTAL_MARGIN}}
-            className="my-4 h-full">
+          <View style={{flex: 1}} className="my-4 h-full">
             <View
               className="w-full h-full rounded-xl p-3"
               style={{backgroundColor: isDarkMode ? '#262626' : '#fff'}}>
@@ -144,16 +151,6 @@ export default function Shopeepay({navigation}) {
                 }}
               />
             </View>
-          </View>
-        )}
-
-        {selectItem && (
-          <View style={[styles.bottom(isDarkMode)]}>
-            <TouchableOpacity
-              style={styles.bottomButton}
-              onPress={() => setShowModal(true)}>
-              <Text style={styles.buttonText}>Lanjutkan</Text>
-            </TouchableOpacity>
           </View>
         )}
 
@@ -174,7 +171,7 @@ export default function Shopeepay({navigation}) {
                 borderWidth: 1,
               }}>
               <Text
-                className="text-center capitalize  text-sm font-poppins-medium mt-2 mb-4"
+                className="text-center normal-case  text-sm font-poppins-medium mt-2 mb-4"
                 style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                 rincian pembelian
               </Text>
@@ -241,7 +238,7 @@ export default function Shopeepay({navigation}) {
                 borderWidth: 1,
               }}>
               <Text
-                className="text-center capitalize text-sm font-poppins-medium mt-2 mb-4"
+                className="text-center normal-case text-sm font-poppins-medium mt-2 mb-4"
                 style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                 rincian pembayaran
               </Text>
@@ -273,20 +270,42 @@ export default function Shopeepay({navigation}) {
           </View>
 
           {selectItem && (
-            <View style={[styles.bottom(isDarkMode)]}>
+            <View className="my-3">
               <TouchableOpacity
-                style={styles.bottomButton}
+                className="w-full rounded-xl mx-auto px-4 h-12 items-center justify-center"
+                style={{
+                  backgroundColor: BLUE_COLOR,
+                  // opacity: isLoading ? 0.7 : 1,
+                }}
                 onPress={() =>
                   navigation.navigate('SuccessNotif', {
                     nomorTujuan: nomorTujuan,
                     item: selectItem,
                   })
                 }>
-                <Text style={styles.buttonLabel}>Bayar</Text>
+                <Text className="text-white text-sm font-poppins-bold">
+                  BAYAR
+                </Text>
               </TouchableOpacity>
             </View>
           )}
         </BottomModal>
+
+        {selectItem && (
+          <View>
+            <TouchableOpacity
+              className="w-full rounded-xl mx-auto px-4 h-12 items-center justify-center"
+              style={{
+                backgroundColor: BLUE_COLOR,
+                // opacity: isLoading ? 0.7 : 1,
+              }}
+              onPress={() => setShowModal(true)}>
+              <Text className="text-white text-sm font-poppins-bold">
+                LANJUTKAN
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </>
   );
@@ -294,7 +313,7 @@ export default function Shopeepay({navigation}) {
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: HORIZONTAL_MARGIN,
+    // marginHorizontal: HORIZONTAL_MARGIN,
     marginTop: 15,
   },
   errorMessage: {
@@ -305,13 +324,10 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
   bottom: isDarkMode => ({
-    position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
     backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
-    marginHorizontal: HORIZONTAL_MARGIN,
-    marginVertical: 10,
   }),
   buttonText: {
     color: WHITE_COLOR,
@@ -323,11 +339,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'Poppins-SemiBold',
   },
-  bottomButton: {
-    backgroundColor: BLUE_COLOR,
-    padding: 10,
-    borderRadius: 12,
-  },
+
   modalData: isDarkMode => ({
     borderBottomWidth: 1,
     borderBottomColor: isDarkMode ? SLATE_COLOR : GREY_COLOR,

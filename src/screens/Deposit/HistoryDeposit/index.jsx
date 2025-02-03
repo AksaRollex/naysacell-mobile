@@ -214,7 +214,7 @@ export default function HistoryDeposit({}) {
       <>
         <View className="ms-2 w-full  px-2">
           <Text
-            className="font-poppins-regular text-[13px]  capitalize"
+            className="font-poppins-regular text-[13px]  normal-case"
             style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
             {new Date(item?.created_at || '').toLocaleDateString('id-ID', {
               year: 'numeric',

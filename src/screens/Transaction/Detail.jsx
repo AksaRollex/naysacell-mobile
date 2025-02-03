@@ -258,7 +258,7 @@ Tanggal: ${new Date(item?.created_at || '').toLocaleDateString('id-ID', {
                 style={{backgroundColor: isDarkMode ? '#262626' : '#F3F4F6'}}>
                 <IonIcons name="share-social" size={25} color={BLUE_COLOR} />
                 <Text
-                  className="text-sm capitalize font-poppins-medium "
+                  className="text-sm normal-case font-poppins-medium "
                   style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                   Bagi bukti bayar
                 </Text>

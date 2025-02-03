@@ -163,7 +163,7 @@ export default function Dana({navigation}) {
                 borderStyle: 'dashed',
                 borderWidth: 1,
               }}>
-              <Text className="text-center capitalize text-white text-sm font-poppins-medium mt-2 mb-4">
+              <Text className="text-center normal-case text-white text-sm font-poppins-medium mt-2 mb-4">
                 rincian pembelian
               </Text>
               <View className="flex-row justify-between items-center my-1 ">
@@ -224,7 +224,7 @@ export default function Dana({navigation}) {
                 borderStyle: 'dashed',
                 borderWidth: 1,
               }}>
-              <Text className="text-center capitalize text-white text-sm font-poppins-medium mt-2 mb-4">
+              <Text className="text-center normal-case text-white text-sm font-poppins-medium mt-2 mb-4">
                 rincian pembayaran
               </Text>
               <View className="flex-row justify-between items-center my-1 ">

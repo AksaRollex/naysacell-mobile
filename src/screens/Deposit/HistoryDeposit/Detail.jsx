@@ -182,7 +182,7 @@ Tanggal Deposit : ${new Date(item?.created_at || '').toLocaleDateString(
                 style={{backgroundColor: isDarkMode ? '#262626' : '#f8f8f8'}}>
                 <IonIcons name="share-social" size={25} color={BLUE_COLOR} />
                 <Text
-                  className="text-sm capitalize font-poppins-medium "
+                  className="text-sm normal-case font-poppins-medium "
                   style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                   Bagi bukti bayar
                 </Text>

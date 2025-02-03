@@ -29,9 +29,7 @@ export default function Input({
   return (
     <View
       style={{
-        borderWidth: 1,
         borderRadius: 12,
-        borderColor: isDarkMode ? SLATE_COLOR : LIGHT_COLOR,
         backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
         fontFamily: REGULAR_FONT,
         flexDirection: 'row',
@@ -40,20 +38,18 @@ export default function Input({
       <TextInput
         keyboardType={type ? type : 'default'}
         placeholder={placeholder}
-        placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
         value={value}
         onChangeText={text => {
           const sanitizedText = text.replace(/[^a-zA-Z0-9 ]/g, '').slice(0, 13);
           onChange(sanitizedText);
         }}
-        className="h-12 w-full rounded-xl px-4 border-[0.5px] border-stone-600"
+        className="h-12 w-full rounded-xl px-4 normal-case font-poppins-medium border-[0.5px] border-stone-600"
         style={{
           width: lebar ? lebar : '100%',
           color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR,
-          fontFamily: 'Poppins-Medium',
-          textTransform: 'capitalize',
-          backgroundColor: isDarkMode ? '#262626' : '#fff',
-        }}></TextInput>
+        }}>
+          
+        </TextInput>
       {value && value !== '' && (
         <TouchableOpacity
           style={{position: 'absolute', right: 10}}

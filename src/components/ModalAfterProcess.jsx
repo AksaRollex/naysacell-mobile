@@ -25,10 +25,10 @@ export default function ModalAfterProcess({
             style={{backgroundColor: bgIcon || '#fef2f2'}}>
             <IonIcons size={iconSize || 25} color={iconColor || '#95bb72'} name={icon} />
           </View>
-          <Text className="text-base my-1 capitalize font-poppins-semibold" style={{ color : isDarkMode ? WHITE_COLOR : LIGHT_COLOR }}>
+          <Text className="text-base my-1 normal-case font-poppins-semibold" style={{ color : isDarkMode ? WHITE_COLOR : LIGHT_COLOR }}>
             {title}
           </Text>
-          <Text className="text-sm text-start capitalize font-poppins-regular" style={{ color : isDarkMode ? WHITE_COLOR : LIGHT_COLOR }}>
+          <Text className="text-sm text-start normal-case font-poppins-regular" style={{ color : isDarkMode ? WHITE_COLOR : LIGHT_COLOR }}>
             {subTitle}
           </Text>
         </View>

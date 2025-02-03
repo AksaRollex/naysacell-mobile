@@ -160,7 +160,7 @@ export default function Transaction({navigation}) {
             <View className="flex-row justify-between px-4">
               <View className="flex-1 mr-2">
                 <Text
-                  className="text-black font-poppins-semibold mb-2"
+                  className="font-poppins-semibold mb-2"
                   style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                   Status Transaksi
                 </Text>
@@ -168,7 +168,7 @@ export default function Transaction({navigation}) {
                   {status.map(statusTransaksi => (
                     <TouchableOpacity
                       key={statusTransaksi}
-                      className={`p-3 rounded-md mb-2 ${
+                      className={`p-3 rounded-xl mb-2 ${
                         transactionStatus === statusTransaksi
                           ? 'bg-blue-100'
                           : isDarkMode
@@ -217,7 +217,7 @@ export default function Transaction({navigation}) {
       <>
         <View className="ms-2 w-full  px-2">
           <Text
-            className="font-poppins-regular text-[13px]  capitalize"
+            className="font-poppins-regular text-[13px]  normal-case"
             style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
             {new Date(item?.created_at || '').toLocaleDateString('id-ID', {
               year: 'numeric',

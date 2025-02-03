@@ -13,7 +13,6 @@ import {
   BLUE_COLOR,
   DARK_BACKGROUND,
   DARK_COLOR,
-  GREY_COLOR,
   LIGHT_COLOR,
   SLATE_COLOR,
   WHITE_BACKGROUND,
@@ -21,7 +20,7 @@ import {
 import {Controller, useForm} from 'react-hook-form';
 import axios from '../../../libs/axios';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
-import {Eye, EyeCrossed} from '../../../../assets';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 const PHASES = {
   EMAIL: 'EMAIL',
   OTP: 'OTP',
@@ -146,7 +145,7 @@ export default function ForgotPasswordScreen() {
         )}
       />
       {errors.email && (
-        <Text className="text-red-500 text-sm mt-1 mx-3 font-poppins-regular">
+        <Text className="text-red-400 text-xs mt-1 mx-3 font-poppins-regular">
           {errors.email.message}
         </Text>
       )}
@@ -157,7 +156,7 @@ export default function ForgotPasswordScreen() {
     <>
       <View className="flex-row flex-wrap mb-2 px-3 gap-x-1">
         <Text
-          className="text-sm text-start capitalize font-poppins-regular"
+          className="text-sm text-start normal-case font-poppins-regular"
           style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
           Kode OTP telah dikirim ke email :
         </Text>
@@ -207,7 +206,7 @@ export default function ForgotPasswordScreen() {
           )}
         />
         {errors.otp && (
-          <Text className="text-red-500 text-sm mt-1 font-poppins-regular">
+          <Text className="text-red-400 text-xs mt-1 font-poppins-regular">
             {errors.otp.message}
           </Text>
         )}
@@ -215,7 +214,7 @@ export default function ForgotPasswordScreen() {
 
       <View className="items-start flex-row justify-start px-3 mt-2 gap-x-2">
         <Text
-          className="text-sm text-start capitalize font-poppins-regular"
+          className="text-sm text-start normal-case font-poppins-regular"
           style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
           Tidak menerima email ?
         </Text>
@@ -241,7 +240,7 @@ export default function ForgotPasswordScreen() {
             }
           }}>
           <Text
-            className="text-sm text-center capitalize font-poppins-regular"
+            className="text-sm text-center normal-case font-poppins-regular"
             style={{color: BLUE_COLOR}}>
             Kirim ulang
           </Text>
@@ -270,7 +269,7 @@ export default function ForgotPasswordScreen() {
               Password Baru
             </Text>
             <TextInput
-              placeholder="Masukkan Password Baru"
+              placeholder="Password baru"
               label="Password"
               secureTextEntry={passwordIsSecure}
               color={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
@@ -295,13 +294,17 @@ export default function ForgotPasswordScreen() {
                 top: '65%',
                 transform: [{translateY: -12}],
               }}>
-              {passwordIsSecure ? <Eye /> : <EyeCrossed />}
+              {passwordIsSecure ? (
+                <MaterialCommunityIcons name="eye" size={25} />
+              ) : (
+                <MaterialCommunityIcons name="eye-off" size={25} />
+              )}
             </TouchableOpacity>
           </View>
         )}
       />
       {errors.password && (
-        <Text className="text-red-500 text-sm mt-1 mx-3 font-poppins-regular">
+        <Text className="text-red-400 text-xs mt-1 mx-3 font-poppins-regular">
           {errors.password.message}
         </Text>
       )}
@@ -322,7 +325,7 @@ export default function ForgotPasswordScreen() {
                 Konfirmasi Password
               </Text>
               <TextInput
-                placeholder="Konfirmasi Password Baru"
+                placeholder="Konfirmasi password baru"
                 label="Konfirmasi Password"
                 color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
                 placeholderTextColor={SLATE_COLOR}
@@ -350,13 +353,17 @@ export default function ForgotPasswordScreen() {
                   top: '65%',
                   transform: [{translateY: -12}],
                 }}>
-                {confirmPasswordIsSecure ? <Eye /> : <EyeCrossed />}
+                {confirmPasswordIsSecure ? (
+                  <MaterialCommunityIcons name="eye" size={25} />
+                ) : (
+                  <MaterialCommunityIcons name="eye-off" size={25} />
+                )}
               </TouchableOpacity>
             </View>
           )}
         />
         {errors.password_confirmation && (
-          <Text className="text-red-500 text-sm mt-1 mx-3 font-poppins-regular">
+          <Text className="text-red-400 text-xs mt-1 mx-3 font-poppins-regular">
             {errors.password_confirmation.message}
           </Text>
         )}
@@ -412,10 +419,10 @@ export default function ForgotPasswordScreen() {
         className="w-full h-[200px] items-start justify-start ">
         <View className="p-4">
           <View className="justify-start flex-col items-start">
-            <Text className="text-white capitalize text-2xl font-poppins-semibold">
+            <Text className="text-white normal-case text-2xl font-poppins-semibold">
               {getPhaseTitle()}
             </Text>
-            <Text className="text-white capitalize text-sm font-poppins-medium">
+            <Text className="text-white normal-case text-sm font-poppins-medium">
               {getPhaseSubtitle()}
             </Text>
           </View>
@@ -428,13 +435,13 @@ export default function ForgotPasswordScreen() {
           {phase === PHASES.NEW_PASSWORD && renderPasswordPhase()}
 
           {/* {errors[Object.keys(errors)[0]] && (
-            <Text className="mt-2 mx-3 text-red-500 font-poppins-regular text-start">
+            <Text className="mt-2 mx-3 text-red-400 font-poppins-regular text-start">
               {errors[Object.keys(errors)[0]].message}
             </Text>
           )} */}
 
           {error && (
-            <Text className="mt-2 mx-3 capitalize text-red-500 font-poppins-regular text-start">
+            <Text className="mt-2 mx-3 normal-case text-red-400 font-poppins-regular text-start">
               {error}
             </Text>
           )}

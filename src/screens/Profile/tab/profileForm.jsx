@@ -168,10 +168,10 @@ export default function ProfileForm({route}) {
                 name="name"
                 defaultValue={data?.user?.name || ''}
                 rules={{
-                  required: 'Nama Harus Diisi',
+                  required: 'Nama harus diisi',
                   pattern: {
-                    value: /^[A-Za-z\s]+$/,
-                    message: 'Nama Tidak Boleh Mengandung Angka atau Simbol',
+                    value: /^[a-zA-Z0-9\s]+$/,
+                    message: 'Hanya huruf dan angka yang diperbolehkan',
                   },
                   maxLength: {
                     value: 17,
@@ -207,7 +207,7 @@ export default function ProfileForm({route}) {
                 )}
               />
               {errors.name && (
-                <Text className="text-red-500 text-sm mt-1">
+                <Text className="text-red-400 font-poppins-regular text-xs mt-1">
                   {errors.name.message}
                 </Text>
               )}
@@ -218,11 +218,12 @@ export default function ProfileForm({route}) {
                 control={control}
                 name="phone"
                 rules={{
+                  required: 'Nomor Telepon harus diisi',
                   pattern: {
-                    value: /^[0-9]+$/,
-                    message: 'Nomor Telepon Harus Diisi dengan Angka',
+                    value: /^08[0-9]{8,13}$/,
+                    message:
+                      'Nomor telepon harus diawali 08 dan memiliki 10-15 digit',
                   },
-                  required: 'Nomor Telepon Harus Diisi',
                 }}
                 render={({field: {value, onChange, onBlur}}) => (
                   <>
@@ -233,7 +234,11 @@ export default function ProfileForm({route}) {
                     </Text>
                     <TextInput
                       value={renderLoadingOrValue(value, 'Memuat...')}
-                      onChangeText={onChange}
+                      onChangeText={text => {
+                        if (text.length <= 15 && /^[0-9]*$/.test(text)) {
+                          onChange(text);
+                        }
+                      }}
                       onBlur={onBlur}
                       placeholder="Nomor Telepon"
                       keyboardType="numeric"
@@ -253,7 +258,7 @@ export default function ProfileForm({route}) {
                 )}
               />
               {errors.phone && (
-                <Text className="text-red-500 text-sm mt-1">
+                <Text className="text-red-400 font-poppins-regular text-xs mt-1">
                   {errors.phone.message}
                 </Text>
               )}
@@ -263,7 +268,7 @@ export default function ProfileForm({route}) {
               <Controller
                 control={control}
                 name="address"
-                rules={{required: 'Alamat Harus Diisi'}}
+                rules={{required: 'Alamat harus diisi'}}
                 render={({field: {value, onChange, onBlur}}) => (
                   <>
                     <Text
@@ -292,7 +297,7 @@ export default function ProfileForm({route}) {
                 )}
               />
               {errors.address && (
-                <Text className="text-red-500 text-sm mt-1">
+                <Text className="text-red-400 font-poppins-regular text-xs mt-1">
                   {errors.address.message}
                 </Text>
               )}
@@ -304,16 +309,31 @@ export default function ProfileForm({route}) {
                 style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
                 Email
               </Text>
-              <TextInput
-                value={renderLoadingOrValue(data.email)}
-                onChangeText={value => handleInputChange('email', value)}
-                editable={false}
-                placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
-                style={{
-                  fontFamily: 'Poppins-Regular',
-                  backgroundColor: isDarkMode ? '#262626' : '#fff',
+              <Controller
+                control={control}
+                name="email"
+                rules={{
+                  required: 'Email harus diisi',
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message: 'Email tidak valid',
+                  },
                 }}
-                className="h-12 w-full rounded-xl px-4 border-[0.5px] border-stone-600"
+                render={({field: {onChange, onBlur, value}}) => (
+                  <TextInput
+                    value={renderLoadingOrValue(data.email)}
+                    onChangeText={value => handleInputChange('email', value)}
+                    editable={false}
+                    placeholderTextColor={
+                      isDarkMode ? SLATE_COLOR : LIGHT_COLOR
+                    }
+                    style={{
+                      fontFamily: 'Poppins-Regular',
+                      backgroundColor: isDarkMode ? '#262626' : '#fff',
+                    }}
+                    className="h-12 w-full rounded-xl px-4 border-[0.5px] border-stone-600"
+                  />
+                )}
               />
             </View>
 

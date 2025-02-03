@@ -17,9 +17,8 @@ import {
   LIGHT_BACKGROUND,
   LIGHT_COLOR,
   SLATE_COLOR,
-  WHITE_BACKGROUND,
 } from '../../utils/const';
-import {Eye, EyeCrossed} from '../../../assets';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Controller, useForm} from 'react-hook-form';
 import axios from '../../libs/axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -78,17 +77,17 @@ export default function LoginPage() {
             </Text>
           </View>
           <View className="justify-start flex-col items-start my-5 ">
-            <Text className="capitalize text-2xl font-poppins-semibold text-white">
+            <Text className="normal-case text-2xl font-poppins-semibold text-white">
               Selamat Datang
             </Text>
-            <Text className="capitalize text-xs font-poppins-medium text-white">
+            <Text className="normal-case text-xs font-poppins-medium text-white">
               Aplikasi naysa cell menyediakan layanan topup pulsa & paket data
               dan uang elektronik
             </Text>
           </View>
 
           <View className="flex-row items-start justify-start">
-            <Text className="font-poppins-semibold capitalize text-sm text-white">
+            <Text className="font-poppins-semibold normal-case text-sm text-white">
               Belum punya akun ?
             </Text>
             <TouchableOpacity
@@ -126,7 +125,7 @@ export default function LoginPage() {
                     Email
                   </Text>
                   <TextInput
-                    placeholder="Masukkan Email"
+                    placeholder="Email"
                     label="Email"
                     color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
                     placeholderTextColor={SLATE_COLOR}
@@ -144,7 +143,7 @@ export default function LoginPage() {
               )}
             />
             {errors.email && (
-              <Text className="mt-1 text-red-400 font-poppins-regular mx-3">
+              <Text className="mt-1 text-red-400 font-poppins-regular text-xs mx-3">
                 {errors.email.message}
               </Text>
             )}
@@ -162,7 +161,7 @@ export default function LoginPage() {
                     Password
                   </Text>
                   <TextInput
-                    placeholder="Masukkan Password"
+                    placeholder="Password"
                     label="Password"
                     color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
                     placeholderTextColor={SLATE_COLOR}
@@ -187,27 +186,23 @@ export default function LoginPage() {
                       top: '65%',
                       transform: [{translateY: -12}],
                     }}>
-                    {isSecure ? <Eye /> : <EyeCrossed />}
+                    {isSecure ? (
+                      <MaterialCommunityIcons name="eye" size={25} />
+                    ) : (
+                      <MaterialCommunityIcons name="eye-off" size={25} />
+                    )}
                   </TouchableOpacity>
                 </View>
               )}
             />
             {errors.password && (
-              <Text className="mt-1 text-red-400 font-poppins-regular mx-3">
+              <Text className="mt-1 text-red-400 font-poppins-regular text-xs mx-3">
                 {errors.password.message}
               </Text>
             )}
           </View>
 
-          <TouchableOpacity
-            onPress={() => navigation.navigate('ForgotPassScreen')}>
-            <Text
-              className="text-start my-4 mx-3  text-black text-sm"
-              style={{color: BLUE_COLOR, fontFamily: 'Poppins-Regular'}}>
-              Lupa Kata Sandi ?
-            </Text>
-          </TouchableOpacity>
-          <View className="flex mx-3">
+          <View className="flex mx-3 mt-4">
             <TouchableOpacity
               className="w-full rounded-xl mx-auto px-4 h-12 items-center justify-center"
               style={{
@@ -222,10 +217,19 @@ export default function LoginPage() {
             </TouchableOpacity>
           </View>
           <TouchableOpacity
-            onPress={() => navigation.navigate('bantuanLogin')}
-            className="my-4 mx-3">
+            className="my-4 "
+            onPress={() => navigation.navigate('ForgotPassScreen')}>
             <Text
-              className="text-start capitalize text-sm font-poppins-regular"
+              className="text-start mx-3  text-black text-sm"
+              style={{color: BLUE_COLOR, fontFamily: 'Poppins-Regular'}}>
+              Lupa kata sandi ?
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('bantuanLogin')}
+            className="mx-3">
+            <Text
+              className="text-start normal-case text-sm font-poppins-regular"
               style={{color: BLUE_COLOR}}>
               Butuh bantuan ?
             </Text>

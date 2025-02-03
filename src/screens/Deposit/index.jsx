@@ -33,7 +33,6 @@ import ProductPaginate from '../../components/ProductPaginate';
 import {WebView} from 'react-native-webview';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
 export default function Deposit({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -59,15 +58,12 @@ export default function Deposit({navigation}) {
 
   const queryClient = useQueryClient();
 
-  // Modifikasi mutation handler
   const {mutate: handleTopup, isLoading} = useMutation(
     async () => {
-      // Pastikan format request sesuai
       const requestData = {
         amount: parseInt(depositAmount.replace(/\D/g, '')) || 0,
       };
 
-      // Tambahkan headers authorization jika diperlukan
       const response = await axios.post('/auth/topup', requestData, {
         headers: {
           Authorization: `Bearer ${await AsyncStorage.getItem('userToken')}`,
@@ -75,7 +71,6 @@ export default function Deposit({navigation}) {
         },
       });
 
-      // Log response untuk debugging
       console.log('Topup Response:', response.data);
 
       return response.data;
@@ -89,7 +84,6 @@ export default function Deposit({navigation}) {
         }
       },
       onError: error => {
-        // Log error detail untuk debugging
         console.error('Topup Error:', {
           message: error.message,
           response: error.response?.data,
@@ -106,7 +100,6 @@ export default function Deposit({navigation}) {
     },
   );
 
-  // Perbaiki WebView component
   if (showPayment && snapToken) {
     return (
       <Modal
@@ -133,6 +126,7 @@ export default function Deposit({navigation}) {
   const onMessage = event => {
     try {
       const data = JSON.parse(event.nativeEvent.data);
+      console.log('Parsed payment status:', data);
       if (data.status_code === '200' || data.status_code === '201') {
         queryClient.invalidateQueries('/auth/check-saldo');
         queryClient.invalidateQueries('/auth/histori');
@@ -328,49 +322,6 @@ export default function Deposit({navigation}) {
               {isLoading ? <ActivityIndicator color="white" /> : 'DEPOSIT'}
             </Text>
           </TouchableOpacity>
-        </View>
-      </View>
-
-      <View
-        className="p-3  rounded-xl"
-        style={{
-          backgroundColor: isDarkMode ? '#262626' : '#fff',
-          marginHorizontal: HORIZONTAL_MARGIN,
-          marginTop: 15,
-        }}>
-        <Text
-          className="font-poppins-regular"
-          style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-          Metode Pembayaran
-        </Text>
-        <View style={styles.paymentGrid}>
-          {paymentOptions.map(option => (
-            <TouchableOpacity
-              key={option.id}
-              className="h-20 px-2 rounded-xl w-full flex-row items-center justify-between my-2"
-              style={[
-                {
-                  backgroundColor: isDarkMode ? '#232323' : '#f9f9f9',
-                },
-              ]}
-              onPress={() => {}}>
-              <Image
-                source={option.logo}
-                style={styles.paymentLogo}
-                resizeMode="contain"
-              />
-              <View className="flex-col items-end">
-                <Text style={[styles.paymentName, {color: BLUE_COLOR}]}>
-                  {option.name}
-                </Text>
-                <Text
-                  className="font-poppins-regular text-xs"
-                  style={[{color: isDarkMode ? SLATE_COLOR : LIGHT_COLOR}]}>
-                  {option.method}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          ))}
         </View>
       </View>
 

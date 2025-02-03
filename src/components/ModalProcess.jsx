@@ -50,11 +50,11 @@ export default function ModalProcess({
           {/* <LottieView source={url} autoPlay loop={true} style={styles.lottie} /> */}
           <Text
             style={styles.successTextTitle}
-            className="text-base my-1  capitalize font-poppins-semibold ">
+            className="text-base my-1  normal-case font-poppins-semibold ">
             {title}
           </Text>
           <Text
-            className="text-sm text-start capitalize mb-4 font-poppins-regular"
+            className="text-sm text-start normal-case mb-4 font-poppins-regular"
             style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
             {subTitle}
           </Text>
@@ -65,7 +65,7 @@ export default function ModalProcess({
               style={{backgroundColor: bgTrueText || '#F43F5E'}}
               onPress={functionTrueButton}>
               <Text
-                className="font-poppins-semibold capitalize text-center"
+                className="font-poppins-semibold normal-case text-center"
                 style={{color: buttonTrueColorText || WHITE_COLOR}}>
                 {buttonTrueText}
               </Text>
@@ -74,7 +74,7 @@ export default function ModalProcess({
               className="w-full  bg-gray-100 border-gray-200 border py-3 rounded-xl items-center"
               onPress={functionFalseButton}>
               <Text
-                className="font-poppins-semibold capitalize text-center"
+                className="font-poppins-semibold normal-case text-center"
                 style={{color: buttonFalseColorText || '#F43F5E'}}>
                 {buttonFalseText}
               </Text>

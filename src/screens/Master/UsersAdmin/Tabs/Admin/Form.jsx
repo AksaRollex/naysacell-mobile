@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   ScrollView,
   StyleSheet,
   Text,
@@ -21,16 +22,15 @@ import {
 import Toast from 'react-native-toast-message';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import axios from '../../../../../libs/axios';
-import {Eye, EyeCrossed} from '../../../../../../assets';
-import BackButton from '../../../../../components/BackButton';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ModalAfterProcess from '../../../../../components/ModalAfterProcess';
-import {ActivityIndicator} from 'react-native';
 
 export default function FormAdmin({route, navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
   const queryClient = useQueryClient();
   const {id} = route.params || {};
   const [showPassword, setShowPassword] = useState(true);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(true);
   const [modalSuccess, setModalSuccess] = useState(false);
   const [modalFailed, setModalFailed] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -39,6 +39,7 @@ export default function FormAdmin({route, navigation}) {
     handleSubmit,
     formState: {errors},
     setValue,
+    watch,
   } = useForm();
 
   const {data, isFetching: isLoadingData} = useQuery(
@@ -51,13 +52,16 @@ export default function FormAdmin({route, navigation}) {
         setValue('email', data.email);
         setValue('phone', data.phone);
         setValue('address', data.address);
+        setValue('role_id', data.role_id);
+        setValue('password', '');
       },
       onError: error => {
+        const errorMsg = error.response?.data?.message || error.message;
         setModalFailed(true);
         setTimeout(() => {
           setModalFailed(false);
         }, 2000);
-        setErrorMessage(error.response?.data || error.message);
+        setErrorMessage(errorMsg);
       },
       retry: false,
     },
@@ -68,30 +72,25 @@ export default function FormAdmin({route, navigation}) {
       const requestData = {
         ...data,
         role_id: 1,
-        password_confirmation: data.password,
       };
 
       Object.keys(requestData).forEach(
         key =>
-          (requestData[key] === undefined || requestData[key] === null) &&
+          (requestData[key] === undefined ||
+            requestData[key] === null ||
+            requestData[key] === '') &&
           delete requestData[key],
       );
-      if (!id) {
-        requestData.password_confirmation = data.password;
-      } else {
-        delete requestData.password;
-        delete requestData.password_confirmation;
+
+      if (requestData.password !== requestData.password_confirmation) {
+        throw new Error('password dan password konfirmasi tidak sama');
       }
-      if (id) {
-        const response = await axios.put(
-          `/master/users/update/${id}`,
-          requestData,
-        );
-        return response.data.data;
-      } else {
-        const response = await axios.post(`/master/users/store`, requestData);
-        return response.data.data;
-      }
+
+      const response = await axios[id ? 'put' : 'post'](
+        id ? `/master/users/update/${id}` : '/master/users/store',
+        requestData,
+      );
+      return response.data.data;
     },
     {
       onSuccess: data => {
@@ -99,22 +98,18 @@ export default function FormAdmin({route, navigation}) {
         setModalSuccess(true);
         setTimeout(() => {
           setModalSuccess(false);
-          navigation.navigate('Admin', {
+          navigation.navigate('User', {
             id: data?.id || null,
           });
         }, 2000);
-        Toast.show({
-          type: 'success',
-          text1: 'Success',
-          text2: 'Data berhasil disimpan',
-        });
       },
       onError: error => {
+        const errorMsg = error.response?.data?.message || error.message;
         setModalFailed(true);
         setTimeout(() => {
           setModalFailed(false);
         }, 2000);
-        setErrorMessage(error.response?.data || error.message);
+        setErrorMessage(errorMsg);
       },
     },
   );
@@ -139,26 +134,22 @@ export default function FormAdmin({route, navigation}) {
           backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
         }}>
         <ScrollView
-          className=" w-full rounded-xl "
+          className=" w-full h-full rounded-xl "
           style={{backgroundColor: isDarkMode ? '#262626' : '#f8f8f8'}}>
-          {/* <View className="w-full mt-2  p-3 rounded-lg flex-row justify-between">
-            <BackButton
-              color={isDarkMode ? WHITE_COLOR : LIGHT_COLOR}
-              size={25}
-              action={() => navigation.goBack()}
-            />
-            <Text
-              className="font-poppins-semibold text-lg text-end  "
-              style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
-              {id ? 'Edit' : 'Tambah'} Admin
-            </Text>
-          </View> */}
-          <View className="px-3 pt-2 pb-3">
+          <View className="px-3 pt-2 pb-3 ">
             <Controller
               control={control}
               name="name"
               rules={{
-                required: 'Nama Harus Diisi',
+                required: 'Nama harus diisi',
+                pattern: {
+                  value: /^[a-zA-Z0-9\s]+$/,
+                  message: 'Hanya huruf dan angka yang diperbolehkan',
+                },
+                maxLength: {
+                  value: 17,
+                  message: 'Nama Tidak Boleh Lebih Dari 17 Karakter',
+                },
               }}
               render={({field: {onChange, value, onBlur}}) => (
                 <>
@@ -172,7 +163,9 @@ export default function FormAdmin({route, navigation}) {
                     onChangeText={onChange}
                     onBlur={onBlur}
                     editable={!isLoadingData}
-                    placeholderTextColor={SLATE_COLOR}
+                    placeholderTextColor={
+                      isDarkMode ? SLATE_COLOR : SLATE_COLOR
+                    }
                     style={{
                       fontFamily: 'Poppins-Regular',
                       backgroundColor: isDarkMode ? '#262626' : '#fff',
@@ -180,10 +173,10 @@ export default function FormAdmin({route, navigation}) {
                     className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
                       errors.name ? 'border-red-500' : 'border-stone-600'
                     }`}
-                    placeholder="Harap Lengkapi Nama Lengkap"
+                    placeholder="Nama Lengkap"
                   />
                   {errors.name && (
-                    <Text className="text-red-500 text-sm mt-1">
+                    <Text className="text-red-400 font-poppins-regular text-xs mt-1">
                       {errors.name.message}
                     </Text>
                   )}
@@ -194,7 +187,7 @@ export default function FormAdmin({route, navigation}) {
               control={control}
               name="email"
               rules={{
-                required: 'Email Harus Diisi',
+                required: 'Email harus diisi',
                 pattern: {
                   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                   message: 'Email tidak valid',
@@ -212,7 +205,9 @@ export default function FormAdmin({route, navigation}) {
                     onChangeText={onChange}
                     onBlur={onBlur}
                     editable={!isLoadingData}
-                    placeholderTextColor={SLATE_COLOR}
+                    placeholderTextColor={
+                      isDarkMode ? SLATE_COLOR : SLATE_COLOR
+                    }
                     style={{
                       fontFamily: 'Poppins-Regular',
                       backgroundColor: isDarkMode ? '#262626' : '#fff',
@@ -220,10 +215,10 @@ export default function FormAdmin({route, navigation}) {
                     className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
                       errors.email ? 'border-red-500' : 'border-stone-600'
                     }`}
-                    placeholder="Harap Lengkapi Email"
+                    placeholder="Email"
                   />
                   {errors.email && (
-                    <Text className="text-red-500 text-sm mt-1">
+                    <Text className="text-red-400 font-poppins-regular text-xs mt-1">
                       {errors.email.message}
                     </Text>
                   )}
@@ -234,10 +229,11 @@ export default function FormAdmin({route, navigation}) {
               control={control}
               name="phone"
               rules={{
-                required: 'Nomor Telepon Harus Diisi',
+                required: 'Nomor Telepon harus diisi',
                 pattern: {
-                  value: /^[0-9]{10,13}$/,
-                  message: 'Nomor telepon tidak valid',
+                  value: /^08[0-9]{8,13}$/,
+                  message:
+                    'Nomor telepon harus diawali 08 dan memiliki 10-15 digit',
                 },
               }}
               render={({field: {onChange, value, onBlur}}) => (
@@ -250,15 +246,16 @@ export default function FormAdmin({route, navigation}) {
                   <TextInput
                     value={value}
                     onChangeText={text => {
-                      const sanitizedText = text
-                        .replace(/[^a-zA-Z0-9 ]/g, '')
-                        .slice(0, 13);
-                      onChange(sanitizedText);
+                      if (text.length <= 15 && /^[0-9]*$/.test(text)) {
+                        onChange(text);
+                      }
                     }}
                     onBlur={onBlur}
                     keyboardType="numeric"
                     editable={!isLoadingData}
-                    placeholderTextColor={SLATE_COLOR}
+                    placeholderTextColor={
+                      isDarkMode ? SLATE_COLOR : SLATE_COLOR
+                    }
                     style={{
                       fontFamily: 'Poppins-Regular',
                       backgroundColor: isDarkMode ? '#262626' : '#fff',
@@ -266,10 +263,10 @@ export default function FormAdmin({route, navigation}) {
                     className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
                       errors.phone ? 'border-red-500' : 'border-stone-600'
                     }`}
-                    placeholder="Harap Lengkapi Nomor Telepon"
+                    placeholder="Nomor Telepon"
                   />
                   {errors.phone && (
-                    <Text className="text-red-500 text-sm mt-1">
+                    <Text className="text-red-400 font-poppins-regular text-xs mt-1">
                       {errors.phone.message}
                     </Text>
                   )}
@@ -280,7 +277,7 @@ export default function FormAdmin({route, navigation}) {
               control={control}
               name="address"
               rules={{
-                required: 'Alamat Harus Diisi',
+                required: 'Alamat harus diisi',
               }}
               render={({field: {onChange, value, onBlur}}) => (
                 <>
@@ -294,7 +291,9 @@ export default function FormAdmin({route, navigation}) {
                     onChangeText={onChange}
                     onBlur={onBlur}
                     editable={!isLoadingData}
-                    placeholderTextColor={SLATE_COLOR}
+                    placeholderTextColor={
+                      isDarkMode ? SLATE_COLOR : SLATE_COLOR
+                    }
                     style={{
                       fontFamily: 'Poppins-Regular',
                       backgroundColor: isDarkMode ? '#262626' : '#fff',
@@ -302,73 +301,167 @@ export default function FormAdmin({route, navigation}) {
                     className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
                       errors.address ? 'border-red-500' : 'border-stone-600'
                     }`}
-                    placeholder="Harap Lengkapi Alamat"
+                    placeholder="Alamat"
                   />
                   {errors.address && (
-                    <Text className="text-red-500 text-sm mt-1">
+                    <Text className="text-red-400 font-poppins-regular text-xs mt-1">
                       {errors.address.message}
                     </Text>
                   )}
                 </>
               )}
             />
-            {!id && (
+            {/* {!id && ( */}
+            <>
               <Controller
                 name="password"
                 control={control}
                 rules={{
-                  required: 'Password Harus Diisi',
+                  required: 'Password harus diisi',
                   minLength: {
                     value: 8,
                     message: 'Password minimal 8 karakter',
                   },
+                  pattern: {
+                    value: /^[0-9]+$/,
+                    message: 'Password hanya boleh angka',
+                  },
                 }}
                 render={({field: {onChange, onBlur, value}}) => (
-                  <View className="relative">
-                    <Text
-                      className="font-poppins-medium mt-2"
-                      style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
-                      Password
-                    </Text>
-                    <TextInput
-                      value={value}
-                      onChangeText={onChange}
-                      onBlur={onBlur}
-                      placeholder="Password"
-                      placeholderTextColor={
-                        isDarkMode ? SLATE_COLOR : LIGHT_COLOR
-                      }
-                      keyboardType="numeric"
-                      style={{
-                        fontFamily: 'Poppins-Regular',
-                        backgroundColor: isDarkMode ? '#262626' : '#fff',
-                      }}
-                      className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
-                        errors.password ? 'border-red-500' : 'border-stone-600'
-                      }`}
-                      secureTextEntry={showPassword}
-                    />
-                    <TouchableOpacity
-                      onPress={() => setShowPassword(!showPassword)}
-                      style={{
-                        position: 'absolute',
-                        top: '70%',
-                        right: 10,
-                        transform: [{translateY: -12}],
-                      }}>
-                      {showPassword ? <Eye /> : <EyeCrossed />}
-                    </TouchableOpacity>
-                  </View>
+                  <>
+                    <View className="relative">
+                      <Text
+                        className="font-poppins-medium mt-2"
+                        style={{
+                          color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR,
+                        }}>
+                        Password
+                      </Text>
+                      <TextInput
+                        value={value}
+                        onChangeText={text => {
+                          if (/^[0-9]*$/.test(text)) {
+                            onChange(text);
+                          }
+                        }}
+                        onBlur={onBlur}
+                        placeholder="Password"
+                        placeholderTextColor={
+                          isDarkMode ? SLATE_COLOR : SLATE_COLOR
+                        }
+                        keyboardType="numeric"
+                        style={{
+                          fontFamily: 'Poppins-Regular',
+                          backgroundColor: isDarkMode ? '#262626' : '#fff',
+                        }}
+                        className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                          errors.password
+                            ? 'border-red-500'
+                            : 'border-stone-600'
+                        }`}
+                        secureTextEntry={showPassword}
+                      />
+                      <TouchableOpacity
+                        onPress={() => setShowPassword(!showPassword)}
+                        style={{
+                          position: 'absolute',
+                          top: '70%',
+                          right: 10,
+                          transform: [{translateY: -12}],
+                        }}>
+                        {showPassword ? (
+                          <MaterialCommunityIcons name="eye" size={25} />
+                        ) : (
+                          <MaterialCommunityIcons name="eye-off" size={25} />
+                        )}
+                      </TouchableOpacity>
+                    </View>
+                    {errors.password && (
+                      <Text className="text-red-400 font-poppins-regular text-xs mt-1">
+                        {errors.password.message}
+                      </Text>
+                    )}
+                  </>
                 )}
               />
-            )}
-            {errors.password && (
-              <Text className="text-red-500 text-sm mt-1">
-                {errors.password.message}
-              </Text>
-            )}
+
+              <Controller
+                name="password_confirmation"
+                control={control}
+                rules={{
+                  required: 'Konfirmasi password harus diisi',
+                  validate: value => {
+                    const password = watch('password');
+                    return value === password || 'Password tidak sama';
+                  },
+                  pattern: {
+                    value: /^[0-9]+$/,
+                    message: 'Password hanya boleh angka',
+                  },
+                }}
+                render={({field: {onChange, onBlur, value}}) => (
+                  <>
+                    <View className="relative">
+                      <Text
+                        className="font-poppins-medium mt-2"
+                        style={{
+                          color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR,
+                        }}>
+                        Konfirmasi Password
+                      </Text>
+                      <TextInput
+                        value={value}
+                        onChangeText={text => {
+                          if (/^[0-9]*$/.test(text)) {
+                            onChange(text);
+                          }
+                        }}
+                        onBlur={onBlur}
+                        placeholder="Konfirmasi Password"
+                        placeholderTextColor={
+                          isDarkMode ? SLATE_COLOR : SLATE_COLOR
+                        }
+                        keyboardType="numeric"
+                        style={{
+                          fontFamily: 'Poppins-Regular',
+                          backgroundColor: isDarkMode ? '#262626' : '#fff',
+                        }}
+                        className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                          errors.password_confirmation
+                            ? 'border-red-500'
+                            : 'border-stone-600'
+                        }`}
+                        secureTextEntry={showConfirmPassword}
+                      />
+                      <TouchableOpacity
+                        onPress={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
+                        style={{
+                          position: 'absolute',
+                          top: '70%',
+                          right: 10,
+                          transform: [{translateY: -12}],
+                        }}>
+                        {showConfirmPassword ? (
+                          <MaterialCommunityIcons name="eye" size={25} />
+                        ) : (
+                          <MaterialCommunityIcons name="eye-off" size={25} />
+                        )}
+                      </TouchableOpacity>
+                    </View>
+                    {errors.password_confirmation && (
+                      <Text className="text-red-400 font-poppins-regular text-xs mt-1">
+                        {errors.password_confirmation.message}
+                      </Text>
+                    )}
+                  </>
+                )}
+              />
+            </>
+            {/* )} */}
           </View>
-          <View style={[styles.bottom]} className="px-3 pt-2 pb-3">
+          <View style={[styles.bottom]} className="p-3">
             <TouchableOpacity
               className="w-full rounded-xl mx-auto px-4 h-12 items-center justify-center"
               style={{
@@ -377,25 +470,36 @@ export default function FormAdmin({route, navigation}) {
               }}
               onPress={onSubmit}>
               <Text style={styles.buttonLabel}>
-                {isLoadingData ? <ActivityIndicator color="white" /> : 'SIMPAN'}
+                {isLoadingData ? (
+                  <ActivityIndicator color="#ffffff" />
+                ) : (
+                  'SIMPAN'
+                )}
               </Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
-
-        <ModalAfterProcess
-          url={require('../../../../../../assets/lottie/success-animation.json')}
-          modalVisible={modalSuccess}
-          title={'Berhasil Menyimpan Data'}
-          subTitle={'Pastikan Data Sudah Benar'}
-        />
-        <ModalAfterProcess
-          url={require('../../../../../../assets/lottie/failed-animation.json')}
-          modalVisible={modalFailed}
-          title={'Gagal Menyimpan Data'}
-          subTitle={errorMessage || 'Pastikan Data Sudah Benar'}
-        />
       </View>
+      <ModalAfterProcess
+        url={require('../../../../../../assets/lottie/success-animation.json')}
+        modalVisible={modalSuccess}
+        icon={'checkmark-done-sharp'}
+        iconColor={'#95bb72'}
+        iconSize={22}
+        bgIcon={'#e6f7e6'}
+        title={'Berhasil Menyimpan Data'}
+        subTitle={'Pastikan Data Sudah Benar'}
+      />
+      <ModalAfterProcess
+        url={require('../../../../../../assets/lottie/failed-animation.json')}
+        modalVisible={modalFailed}
+        title={'Gagal Menyimpan Data'}
+        subTitle={errorMessage || 'Pastikan Data Sudah Benar'}
+        icon={'close-sharp'}
+        iconColor={'#f43f5e'}
+        iconSize={22}
+        bgIcon={'#fdecef'}
+      />
     </>
   );
 }

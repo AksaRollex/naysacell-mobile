@@ -38,7 +38,6 @@ export default function Prabayar({navigation}) {
 
   const [tempCategory, setTempCategory] = useState('');
   const [tempProvider, setTempProvider] = useState('');
-  const [tempEmoney, setTempEMoney] = useState('');
 
   const [payload, setPayload] = useState({});
 

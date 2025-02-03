@@ -14,7 +14,6 @@ import {
 } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import IonIcons from 'react-native-vector-icons/Ionicons';
-// SCREENS
 import HomeScreen from '../Home/index';
 import Pulsa from '../Pulsa';
 import LayananPLN from '../Pln';
@@ -40,20 +39,16 @@ import GoPay from '../Dompet_elektronik/Gopay';
 import Master from '../Master';
 import LiveChat from '../Bantuan/component_cs/livechat';
 import CustomerService from '../Bantuan/customer_service';
-// USERS ADMIN
 import IndexUsersAdmin from '../Master/UsersAdmin';
 import Admin from '../Master/UsersAdmin/Tabs/Admin/Admin';
 import FormAdmin from '../Master/UsersAdmin/Tabs/Admin/Form';
 import User from '../Master/UsersAdmin/Tabs/User/User';
 import FormUser from '../Master/UsersAdmin/Tabs/User/Form';
-// MASTER
 import IndexMaster from '../Master/Master';
 import Brand from '../Master/Master/Tabs/Brand';
-// PRODUK
 import IndexProduk from '../Master/Produk';
 import Prabayar from '../Master/Produk/Tabs/Prabayar/Prabayar';
 import Pascabayar from '../Master/Produk/Tabs/Pascabayar';
-// LAPORAN
 import IndexLaporan from '../Master/Laporan';
 import Laporan from '../Master/Laporan/Tabs/Laporan';
 import GrafikPenjualan from '../Master/Laporan/Tabs/GrafikPenjualan';
@@ -63,6 +58,8 @@ import axios from '../../libs/axios';
 import LoginPage from '../auth/login';
 import Order from '../Master/Order';
 import FormOrder from '../Master/Order/Form';
+import FormSaldoUser from '../Master/SaldoUser/Form';
+import SaldoUser from '../Master/SaldoUser';
 import LaporanDeposit from '../Master/Laporan/Tabs/LaporanDeposit';
 
 const Tab = createBottomTabNavigator();
@@ -105,6 +102,8 @@ const CustomTabBar = ({state, descriptors, navigation}) => {
     'DetailTransaction',
     'LaporanDeposit',
     'CustomerService',
+    'SaldoUser',
+    'FormSaldoUser',
   ];
 
   if (hideOnScreens.includes(routeName)) {
@@ -563,6 +562,34 @@ const MasterNavigation = () => {
           },
         }}
       />
+      <Stack.Screen
+        name="SaldoUser"
+        component={SaldoUser}
+        options={{
+          title: 'Saldo Pengguna',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: 18,
+            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+          },
+        }}
+      />
+      <Stack.Screen
+        name="FormSaldoUser"
+        component={FormSaldoUser}
+        options={({route}) => ({
+          title: route.params?.id
+            ? 'Form Edit Saldo Pengguna'
+            : 'Form Tambah Saldo Pengguna',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: 18,
+            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+          },
+        })}
+      />
     </Stack.Navigator>
   );
 };
@@ -633,6 +660,8 @@ export default function MainScreen() {
                 'DetailHistoryDeposit',
                 'DetailTransaction',
                 'LaporanDeposit',
+                'SaldoUser',
+                'FormSaldoUser',
               ];
 
               if (hideOnScreens.includes(routeName)) {

@@ -20,8 +20,10 @@ export const LIGHT_BACKGROUND = Colors.lighter;
 export const WHITE_BACKGROUND = '#FFFFFF';
 
 export const LIGHT_COLOR = '#374957';
+// export const LIGHT_COLOR = '#000000';
 export const DARK_COLOR = '#FFFFFF';
 export const SLATE_COLOR = '#94A3BB';
+// export const SLATE_COLOR = '#000000';
 export const BLUE_COLOR = '#138EE9';
 export const GREY_COLOR = '#D9D9D9';
 export const GREEN_COLOR = '#01C1A2';

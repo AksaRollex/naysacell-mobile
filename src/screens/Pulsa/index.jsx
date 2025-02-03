@@ -184,23 +184,25 @@ export default function Pulsa({navigation}) {
     const isSelected = selectItem && selectItem.id === item.id;
     return (
       <TouchableOpacity
-        className={`p-2 border rounded-xl m-1 relative ${
+        className={`p-2 border rounded-xl relative ${
           isSelected
-            ? 'border-green-500 bg-[#2a2a2a]'
-            : 'border-gray-500 bg-[#404040]'
+            ? `border-green-500 bg-${isDarkMode ? '[#252525]' : '[]'}`
+            : `border-gray-500 bg-${isDarkMode ? '[#262626]' : '[]'}`
         }`}
         onPress={() => {
           setSelectedItem(isSelected ? null : item);
         }}>
         <View className="items-start flex-col ">
-          <Text className="font-poppins-semibold text-base text-white">
+          <Text
+            className="font-poppins-semibold text-sm"
+            style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
             {item.product_name}
           </Text>
           <View className="w-full">
             <View className="justify-items-end items-end">
               <Text
-                className="font-poppins-regular text-sm text-end "
-                style={{color: WHITE_COLOR}}>
+                className="font-poppins-regular text-sm"
+                style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
                 {rupiah(item.product_price)}
               </Text>
             </View>
@@ -216,66 +218,36 @@ export default function Pulsa({navigation}) {
         style={{
           backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
         }}
-        className="w-full h-full">
+        className="w-full h-full p-3">
         <SafeAreaView>
-          <View style={{marginHorizontal: HORIZONTAL_MARGIN, marginTop: 15}}>
+          <View>
             <View style={{rowGap: 10}}>
-              <View className="flex-row items-center">
-                <View className="flex-1 mr-2">
-                  <Controller
-                    control={control}
-                    name="nomor"
-                    render={({field: {}}) => (
-                      <Input
-                        value={nomorTujuan}
-                        placeholder="Masukan Nomor Tujuan"
-                        lebar={'100%'}
-                        onChange={text => setNomorTujuan(text)}
-                        onDelete={clearNomor}
-                        type="numeric"
-                      />
-                    )}
-                  />
-                </View>
-                {phoneOperator && (
-                  <View className="bg-blue-500 p-4 rounded-xl">
-                    <Text className="text-white font-poppins-bold uppercase text-xs">
-                      {phoneOperator}
-                    </Text>
+              <View className="flex-row items-center ">
+                <View
+                  className="p-3  rounded-xl"
+                  style={{backgroundColor: isDarkMode ? '#262626' : '#fff'}}>
+                  <Text
+                    className="text-sm font-poppins-semibold my-1 "
+                    style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
+                    Nomor Tujuan
+                  </Text>
+                  <View className="flex-row">
+                    <Input
+                      value={nomorTujuan}
+                      placeholder="Masukkan Nomor Tujuan"
+                      onChange={text => setNomorTujuan(text)}
+                      type="numeric"
+                      onDelete={clearNomor}
+                    />
+                    {/* {phoneOperator && (
+                      <View className="bg-blue-500 p-4 rounded-xl">
+                        <Text className="text-white font-poppins-bold uppercase text-xs">
+                          {phoneOperator}
+                        </Text>
+                      </View>
+                    )} */}
                   </View>
-                )}
-              </View>
-
-              {/* Tab Navigation */}
-              <View className="flex-row justify-between">
-                {product_type.map(tabType => (
-                  <TouchableOpacity
-                    key={tabType}
-                    style={[
-                      styles.buttonTab,
-                      {
-                        borderBottomColor:
-                          type === tabType ? BLUE_COLOR : GREY_COLOR,
-                        borderBottomWidth: type === tabType ? 2 : 1,
-                      },
-                    ]}
-                    onPress={() => setType(tabType)}>
-                    <Text
-                      style={[
-                        styles.buttonTabLabel(isDarkMode),
-                        {
-                          color:
-                            type === tabType
-                              ? BLUE_COLOR
-                              : isDarkMode
-                              ? DARK_COLOR
-                              : LIGHT_COLOR,
-                        },
-                      ]}>
-                      {tabType}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
+                </View>
               </View>
             </View>
           </View>
@@ -283,74 +255,146 @@ export default function Pulsa({navigation}) {
 
         {isSearchEnabled ? (
           type === 'Pulsa' ? (
-            <ProductPaginate
-              url="/master/product/prepaid"
-              editUrl="/master/product/prepaid/{id}"
-              renderItem={productPulsa}
-              ref={pulsaRef}
-              payload={{
-                product_category: 'Pulsa',
-                product_provider: phoneOperator,
-              }}
-              onItemPress={selectedItem => {
-                setSelectedItem(selectedItem);
-              }}
-            />
+            <View
+              className="w-full flex-1 mt-4 rounded-xl p-3"
+              style={{backgroundColor: isDarkMode ? '#262626' : '#fff'}}>
+              {/* Tab Navigation */}
+              <View
+                className="w-full mb-3 "
+                style={{backgroundColor: isDarkMode ? '#262626' : '#fff'}}>
+                <View className="flex-row justify-between">
+                  {product_type.map(tabType => (
+                    <TouchableOpacity
+                      key={tabType}
+                      style={[
+                        styles.buttonTab,
+                        {
+                          borderBottomColor:
+                            type === tabType ? BLUE_COLOR : GREY_COLOR,
+                          borderBottomWidth: type === tabType ? 2 : 1,
+                        },
+                      ]}
+                      onPress={() => setType(tabType)}>
+                      <Text
+                        style={[
+                          styles.buttonTabLabel(isDarkMode),
+                          {
+                            color:
+                              type === tabType
+                                ? BLUE_COLOR
+                                : isDarkMode
+                                ? DARK_COLOR
+                                : LIGHT_COLOR,
+                          },
+                        ]}>
+                        {tabType}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+              <ProductPaginate
+                url="/master/product/prepaid"
+                editUrl="/master/product/prepaid/{id}"
+                renderItem={productPulsa}
+                ref={pulsaRef}
+                payload={{
+                  product_category: 'Pulsa',
+                  product_provider: phoneOperator,
+                }}
+                onItemPress={selectedItem => {
+                  setSelectedItem(selectedItem);
+                }}
+              />
+            </View>
           ) : (
-            <ProductPaginate
-              url="/master/product/prepaid"
-              editUrl="/master/product/prepaid/{id}"
-              renderItem={productPulsa}
-              ref={dataRef}
-              payload={{
-                product_category: 'Data',
-                product_provider: phoneOperator,
-              }}
-              onItemPress={selectedItem => {
-                setSelectedItem(selectedItem);
-              }}
-            />
+            <View
+              className="w-full flex-1 mt-4 rounded-xl p-3"
+              style={{backgroundColor: isDarkMode ? '#262626' : '#fff'}}>
+              {/* Tab Navigation */}
+              <View
+                className="w-full mb-3 "
+                style={{backgroundColor: isDarkMode ? '#262626' : '#fff'}}>
+                <View className="flex-row justify-between">
+                  {product_type.map(tabType => (
+                    <TouchableOpacity
+                      key={tabType}
+                      style={[
+                        styles.buttonTab,
+                        {
+                          borderBottomColor:
+                            type === tabType ? BLUE_COLOR : GREY_COLOR,
+                          borderBottomWidth: type === tabType ? 2 : 1,
+                        },
+                      ]}
+                      onPress={() => setType(tabType)}>
+                      <Text
+                        style={[
+                          styles.buttonTabLabel(isDarkMode),
+                          {
+                            color:
+                              type === tabType
+                                ? BLUE_COLOR
+                                : isDarkMode
+                                ? DARK_COLOR
+                                : LIGHT_COLOR,
+                          },
+                        ]}>
+                        {tabType}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+              <ProductPaginate
+                url="/master/product/prepaid"
+                editUrl="/master/product/prepaid/{id}"
+                renderItem={productPulsa}
+                ref={dataRef}
+                payload={{
+                  product_category: 'Data',
+                  product_provider: phoneOperator,
+                }}
+                onItemPress={selectedItem => {
+                  setSelectedItem(selectedItem);
+                }}
+              />
+            </View>
           )
         ) : (
-          <View className="flex-1 justify-center items-center">
-            <Text className="text-gray-500 font-poppins-regular capitalize">
-              Masukkan nomor minimal 3 digit untuk melihat produk
+          <View className=" justify-center items-center">
+            <Text className="text-red-500 mt-2 text-sm font-poppins-regular">
+              Masukkan nomor minimal 4 digit untuk melihat produk
             </Text>
           </View>
         )}
 
         {/* Ganti kondisi selectItem menjadi seperti ini */}
         {selectItem && isSearchEnabled && (
-          <View style={[styles.bottom(isDarkMode)]}>
+          <View className="mt-3">
             <TouchableOpacity
-              style={[
-                styles.bottomButton,
-                {
-                  backgroundColor: isValidNumber ? BLUE_COLOR : GREY_COLOR,
-                },
-              ]}
+              className="w-full rounded-xl mx-auto px-4 h-12 items-center justify-center"
+              style={{
+                backgroundColor: BLUE_COLOR,
+                // opacity: isLoading ? 0.7 : 1,
+              }}
               disabled={!isValidNumber}
               onPress={() => setShowModal(true)}>
-              <Text
-                style={[styles.buttonText, {opacity: isValidNumber ? 1 : 0.5}]}>
-                Lanjutkan
-              </Text>
+              {/* Modifikasi juga pesan error-nya */}
+
+              {selectItem && isSearchEnabled && !isValidNumber ? (
+                <Text className="text-red-100 text-xs font-poppins-bold text-center">
+                  Mohon Untuk Memasukkan Nomor Dengan Benar
+                </Text>
+              ) : (
+                <Text
+                  className="text-white text-sm font-poppins-bold"
+                  style={[{opacity: isValidNumber ? 1 : 0.5}]}>
+                  LANJUTKAN
+                </Text>
+              )}
             </TouchableOpacity>
           </View>
-        )}
-
-        {/* Modifikasi juga pesan error-nya */}
-        {selectItem && isSearchEnabled && !isValidNumber && (
-          <Text
-            className="mb-5"
-            style={{
-              textAlign: 'center',
-              color: '#f43f5e',
-              fontFamily: 'Poppins-SemiBold',
-              fontSize: 12,
-            }}>
-            Mohon Untuk Memasukkan Nomor Dengan Benar
-          </Text>
         )}
 
         <BottomModal
@@ -370,7 +414,7 @@ export default function Pulsa({navigation}) {
                 borderWidth: 1,
               }}>
               <Text
-                className="text-center capitalize  text-sm font-poppins-medium mt-2 mb-4"
+                className="text-center normal-case  text-sm font-poppins-medium mt-2 mb-4"
                 style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                 rincian pembelian
               </Text>
@@ -437,7 +481,7 @@ export default function Pulsa({navigation}) {
                 borderWidth: 1,
               }}>
               <Text
-                className="text-center capitalize text-sm font-poppins-medium mt-2 mb-4"
+                className="text-center normal-case text-sm font-poppins-medium mt-2 mb-4"
                 style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                 rincian pembayaran
               </Text>
@@ -480,7 +524,9 @@ export default function Pulsa({navigation}) {
                 {isLoading ? (
                   <ActivityIndicator color="#ffffff" />
                 ) : (
-                  <Text style={styles.buttonLabel}>Bayar</Text>
+                  <Text className="text-white text-sm font-poppins-bold uppercase">
+                    Bayar
+                  </Text>
                 )}
               </TouchableOpacity>
             </View>

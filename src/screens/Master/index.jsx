@@ -38,6 +38,10 @@ const Master = () => {
     navigation.navigate('IndexLaporan');
   };
 
+  const saldoUser = () => {
+    navigation.navigate('SaldoUser');
+  }
+
   const Pesanan = () => {
     navigation.navigate('Order');
   };
@@ -188,6 +192,50 @@ const Master = () => {
             )}
             className="bg-[#ffffff] border-black p-2 ml-3 mr-3"
             onPress={Laporan}
+          />
+          <View
+            style={{
+              borderBottomWidth: 1,
+              borderBottomColor: isDarkMode ? '#262626' : '#fff',
+              marginHorizontal: 15,
+            }}
+          />
+        </View>
+        <View>
+          <List.Item
+            style={{
+              borderTopLeftRadius: 10,
+              borderTopRightRadius: 10,
+              backgroundColor: isDarkMode ? '#262626' : '#fff',
+            }}
+            title={
+              <Text
+                className="font-poppins-medium text-[15px]"
+                style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                Saldo Pengguna
+              </Text>
+            }
+            left={() => (
+              <View
+                className="rounded-full ml-3"
+                style={{backgroundColor: BLUE_COLOR}}>
+                <Ionicons
+                  name="wallet"
+                  size={17}
+                  color={'white'}
+                  style={{padding: 5}}
+                />
+              </View>
+            )}
+            right={props => (
+              <List.Icon
+                {...props}
+                icon="chevron-right"
+                color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+              />
+            )}
+            className="bg-[#ffffff] border-black p-2 ml-3 mr-3"
+            onPress={saldoUser}
           />
           <View
             style={{
