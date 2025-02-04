@@ -42,6 +42,11 @@ export default function User({navigation}) {
         action: item => navigation.navigate('FormUser', {id: item.id}),
       },
       {
+        id: 'Edit Password',
+        title: 'Edit Password',
+        action: item => navigation.navigate('FormPassUser', {id: item.id}),
+      },
+      {
         id: 'Hapus',
         title: 'Hapus',
         action: item => deleteUser(`/master/users/delete/${item.id}`),

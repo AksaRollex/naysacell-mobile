@@ -70,7 +70,6 @@ export default function Profile({navigation}) {
       queryClient.invalidateQueries(['auth', 'user']);
     },
     onError: () => {
-      console.error('Logout error:', error.response?.data || error.message);
       setErrorMessage(error.response?.data || error.message);
       setModalFailedLogout(true);
       setTimeout(() => {
@@ -119,45 +118,6 @@ export default function Profile({navigation}) {
         <View className=" items-center justify-center">
           {data && (
             <View className="space-x-4 flex-row items-center">
-              {/* <TouchableOpacity
-                onPress={() => openImageViewer(data.photo)}
-                style={{
-                  alignSelf: 'center',
-                }}>
-                <Image
-                  className="rounded-3xl w-20 h-20 bg-slate-50"
-                  source={{
-                    uri: data.photo
-                      ? `${APP_URL}${data.photo}`
-                      : 'https://t4.ftcdn.net/jpg/04/89/93/27/360_F_489932757_QoDMy213RNITzJcdRuPs7ZVsQyccJ9Vd.jpg',
-                  }}
-                  // source={{
-                  //   uri: data.photo
-                  //     ? `${APP_URL}${
-                  //         data.photo.startsWith('/')
-                  //           ? data.photo
-                  //           : '/' + data.photo
-                  //       }`
-                  //     : 'https://default-avatar-url',
-                  // }}
-                  onError={e => {
-                    console.log('Image load error:', e.nativeEvent.error);
-                    console.log('Image URL:', `${APP_URL}/${data.photo}`);
-                  }}
-                />
-              </TouchableOpacity> */}
-              {/* <View className="flex-col">
-                <Text
-                  className="text-base font-poppins-semibold"
-                  style={{color: isDarkMode ? 'white' : 'white'}}>
-                  {data.name}
-                </Text>
-                <Text
-                  className="text-base font-poppins-semibold "
-                  style={{color: isDarkMode ? 'white' : 'white'}}>
-                  {data.email}
-                </Text>
-              </View> */}
             </View>
           )}
         </View>

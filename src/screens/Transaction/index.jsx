@@ -91,6 +91,10 @@ export default function Transaction({navigation}) {
   };
   const TypePicker = ({onClose}) => {
     const statusMapping = {
+      all: {
+        display: 'Semua',
+        value: 'all',
+      },
       Pending: {
         display: 'Menunggu',
         value: 'pending',
@@ -105,7 +109,7 @@ export default function Transaction({navigation}) {
       },
     };
 
-    const status = ['Pending', 'Success', 'Failed'];
+    const status = ['all', 'Pending', 'Success', 'Failed'];
 
     const hasChanges = () => {
       return transactionStatus !== '';
@@ -119,7 +123,8 @@ export default function Transaction({navigation}) {
       );
       setPayload(prev => ({
         ...prev,
-        transaction_status: selectedValue.toLowerCase(),
+        transaction_status:
+          selectedValue === 'all' ? '' : selectedValue.toLowerCase(),
       }));
 
       if (paginateRef.current) {

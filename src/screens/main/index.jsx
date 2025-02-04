@@ -61,6 +61,8 @@ import FormOrder from '../Master/Order/Form';
 import FormSaldoUser from '../Master/SaldoUser/Form';
 import SaldoUser from '../Master/SaldoUser';
 import LaporanDeposit from '../Master/Laporan/Tabs/LaporanDeposit';
+import FormPassAdmin from '../Master/UsersAdmin/Tabs/Admin/FormPassAdmin';
+import FormPassUser from '../Master/UsersAdmin/Tabs/User/FormPassUser';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -104,6 +106,8 @@ const CustomTabBar = ({state, descriptors, navigation}) => {
     'CustomerService',
     'SaldoUser',
     'FormSaldoUser',
+    'FormPassAdmin',
+    'FormPassUser',
   ];
 
   if (hideOnScreens.includes(routeName)) {
@@ -590,6 +594,36 @@ const MasterNavigation = () => {
           },
         })}
       />
+      <Stack.Screen
+        name="FormPassUser"
+        component={FormPassUser}
+        options={({route}) => ({
+          title: route.params?.id
+            ? 'Form Edit Password'
+            : 'Form Tambah Password',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: 18,
+            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+          },
+        })}
+      />
+      <Stack.Screen
+        name="FormPassAdmin"
+        component={FormPassAdmin}
+        options={({route}) => ({
+          title: route.params?.id
+            ? 'Form Edit Password'
+            : 'Form Tambah Password',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: 18,
+            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+          },
+        })}
+      />
     </Stack.Navigator>
   );
 };
@@ -662,6 +696,8 @@ export default function MainScreen() {
                 'LaporanDeposit',
                 'SaldoUser',
                 'FormSaldoUser',
+                'FormPassUser',
+                'FormPassAdmin',
               ];
 
               if (hideOnScreens.includes(routeName)) {

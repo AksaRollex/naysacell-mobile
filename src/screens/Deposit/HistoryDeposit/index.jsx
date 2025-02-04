@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Modal,
-  ScrollView
+  ScrollView,
 } from 'react-native';
 import React, {useRef, useEffect} from 'react';
 import {
@@ -64,6 +64,10 @@ export default function HistoryDeposit({}) {
   };
   const TypePicker = ({onClose}) => {
     const statusMapping = {
+      all: {
+        display: 'Semua',
+        value: 'all',
+      },
       pending: {
         display: 'Menunggu',
         value: 'pending',
@@ -78,7 +82,7 @@ export default function HistoryDeposit({}) {
       },
     };
 
-    const status = ['pending', 'success', 'failed'];
+    const status = ['all', 'pending', 'success', 'failed'];
 
     const hasChanges = () => {
       return depositStatus !== '';
@@ -92,7 +96,7 @@ export default function HistoryDeposit({}) {
       );
       setPayload(prev => ({
         ...prev,
-        status: selectedValue.toLowerCase(),
+        status: selectedValue === 'all' ? '' : selectedValue.toLowerCase(),
       }));
 
       if (paginateRef.current) {

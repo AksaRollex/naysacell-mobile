@@ -116,17 +116,46 @@ export default function Laporan({navigation}) {
   };
 
   const TypePicker = ({onClose}) => {
-    const status = ['Pending', 'Success', 'Failed'];
+    const statusMapping = {
+      all: {
+        display: 'Semua',
+        value: 'all',
+      },
+      Pending: {
+        display: 'Menunggu',
+        value: 'pending',
+      },
+      Success: {
+        display: 'Berhasil',
+        value: 'success',
+      },
+      Failed: {
+        display: 'Gagal',
+        value: 'failed',
+      },
+    };
+
+    const status = ['all', 'Pending', 'Success', 'Failed'];
 
     const hasChanges = () => {
       return transactionStatus !== '';
     };
 
     const handleConfirm = () => {
-      setSelectedTransactionStatus(transactionStatus);
-      setPayload({
-        transaction_status: transactionStatus,
-      });
+      const selectedValue =
+        statusMapping[transactionStatus]?.value || transactionStatus;
+      setSelectedTransactionStatus(
+        statusMapping[transactionStatus]?.display || transactionStatus,
+      );
+      setPayload(prev => ({
+        ...prev,
+        transaction_status:
+          selectedValue === 'all' ? '' : selectedValue.toLowerCase(),
+      }));
+
+      if (paginateRef.current) {
+        paginateRef.current.refetch();
+      }
       onClose();
     };
 
@@ -137,21 +166,27 @@ export default function Laporan({navigation}) {
         visible={modalTransactionStatus}
         onRequestClose={onClose}>
         <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Pilih Filter</Text>
+          <View style={styles.modalContent(isDarkMode)}>
+            <View style={styles.modalHeader(isDarkMode)}>
+              <Text style={styles.modalTitle(isDarkMode)}>Pilih Filter</Text>
               <TouchableOpacity
                 onPress={() => {
                   setTransactionStatus('');
                   onClose();
                 }}>
-                <MaterialIcons name="close" size={24} color="#000" />
+                <MaterialIcons
+                  name="close"
+                  size={24}
+                  color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+                />
               </TouchableOpacity>
             </View>
 
             <View className="flex-row justify-between px-4">
               <View className="flex-1 mr-2">
-                <Text className="text-black font-poppins-semibold mb-2">
+                <Text
+                  className=" font-poppins-semibold mb-2"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                   Status Transaksi
                 </Text>
                 <ScrollView className="max-h-64">
@@ -160,17 +195,22 @@ export default function Laporan({navigation}) {
                       key={statusTransaksi}
                       className={`p-3 rounded-md mb-2 ${
                         transactionStatus === statusTransaksi
-                          ? 'bg-blue-50'
-                          : 'bg-[#ececec]'
+                          ? 'bg-blue-100'
+                          : isDarkMode
+                          ? 'bg-[#262626]'
+                          : 'bg-[#f8f8f8]'
                       }`}
                       onPress={() => setTransactionStatus(statusTransaksi)}>
                       <Text
                         className={`${
                           transactionStatus === statusTransaksi
                             ? 'text-blue-500 font-poppins-semibold'
+                            : isDarkMode
+                            ? 'text-white font-poppins-regular'
                             : 'text-black font-poppins-regular'
                         }`}>
-                        {statusTransaksi}
+                        {statusMapping[statusTransaksi]?.display ||
+                          statusTransaksi}
                       </Text>
                     </TouchableOpacity>
                   ))}
@@ -186,7 +226,7 @@ export default function Laporan({navigation}) {
                 disabled={!hasChanges()}
                 onPress={handleConfirm}>
                 <Text className="text-white text-center font-poppins-semibold">
-                  Terapkan Filter
+                  TERAPKAN
                 </Text>
               </TouchableOpacity>
             </View>
@@ -358,22 +398,22 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'flex-end',
   },
-  modalContent: {
-    backgroundColor: 'white',
+  modalContent: isDarkMode => ({
+    backgroundColor: isDarkMode ? '#1e1e1e' : '#fff',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingVertical: 20,
-  },
-  modalHeader: {
+  }),
+  modalHeader: isDarkMode => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
     marginBottom: 15,
-  },
-  modalTitle: {
+  }),
+  modalTitle: isDarkMode => ({
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#000',
-  },
+    color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+  }),
 });

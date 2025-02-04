@@ -1,4 +1,12 @@
-import {Text, View, useColorScheme} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  useColorScheme,
+  Modal,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import React, {useRef} from 'react';
 import {
   DARK_BACKGROUND,
@@ -10,8 +18,13 @@ import {
 import Paginate from '../../../../components/Paginate';
 import {rupiah} from '../../../../libs/utils';
 import IonIcons from 'react-native-vector-icons/Ionicons';
+import {MenuView} from '@react-native-menu/menu';
+import {useDelete} from '../../../../hooks/useDelete';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useQueryClient} from '@tanstack/react-query';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-export default function LaporanDeposit({}) {
+export default function LaporanDeposit({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
   const paginateRef = useRef();
 
@@ -47,7 +60,203 @@ export default function LaporanDeposit({}) {
       return 'Gagal';
     }
   };
+
+  const queryClient = useQueryClient();
+
+  const {
+    delete: deleteLaporanDeposit,
+    DeleteConfirmationModal,
+    SuccessOverlayModal,
+    FailedOverlayModal,
+  } = useDelete({
+    onSuccess: () => {
+      queryClient.invalidateQueries('/auth/histori-deposit-web');
+      navigation.navigate('LaporanDeposit');
+    },
+    onError: error => {
+      console.log('delete error', error);
+    },
+  });
+  const [transactionStatus, setTransactionStatus] = React.useState('');
+  const [selectedTransactionStatus, setSelectedTransactionStatus] =
+    React.useState('');
+  const [modalTransactionStatus, setModalTransactionStatus] =
+    React.useState(false);
+  const [payload, setPayload] = React.useState({});
+
+  const Plugs = () => {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          setModalTransactionStatus(true);
+          setTransactionStatus(selectedTransactionStatus);
+        }}
+        className=" flex-row items-center rounded-xl border-[0.5px] border-stone-600 justify-between p-[14px] min-w-[70px]"
+        style={{backgroundColor: isDarkMode ? '#262626' : '#fff'}}>
+        <View className="flex-row items-center">
+          <IonIcons
+            name="apps"
+            size={20}
+            color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+          />
+          <Text
+            className=" font-poppins-regular mx-2 text-sm"
+            style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+            {selectedTransactionStatus || 'Status'}
+          </Text>
+        </View>
+        <MaterialIcons
+          name="keyboard-arrow-down"
+          size={20}
+          color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+        />
+      </TouchableOpacity>
+    );
+  };
+
+  const TypePicker = ({onClose}) => {
+    const statusMapping = {
+      all: {
+        display: 'Semua',
+        value: 'all',
+      },
+      pending: {
+        display: 'Menunggu',
+        value: 'pending',
+      },
+      success: {
+        display: 'Berhasil',
+        value: 'success',
+      },
+      failed: {
+        display: 'Gagal',
+        value: 'failed',
+      },
+      process: {
+        display: 'Proses',
+        value: 'process',
+      },
+      cancelled: {
+        display: 'Dibatalkan',
+        value: 'cancelled',
+      },
+    };
+    const status = [
+      'all',
+      'pending',
+      'success',
+      'failed',
+      'process',
+      'cancelled',
+    ];
+
+    const hasChanges = () => {
+      return transactionStatus !== '';
+    };
+
+    const handleConfirm = () => {
+      const selectedValue =
+        statusMapping[transactionStatus]?.value || transactionStatus;
+      setSelectedTransactionStatus(
+        statusMapping[transactionStatus]?.display || transactionStatus,
+      );
+      setPayload(prev => ({
+        ...prev,
+        status: selectedValue === 'all' ? '' : selectedValue.toLowerCase(),
+      }));
+
+      if (paginateRef.current) {
+        paginateRef.current.refetch();
+      }
+      onClose();
+    };
+
+    return (
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalTransactionStatus}
+        onRequestClose={onClose}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent(isDarkMode)}>
+            <View style={styles.modalHeader(isDarkMode)}>
+              <Text style={styles.modalTitle(isDarkMode)}>Pilih Filter</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  setTransactionStatus('');
+                  onClose();
+                }}>
+                <MaterialIcons
+                  name="close"
+                  size={24}
+                  color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+                />
+              </TouchableOpacity>
+            </View>
+
+            <View className="flex-row justify-between px-4">
+              <View className="flex-1 mr-2">
+                <Text
+                  className="font-poppins-semibold mb-2"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  Status Transaksi
+                </Text>
+                <ScrollView className="max-h-64">
+                  {status.map(statusTransaksi => (
+                    <TouchableOpacity
+                      key={statusTransaksi}
+                      className={`p-3 rounded-md mb-2 ${
+                        transactionStatus === statusTransaksi
+                          ? 'bg-blue-100'
+                          : isDarkMode
+                          ? 'bg-[#262626]'
+                          : 'bg-[#f8f8f8]'
+                      }`}
+                      onPress={() => setTransactionStatus(statusTransaksi)}>
+                      <Text
+                        className={`${
+                          transactionStatus === statusTransaksi
+                            ? 'text-blue-500 font-poppins-semibold'
+                            : isDarkMode
+                            ? 'text-white font-poppins-regular'
+                            : 'text-black font-poppins-regular'
+                        }`}>
+                        {statusMapping[statusTransaksi]?.display ||
+                          statusTransaksi}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </View>
+            </View>
+
+            <View className="mt-4 px-4">
+              <TouchableOpacity
+                className={`py-3 rounded-md ${
+                  hasChanges() ? 'bg-blue-500' : 'bg-gray-300'
+                }`}
+                disabled={!hasChanges()}
+                onPress={handleConfirm}>
+                <Text className="text-white text-center font-poppins-semibold">
+                  TERAPKAN
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
   const LaporanCards = ({item}) => {
+    const dropdownOptions = [
+      {
+        id: 'Hapus',
+        title: 'Hapus',
+        action: item =>
+          deleteLaporanDeposit(`/master/delete-laporan-deposit/${item.id}`),
+      },
+    ];
     return (
       <View
         className="w-full p-2 flex-col  rounded-lg mt-4"
@@ -72,6 +281,7 @@ export default function LaporanDeposit({}) {
                 }}>
                 <IonIcons name="receipt" size={25} color={BLUE_COLOR} />
               </View>
+
               <View className="flex-col items-start justify-start ">
                 <Text
                   className="font-poppins-medium text-base "
@@ -122,9 +332,16 @@ export default function LaporanDeposit({}) {
                         size={15}
                       />
                     ) : item?.status === 'failed' ? (
-                      <IonIcons name="close" color="#138EE9" size={15} />
-                    ) : (
-                      <IonIcons name="information" color="#138EE9" size={15} />
+                      <IonIcons name="close-sharp" color="#138EE9" size={15} />
+                    )  : item?.status  === 'cancelled' ? (
+                      <IonIcons name="close-sharp" color="#ef4444" size={15} />
+                    )  : item?.status === 'pending' ? (
+                      <IonIcons name="time-sharp" color="#3b82f6" size={15} />
+                    ) : item?.status === 'process' ? (
+                      <IonIcons name="settings-sharp" color="#eab308" size={15} />
+                    )
+                    : (
+                      <IonIcons name="time-sharp" color="#3b82f6" size={15} />
                     )}
                     <Text
                       className={`font-poppins-medium text-xs mx-2  ${textColor(
@@ -136,6 +353,28 @@ export default function LaporanDeposit({}) {
                 </View>
               </View>
             </View>
+            <MenuView
+              title="Menu Title"
+              actions={dropdownOptions.map(option => ({
+                ...option,
+              }))}
+              onPressAction={({nativeEvent}) => {
+                const selectedOption = dropdownOptions.find(
+                  option => option.title === nativeEvent.event,
+                );
+                if (selectedOption) {
+                  selectedOption.action(item);
+                }
+              }}
+              shouldOpenOnLongPress={false}>
+              <View className="p-1 justify-end rounded-full items-start bg-stone-200">
+                <MaterialCommunityIcons
+                  name="dots-vertical"
+                  color="black"
+                  size={20}
+                />
+              </View>
+            </MenuView>
           </View>
         </View>
       </View>
@@ -149,10 +388,45 @@ export default function LaporanDeposit({}) {
         backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
       }}>
       <Paginate
-        url="/auth/histori-deposit-web"
+        url="/auth/histori-deposit"
         ref={paginateRef}
+        payload={payload}
+        Plugin={Plugs}
         renderItem={LaporanCards}
       />
+      <TypePicker
+        visible={modalTransactionStatus}
+        onClose={() => setModalTransactionStatus(false)}
+      />
+      <DeleteConfirmationModal />
+      <SuccessOverlayModal />
+      <FailedOverlayModal />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: isDarkMode => ({
+    backgroundColor: isDarkMode ? '#1e1e1e' : '#fff',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingVertical: 20,
+  }),
+  modalHeader: isDarkMode => ({
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    marginBottom: 15,
+  }),
+  modalTitle: isDarkMode => ({
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+  }),
+});

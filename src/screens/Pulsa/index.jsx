@@ -26,7 +26,6 @@ import BottomModal from '../../components/BottomModal';
 import {rupiah} from '../../libs/utils';
 import Input from '../../components/form/input';
 import ProductPaginate from '../../components/ProductPaginate';
-import {Controller, useForm} from 'react-hook-form';
 import axios from '../../libs/axios';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import ModalAfterProcess from '../../components/ModalAfterProcess';
@@ -46,8 +45,6 @@ export default function Pulsa({navigation}) {
   const queryClient = useQueryClient();
   const [isSearchEnabled, setIsSearchEnabled] = useState(false);
   const [phoneOperator, setPhoneOperator] = useState(null);
-
-  const {control} = useForm();
 
   const phoneOperators = [
     {
@@ -184,7 +181,7 @@ export default function Pulsa({navigation}) {
     const isSelected = selectItem && selectItem.id === item.id;
     return (
       <TouchableOpacity
-        className={`p-2 border rounded-xl relative ${
+        className={`p-2  h-20 border rounded-xl relative items-start  ${
           isSelected
             ? `border-green-500 bg-${isDarkMode ? '[#252525]' : '[]'}`
             : `border-gray-500 bg-${isDarkMode ? '[#262626]' : '[]'}`
@@ -362,8 +359,8 @@ export default function Pulsa({navigation}) {
             </View>
           )
         ) : (
-          <View className=" justify-center items-center">
-            <Text className="text-red-500 mt-2 text-sm font-poppins-regular">
+          <View className=" justify-items-start items-start ">
+            <Text className="text-red-400 mt-1 text-sm font-poppins-regular">
               Masukkan nomor minimal 4 digit untuk melihat produk
             </Text>
           </View>
@@ -414,9 +411,9 @@ export default function Pulsa({navigation}) {
                 borderWidth: 1,
               }}>
               <Text
-                className="text-center normal-case  text-sm font-poppins-medium mt-2 mb-4"
+                className="text-center text-sm font-poppins-medium mt-2 mb-4 normal-case"
                 style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                rincian pembelian
+                Rincian pembelian
               </Text>
               <View className="flex-row justify-between items-center my-1 ">
                 <Text
@@ -483,7 +480,7 @@ export default function Pulsa({navigation}) {
               <Text
                 className="text-center normal-case text-sm font-poppins-medium mt-2 mb-4"
                 style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                rincian pembayaran
+                Rincian pembayaran
               </Text>
               <View className="flex-row justify-between items-center my-1 ">
                 <Text

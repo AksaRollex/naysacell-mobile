@@ -1,4 +1,12 @@
-import {StyleSheet, Text, useColorScheme, View, Image} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+  Modal,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import React, {useRef} from 'react';
 import Paginate from '../../../components/Paginate';
 import {
@@ -15,6 +23,7 @@ import IonIcons from 'react-native-vector-icons/Ionicons';
 import {useQueryClient} from '@tanstack/react-query';
 import {useDelete} from '../../../hooks/useDelete';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 export default function Order({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
@@ -50,11 +59,11 @@ export default function Order({navigation}) {
 
   const textOrderStatus = order_status => {
     if (order_status === 'pending') {
-      return 'Pending';
+      return 'Menunggu';
     } else if (order_status === 'success') {
-      return 'Sukses';
+      return 'Berhasil';
     } else if (order_status === 'processing') {
-      return 'Dalam Proses';
+      return 'Proses';
     } else if (order_status === 'cancelled') {
       return 'Gagal';
     } else {
@@ -66,13 +75,27 @@ export default function Order({navigation}) {
     if (order_status === 'pending') {
       return '#3b82f6';
     } else if (order_status === 'success') {
-      return '#22c55e';
+      return '#4caf50';
     } else if (order_status === 'processing') {
       return '#eab308';
     } else if (order_status === 'cancelled') {
       return '#ef4444';
     } else {
       return '##3b82f6';
+    }
+  };
+
+  const iconOrderStatus = order_status => {
+    if (order_status === 'pending') {
+      return 'time-sharp';
+    } else if (order_status === 'success') {
+      return 'checkmark-done-sharp';
+    } else if (order_status === 'processing') {
+      return 'settings-sharp';
+    } else if (order_status === 'cancelled') {
+      return 'close-sharp';
+    } else {
+      return 'time-sharp';
     }
   };
 
@@ -92,6 +115,168 @@ export default function Order({navigation}) {
       console.log(error);
     },
   });
+
+  const [transactionStatus, setTransactionStatus] = React.useState('');
+  const [selectedTransactionStatus, setSelectedTransactionStatus] =
+    React.useState('');
+  const [modalTransactionStatus, setModalTransactionStatus] =
+    React.useState(false);
+  const [payload, setPayload] = React.useState({});
+
+  const Plugs = () => {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          setModalTransactionStatus(true);
+          setTransactionStatus(selectedTransactionStatus);
+        }}
+        className=" flex-row items-center rounded-xl border-[0.5px] border-stone-600 justify-between p-[14px] min-w-[70px]"
+        style={{backgroundColor: isDarkMode ? '#262626' : '#fff'}}>
+        <View className="flex-row items-center">
+          <IonIcons
+            name="apps"
+            size={20}
+            color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+          />
+          <Text
+            className=" font-poppins-regular mx-2 text-sm"
+            style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+            {selectedTransactionStatus || 'Status'}
+          </Text>
+        </View>
+        <MaterialIcons
+          name="keyboard-arrow-down"
+          size={20}
+          color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+        />
+      </TouchableOpacity>
+    );
+  };
+
+  const TypePicker = ({onClose}) => {
+    const statusMapping = {
+      all: {
+        display: 'Semua',
+        value: 'all',
+      },
+      pending: {
+        display: 'Menunggu',
+        value: 'pending',
+      },
+      success: {
+        display: 'Berhasil',
+        value: 'success',
+      },
+      processing: {
+        display: 'Proses',
+        value: 'processing',
+      },
+      cancelled: {
+        display: 'Dibatalkan',
+        value: 'cancelled',
+      },
+    };
+
+    const status = ['all', 'pending', 'success', 'processing', 'cancelled'];
+
+    const hasChanges = () => {
+      return transactionStatus !== '';
+    };
+
+    const handleConfirm = () => {
+      const selectedValue =
+        statusMapping[transactionStatus]?.value || transactionStatus;
+      setSelectedTransactionStatus(
+        statusMapping[transactionStatus]?.display || transactionStatus,
+      );
+      setPayload(prev => ({
+        ...prev,
+        order_status:
+          selectedValue === 'all' ? '' : selectedValue.toLowerCase(),
+      }));
+
+      if (paginateRef.current) {
+        paginateRef.current.refetch();
+      }
+      onClose();
+    };
+
+    return (
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalTransactionStatus}
+        onRequestClose={onClose}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent(isDarkMode)}>
+            <View style={styles.modalHeader(isDarkMode)}>
+              <Text style={styles.modalTitle(isDarkMode)}>Pilih Filter</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  setTransactionStatus('');
+                  onClose();
+                }}>
+                <MaterialIcons
+                  name="close"
+                  size={24}
+                  color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+                />
+              </TouchableOpacity>
+            </View>
+
+            <View className="flex-row justify-between px-4">
+              <View className="flex-1 mr-2">
+                <Text
+                  className="font-poppins-semibold mb-2"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  Status Transaksi
+                </Text>
+                <ScrollView className="max-h-64">
+                  {status.map(statusTransaksi => (
+                    <TouchableOpacity
+                      key={statusTransaksi}
+                      className={`p-3 rounded-md mb-2 ${
+                        transactionStatus === statusTransaksi
+                          ? 'bg-blue-100'
+                          : isDarkMode
+                          ? 'bg-[#262626]'
+                          : 'bg-[#f8f8f8]'
+                      }`}
+                      onPress={() => setTransactionStatus(statusTransaksi)}>
+                      <Text
+                        className={`${
+                          transactionStatus === statusTransaksi
+                            ? 'text-blue-500 font-poppins-semibold'
+                            : isDarkMode
+                            ? 'text-white font-poppins-regular'
+                            : 'text-black font-poppins-regular'
+                        }`}>
+                        {statusMapping[statusTransaksi]?.display ||
+                          statusTransaksi}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </View>
+            </View>
+
+            <View className="mt-4 px-4">
+              <TouchableOpacity
+                className={`py-3 rounded-md ${
+                  hasChanges() ? 'bg-blue-500' : 'bg-gray-300'
+                }`}
+                disabled={!hasChanges()}
+                onPress={handleConfirm}>
+                <Text className="text-white text-center font-poppins-semibold">
+                  TERAPKAN
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
 
   const orderCards = ({item}) => {
     const dropdownOptions = [
@@ -157,9 +342,9 @@ export default function Order({navigation}) {
                         item?.order_status,
                       )}`}>
                       <IonIcons
-                        name="wallet"
+                        name={iconOrderStatus(item?.order_status)}
                         color={colorOrderStatus(item?.order_status)}
-                        size={17}
+                        size={15}
                       />
 
                       <Text
@@ -180,7 +365,7 @@ export default function Order({navigation}) {
                   </View>
                   <View className="flex-row ">
                     <View className="bg-blue-100 rounded-md pl-2   mt-1 justify-center  items-center flex-row  py-1 max-w-[120px]">
-                      <IonIcons name="pricetag" color="#138EE9" size={17} />
+                      <IonIcons name="pricetag" color="#138EE9" size={15} />
                       <Text className="font-poppins-medium text-xs mx-2 text-[#138EE9]">
                         {rupiah(item?.product_price)}
                       </Text>
@@ -225,8 +410,17 @@ export default function Order({navigation}) {
       <View
         className="rounded-lg "
         style={{backgroundColor: isDarkMode ? '#262626' : '#f8f8f8'}}></View>
-      <Paginate url="/master/order" ref={paginateRef} renderItem={orderCards} />
-
+      <Paginate
+        url="/master/order"
+        ref={paginateRef}
+        renderItem={orderCards}
+        payload={payload}
+        Plugin={Plugs}
+      />
+      <TypePicker
+        visible={modalTransactionStatus}
+        onClose={() => setModalTransactionStatus(false)}
+      />
       <DeleteConfirmationModal />
       <SuccessOverlayModal />
       <FailedOverlayModal />
@@ -234,4 +428,28 @@ export default function Order({navigation}) {
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: isDarkMode => ({
+    backgroundColor: isDarkMode ? '#1e1e1e' : '#fff',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingVertical: 20,
+  }),
+  modalHeader: isDarkMode => ({
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    marginBottom: 15,
+  }),
+  modalTitle: isDarkMode => ({
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+  }),
+});

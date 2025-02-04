@@ -60,7 +60,7 @@ const Paginate = forwardRef(
     const [dataList, setDataList] = useState([]);
     const [isFetchingMore, setIsFetchingMore] = useState(false);
     const {control, handleSubmit} = useForm();
-    const cardData = [1, 2, 3, 4];
+    const cardData = [1, 2];
     const isDarkMode = useColorScheme() === 'dark';
 
     const {data, isFetching, refetch} = useQuery({

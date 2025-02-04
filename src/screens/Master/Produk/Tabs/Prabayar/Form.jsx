@@ -254,7 +254,7 @@ export default function FormPrabayar({route, navigation}) {
                   onChangeText={onChange}
                   onBlur={onBlur}
                   editable={!isLoadingData}
-                  placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
+                  placeholderTextColor={SLATE_COLOR}
                   style={{
                     fontFamily: 'Poppins-Regular',
                     backgroundColor: isDarkMode ? '#262626' : '#fff',
@@ -268,7 +268,7 @@ export default function FormPrabayar({route, navigation}) {
             )}
           />
           {errors.product_name && (
-            <Text className="mt-1  text-red-400 font-poppins-regular">
+            <Text className="mt-1  text-red-400 font-poppins-regular text-xs">
               {errors.product_name.message}
             </Text>
           )}
@@ -278,6 +278,7 @@ export default function FormPrabayar({route, navigation}) {
             rules={{
               required: 'Harga Produk harus diisi',
               pattern: {value: /[0-9]{3,10}$/},
+              message: 'Harga Produk hanya diperbolehkan angka',
             }}
             render={({field: {onChange, onBlur, value}}) => (
               <>
@@ -297,7 +298,7 @@ export default function FormPrabayar({route, navigation}) {
                   onBlur={onBlur}
                   editable={!isLoadingData}
                   keyboardType="numeric"
-                  placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
+                  placeholderTextColor={SLATE_COLOR}
                   style={{
                     fontFamily: 'Poppins-Regular',
                     backgroundColor: isDarkMode ? '#262626' : '#fff',
@@ -311,14 +312,14 @@ export default function FormPrabayar({route, navigation}) {
             )}
           />
           {errors.product_price && (
-            <Text className="mt-1  text-red-400 font-poppins-regular">
+            <Text className="mt-1  text-red-400 font-poppins-regular text-xs">
               {errors.product_price.message}
             </Text>
           )}
           <Controller
             control={control}
             name="product_desc"
-            rules={{required: 'Harga Produk diisi'}}
+            rules={{required: 'Deskripsi Produk diisi'}}
             render={({field: {onChange, onBlur, value}}) => (
               <>
                 <Text
@@ -332,7 +333,7 @@ export default function FormPrabayar({route, navigation}) {
                   onBlur={onBlur}
                   editable={!isLoadingData}
                   keyboardType="default"
-                  placeholderTextColor={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
+                  placeholderTextColor={SLATE_COLOR}
                   style={{
                     fontFamily: 'Poppins-Regular',
                     backgroundColor: isDarkMode ? '#262626' : '#fff',
@@ -345,6 +346,11 @@ export default function FormPrabayar({route, navigation}) {
               </>
             )}
           />
+          {errors.product_desc && (
+            <Text className="mt-1  text-red-400 font-poppins-regular text-xs">
+              {errors.product_desc.message}
+            </Text>
+          )}
           <Controller
             control={control}
             name="product_category"
@@ -369,7 +375,15 @@ export default function FormPrabayar({route, navigation}) {
                   }`}>
                   <Text
                     className="font-poppins-regular normal-case"
-                    style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                    style={{
+                      color: isDarkMode
+                        ? value
+                          ? DARK_COLOR
+                          : SLATE_COLOR
+                        : value
+                        ? LIGHT_COLOR
+                        : SLATE_COLOR,
+                    }}>
                     {value || 'Pilih Kategori'}
                   </Text>
                 </TouchableOpacity>
@@ -377,15 +391,11 @@ export default function FormPrabayar({route, navigation}) {
             )}
           />
           {errors.product_category && (
-            <Text className="mt-1  text-red-400 font-poppins-regular">
+            <Text className="mt-1  text-red-400 font-poppins-regular text-xs">
               {errors.product_category.message}
             </Text>
           )}
-          {errors.product_desc && (
-            <Text className="mt-1  text-red-400 font-poppins-regular">
-              {errors.product_desc.message}
-            </Text>
-          )}
+
           <Controller
             control={control}
             name="product_provider"
@@ -420,7 +430,15 @@ export default function FormPrabayar({route, navigation}) {
                   }`}>
                   <Text
                     className="font-poppins-regular normal-case"
-                    style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                    style={{
+                      color: isDarkMode
+                        ? value
+                          ? DARK_COLOR
+                          : SLATE_COLOR
+                        : value
+                        ? LIGHT_COLOR
+                        : SLATE_COLOR,
+                    }}>
                     {value || 'Pilih Provider'}
                   </Text>
                 </TouchableOpacity>
@@ -428,7 +446,7 @@ export default function FormPrabayar({route, navigation}) {
             )}
           />
           {errors.product_provider && (
-            <Text className="mt-1  text-red-400 font-poppins-regular">
+            <Text className="mt-1  text-red-400 font-poppins-regular text-xs">
               {errors.product_provider.message}
             </Text>
           )}

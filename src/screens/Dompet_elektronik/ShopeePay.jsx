@@ -4,8 +4,9 @@ import {
   View,
   TouchableOpacity,
   useColorScheme,
+  ActivityIndicator,
 } from 'react-native';
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   BLUE_COLOR,
   DARK_BACKGROUND,
@@ -22,14 +23,19 @@ import BottomModal from '../../components/BottomModal';
 import Input from '../../components/form/input';
 import {rupiah} from '../../libs/utils';
 import ProductPaginate from '../../components/ProductPaginate';
+import ModalAfterProcess from '../../components/ModalAfterProcess';
+import {useMutation} from '@tanstack/react-query';
+import axios from '../../libs/axios';
 
 export default function Shopeepay({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
   const [nomorTujuan, setNomorTujuan] = useState('');
   const [showProducts, setShowProducts] = useState(false);
+  const [modalFailed, setModalFailed] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectItem, setSelectedItem] = useState(null);
   const [message, setMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const paginateRef = useRef();
 
@@ -52,11 +58,71 @@ export default function Shopeepay({navigation}) {
     }
   };
 
+  const [userId, setUserId] = useState(null);
+  const [nameCustomer, setNameCustomer] = useState('');
+
+  useEffect(() => {
+    axios
+      .get('auth/me')
+      .then(res => {
+        setNameCustomer(res.data.user?.name);
+        setUserId(res.data.user?.id);
+      })
+      .catch(err => {
+        console.error('Error fetching data:', err);
+      });
+  }, []);
+
+  const handleTopup = async () => {
+    try {
+      if (!userId) {
+        Alert.alert('Error', 'User data tidak ditemukan');
+        return;
+      }
+
+      const response = await axios.post('/auth/submit-product', {
+        product_id: selectItem?.id,
+        customer_no: nomorTujuan,
+        quantity: 1,
+        product_name: selectItem?.product_name,
+        product_price: selectItem?.product_price,
+        customer_name: nameCustomer,
+        user_id: userId,
+      });
+      queryClient.invalidateQueries('/auth/histori');
+      navigation.replace('SuccessNotif', {
+        item: selectItem,
+        customer_no: nomorTujuan,
+        transaction_data: response.data.data,
+      });
+    } catch (error) {
+      let errorMsg = error.response?.data?.message || 'Terjadi kesalahan';
+
+      if (error.response?.data?.details) {
+        const details = error.response.data.details;
+        errorMsg += `\nSaldo: ${details.saldo_sekarang}\nTotal: ${details.total_pembelian}\nKurang: ${details.kekurangan_saldo}`;
+      }
+
+      if (error.response?.data?.suggestion) {
+        errorMsg += `\n${error.response.data.suggestion}`;
+      }
+
+      console.log(error);
+      setErrorMessage(errorMsg);
+      setModalFailed(true);
+      setTimeout(() => {
+        setModalFailed(false);
+      }, 2000);
+    }
+  };
+
+  const {mutate: topup, isLoading} = useMutation(handleTopup);
+
   const productShopeepay = ({item}) => {
     const isSelected = selectItem && selectItem.id === item.id;
     return (
       <TouchableOpacity
-        className={`p-2 border rounded-xl relative ${
+        className={`p-2 border rounded-xl h-20 relative ${
           isSelected
             ? `border-green-500 bg-${isDarkMode ? '[#252525]' : '[]'}`
             : `border-gray-500 bg-${isDarkMode ? '[#262626]' : '[]'}`
@@ -117,7 +183,7 @@ export default function Shopeepay({navigation}) {
           </View>
 
           {message !== '' && (
-            <Text className="text-red-500 mt-1 text-sm font-poppins-regular">
+            <Text className="text-red-400 mt-1 text-xs font-poppins-regular">
               {message}
             </Text>
           )}
@@ -173,7 +239,7 @@ export default function Shopeepay({navigation}) {
               <Text
                 className="text-center normal-case  text-sm font-poppins-medium mt-2 mb-4"
                 style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                rincian pembelian
+                Rincian pembelian
               </Text>
               <View className="flex-row justify-between items-center my-1 ">
                 <Text
@@ -240,7 +306,7 @@ export default function Shopeepay({navigation}) {
               <Text
                 className="text-center normal-case text-sm font-poppins-medium mt-2 mb-4"
                 style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                rincian pembayaran
+                Rincian pembayaran
               </Text>
               <View className="flex-row justify-between items-center my-1 ">
                 <Text
@@ -275,17 +341,16 @@ export default function Shopeepay({navigation}) {
                 className="w-full rounded-xl mx-auto px-4 h-12 items-center justify-center"
                 style={{
                   backgroundColor: BLUE_COLOR,
-                  // opacity: isLoading ? 0.7 : 1,
+                  opacity: isLoading ? 0.7 : 1,
                 }}
-                onPress={() =>
-                  navigation.navigate('SuccessNotif', {
-                    nomorTujuan: nomorTujuan,
-                    item: selectItem,
-                  })
-                }>
-                <Text className="text-white text-sm font-poppins-bold">
-                  BAYAR
-                </Text>
+                onPress={() => topup()}>
+                {isLoading ? (
+                  <ActivityIndicator color="#ffffff" />
+                ) : (
+                  <Text className="text-white text-sm font-poppins-bold uppercase">
+                    Bayar
+                  </Text>
+                )}
               </TouchableOpacity>
             </View>
           )}
@@ -306,6 +371,15 @@ export default function Shopeepay({navigation}) {
             </TouchableOpacity>
           </View>
         )}
+
+        <ModalAfterProcess
+          modalVisible={modalFailed}
+          title={'Kesalahan Pada Pembayaran'}
+          subTitle={errorMessage || 'Saldo Tidak Mencukupi'}
+          icon={'close-sharp'}
+          iconColor={'#f43f5e'}
+          iconSize={24}
+        />
       </View>
     </>
   );

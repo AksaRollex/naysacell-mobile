@@ -104,7 +104,6 @@ export default function FormOrder({route, navigation}) {
     },
     errors => {
       console.log('Form errors:', errors);
-      // Optional: Tambahkan Toast untuk memberitahu user
       Toast.show({
         type: 'error',
         text1: 'Error',
@@ -120,7 +119,7 @@ export default function FormOrder({route, navigation}) {
       }}>
       <View
         className="w-full h-full rounded-xl"
-        style={{backgroundColor: isDarkMode ? '#262626' : '#fff '}}>
+        style={{backgroundColor: isDarkMode ? '#262626' : '#f8f8f8'}}>
         <ScrollView className="px-3 pt-2 pb-3">
           <Controller
             control={control}
@@ -141,7 +140,7 @@ export default function FormOrder({route, navigation}) {
                   IconRenderer={Icon}
                   items={orderStatusOptions}
                   uniqueKey="id"
-                  selectText="Pilih Status Pesanan"
+                  selectText="Status Pesanan"
                   searchPlaceholderText="Cari..."
                   showDropDowns={false}
                   single={true}
@@ -184,10 +183,10 @@ export default function FormOrder({route, navigation}) {
                       borderWidth: 0.5,
                       borderColor: '#404040',
                       borderRadius: 12,
-                      backgroundColor: isDarkMode ? '#1e1e1e' : '#fff',
+                      backgroundColor: isDarkMode ? '#262626' : '#fff',
                       flexDirection: 'row',
                       justifyContent: 'space-between',
-                      alignItems: 'center', 
+                      alignItems: 'center',
                     },
                     selectToggleText: {
                       color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
@@ -196,26 +195,25 @@ export default function FormOrder({route, navigation}) {
                     },
                     item: {
                       paddingVertical: 12,
-                      borderRadius: 12,
-                      margin: 8,
                       backgroundColor: isDarkMode ? '#292929' : '#f8f8f8',
                       paddingHorizontal: 10,
-
                     },
                     itemText: {
                       color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
                       fontFamily: 'Poppins-Regular',
                     },
-                    
+
                     chipIcon: {
                       color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
                     },
-
+                    subComponent: {
+                      backgroundColor: isDarkMode ? '#262626' : '#fff',
+                    },
                     selectedItemText: {
                       color: BLUE_COLOR,
                       fontFamily: 'Poppins-SemiBold',
                     },
-                   
+
                     modalWrapper: {
                       backgroundColor: isDarkMode
                         ? 'rgba(0,0,0,0.5)'
@@ -230,6 +228,15 @@ export default function FormOrder({route, navigation}) {
                       alignItems: 'center',
                     },
 
+                    modal: {
+                      backgroundColor: isDarkMode ? '#262626' : '#fff',
+                    },
+                    backdrop: {
+                      backgroundColor: isDarkMode ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0.2)',
+                    },
+                    scrollView: { 
+                      backgroundColor: isDarkMode ? '#262626' : '#fff',
+                    },
                     confirmText: {
                       color: WHITE_COLOR,
                       fontFamily: 'Poppins-SemiBold',

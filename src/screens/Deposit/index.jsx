@@ -282,7 +282,7 @@ export default function Deposit({navigation}) {
                   }`}
                 />
                 {error && (
-                  <Text className="text-red-400 mt-1">{error.message}</Text>
+                  <Text className="text-red-400 mt-1 font-poppins-regular text-xs">{error.message}</Text>
                 )}
               </View>
             )}

@@ -40,6 +40,11 @@ export default function Admin({navigation}) {
         action: item => navigation.navigate('FormAdmin', {id: item.id}),
       },
       {
+        id: 'Edit Password',
+        title: 'Edit Password',
+        action: item => navigation.navigate('FormPassAdmin', {id: item.id}),
+      },
+      {
         id: 'Hapus',
         title: 'Hapus',
         action: item => deleteAdmin(`/master/users/delete/${item.id}`),

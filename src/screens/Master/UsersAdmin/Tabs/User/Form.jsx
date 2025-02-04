@@ -311,170 +311,166 @@ export default function FormUser({route, navigation}) {
                 </>
               )}
             />
-            {/* {!id && ( */}
-            <>
-              <Controller
-                name="password"
-                control={control}
-                rules={{
-                  required: 'Password harus diisi',
-                  minLength: {
-                    value: 8,
-                    message: 'Password minimal 8 karakter',
-                  },
-                  pattern: {
-                    value: /^[0-9]+$/,
-                    message: 'Password hanya boleh angka',
-                  },
-                }}
-                render={({field: {onChange, onBlur, value}}) => (
-                  <>
-                    <View className="relative">
-                      <Text
-                        className="font-poppins-medium mt-2"
-                        style={{
-                          color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR,
-                        }}>
-                        Password
-                      </Text>
-                      <TextInput
-                        value={value}
-                        onChangeText={text => {
-                          if (/^[0-9]*$/.test(text)) {
-                            onChange(text);
+            {!id && (
+              <>
+                <Controller
+                  name="password"
+                  control={control}
+                  rules={{
+                    required: 'Password harus diisi',
+                    minLength: {
+                      value: 8,
+                      message: 'Password minimal 8 karakter',
+                    },
+                    pattern: {
+                      value: /^[0-9]+$/,
+                      message: 'Password hanya boleh angka',
+                    },
+                  }}
+                  render={({field: {onChange, onBlur, value}}) => (
+                    <>
+                      <View className="relative">
+                        <Text
+                          className="font-poppins-medium mt-2"
+                          style={{
+                            color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR,
+                          }}>
+                          Password
+                        </Text>
+                        <TextInput
+                          value={value}
+                          onChangeText={text => {
+                            if (/^[0-9]*$/.test(text)) {
+                              onChange(text);
+                            }
+                          }}
+                          onBlur={onBlur}
+                          placeholder="Password"
+                          placeholderTextColor={
+                            isDarkMode ? SLATE_COLOR : SLATE_COLOR
                           }
-                        }}
-                        onBlur={onBlur}
-                        placeholder="Password"
-                        placeholderTextColor={
-                          isDarkMode ? SLATE_COLOR : SLATE_COLOR
-                        }
-                        keyboardType="numeric"
-                        style={{
-                          fontFamily: 'Poppins-Regular',
-                          backgroundColor: isDarkMode ? '#262626' : '#fff',
-                        }}
-                        className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
-                          errors.password
-                            ? 'border-red-500'
-                            : 'border-stone-600'
-                        }`}
-                        secureTextEntry={showPassword}
-                      />
-                      <TouchableOpacity
-                        onPress={() => setShowPassword(!showPassword)}
-                        style={{
-                          position: 'absolute',
-                          top: '70%',
-                          right: 10,
-                          transform: [{translateY: -12}],
-                        }}>
-                        {showPassword ? (
-                          <MaterialCommunityIcons name="eye" size={25} />
-                        ) : (
-                          <MaterialCommunityIcons name="eye-off" size={25} />
-                        )}
-                      </TouchableOpacity>
-                    </View>
-                    {errors.password && (
-                      <Text className="text-red-400 font-poppins-regular text-xs mt-1">
-                        {errors.password.message}
-                      </Text>
-                    )}
-                  </>
-                )}
-              />
+                          keyboardType="numeric"
+                          style={{
+                            fontFamily: 'Poppins-Regular',
+                            backgroundColor: isDarkMode ? '#262626' : '#fff',
+                          }}
+                          className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                            errors.password
+                              ? 'border-red-500'
+                              : 'border-stone-600'
+                          }`}
+                          secureTextEntry={showPassword}
+                        />
+                        <TouchableOpacity
+                          onPress={() => setShowPassword(!showPassword)}
+                          style={{
+                            position: 'absolute',
+                            top: '70%',
+                            right: 10,
+                            transform: [{translateY: -12}],
+                          }}>
+                          {showPassword ? (
+                            <MaterialCommunityIcons name="eye" size={25} />
+                          ) : (
+                            <MaterialCommunityIcons name="eye-off" size={25} />
+                          )}
+                        </TouchableOpacity>
+                      </View>
+                      {errors.password && (
+                        <Text className="text-red-400 font-poppins-regular text-xs mt-1">
+                          {errors.password.message}
+                        </Text>
+                      )}
+                    </>
+                  )}
+                />
 
-              <Controller
-                name="password_confirmation"
-                control={control}
-                rules={{
-                  required: 'Konfirmasi password harus diisi',
-                  validate: value => {
-                    const password = watch('password');
-                    return value === password || 'Password tidak sama';
-                  },
-                  pattern: {
-                    value: /^[0-9]+$/,
-                    message: 'Password hanya boleh angka',
-                  },
-                }}
-                render={({field: {onChange, onBlur, value}}) => (
-                  <>
-                    <View className="relative">
-                      <Text
-                        className="font-poppins-medium mt-2"
-                        style={{
-                          color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR,
-                        }}>
-                        Konfirmasi Password
-                      </Text>
-                      <TextInput
-                        value={value}
-                        onChangeText={text => {
-                          if (/^[0-9]*$/.test(text)) {
-                            onChange(text);
+                <Controller
+                  name="password_confirmation"
+                  control={control}
+                  rules={{
+                    required: 'Konfirmasi password harus diisi',
+                    validate: value => {
+                      const password = watch('password');
+                      return value === password || 'Password tidak sama';
+                    },
+                    pattern: {
+                      value: /^[0-9]+$/,
+                      message: 'Password hanya boleh angka',
+                    },
+                  }}
+                  render={({field: {onChange, onBlur, value}}) => (
+                    <>
+                      <View className="relative">
+                        <Text
+                          className="font-poppins-medium mt-2"
+                          style={{
+                            color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR,
+                          }}>
+                          Konfirmasi Password
+                        </Text>
+                        <TextInput
+                          value={value}
+                          onChangeText={text => {
+                            if (/^[0-9]*$/.test(text)) {
+                              onChange(text);
+                            }
+                          }}
+                          onBlur={onBlur}
+                          placeholder="Konfirmasi Password"
+                          placeholderTextColor={
+                            isDarkMode ? SLATE_COLOR : SLATE_COLOR
                           }
-                        }}
-                        onBlur={onBlur}
-                        placeholder="Konfirmasi Password"
-                        placeholderTextColor={
-                          isDarkMode ? SLATE_COLOR : SLATE_COLOR
-                        }
-                        keyboardType="numeric"
-                        style={{
-                          fontFamily: 'Poppins-Regular',
-                          backgroundColor: isDarkMode ? '#262626' : '#fff',
-                        }}
-                        className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
-                          errors.password_confirmation
-                            ? 'border-red-500'
-                            : 'border-stone-600'
-                        }`}
-                        secureTextEntry={showConfirmPassword}
-                      />
-                      <TouchableOpacity
-                        onPress={() =>
-                          setShowConfirmPassword(!showConfirmPassword)
-                        }
-                        style={{
-                          position: 'absolute',
-                          top: '70%',
-                          right: 10,
-                          transform: [{translateY: -12}],
-                        }}>
-                        {showConfirmPassword ? (
-                          <MaterialCommunityIcons name="eye" size={25} />
-                        ) : (
-                          <MaterialCommunityIcons name="eye-off" size={25} />
-                        )}
-                      </TouchableOpacity>
-                    </View>
-                    {errors.password_confirmation && (
-                      <Text className="text-red-400 font-poppins-regular text-xs mt-1">
-                        {errors.password_confirmation.message}
-                      </Text>
-                    )}
-                  </>
-                )}
-              />
-            </>
-            {/* )} */}
+                          keyboardType="numeric"
+                          style={{
+                            fontFamily: 'Poppins-Regular',
+                            backgroundColor: isDarkMode ? '#262626' : '#fff',
+                          }}
+                          className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                            errors.password_confirmation
+                              ? 'border-red-500'
+                              : 'border-stone-600'
+                          }`}
+                          secureTextEntry={showConfirmPassword}
+                        />
+                        <TouchableOpacity
+                          onPress={() =>
+                            setShowConfirmPassword(!showConfirmPassword)
+                          }
+                          style={{
+                            position: 'absolute',
+                            top: '70%',
+                            right: 10,
+                            transform: [{translateY: -12}],
+                          }}>
+                          {showConfirmPassword ? (
+                            <MaterialCommunityIcons name="eye" size={25} />
+                          ) : (
+                            <MaterialCommunityIcons name="eye-off" size={25} />
+                          )}
+                        </TouchableOpacity>
+                      </View>
+                      {errors.password_confirmation && (
+                        <Text className="text-red-400 font-poppins-regular text-xs mt-1">
+                          {errors.password_confirmation.message}
+                        </Text>
+                      )}
+                    </>
+                  )}
+                />
+              </>
+            )}
           </View>
           <View style={[styles.bottom]} className="p-3">
             <TouchableOpacity
               className="w-full rounded-xl mx-auto px-4 h-12 items-center justify-center"
               style={{
                 backgroundColor: BLUE_COLOR,
-                opacity: isLoadingData ? 0.7 : 1,
+                opacity: isLoadingData || isLoading ? 0.7 : 1,
               }}
               onPress={onSubmit}>
               <Text style={styles.buttonLabel}>
-                {isLoadingData ? (
-                  <ActivityIndicator color="#fff" />
-                ) : (
-                  'SIMPAN'
-                )}
+                {isLoadingData || isLoading ? <ActivityIndicator color="#fff" /> : 'SIMPAN'}
               </Text>
             </TouchableOpacity>
           </View>
