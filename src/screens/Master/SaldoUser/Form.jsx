@@ -69,13 +69,13 @@ export default function FormSaldoUser({route, navigation}) {
         setTimeout(() => {
           setModalSuccess(false);
           navigation.navigate('SaldoUser');
-        }, 2000);
+        }, 3000);
       },
       onError: error => {
         setModalFailed(true);
         setTimeout(() => {
           setModalFailed(false);
-        }, 2000);
+        }, 3000);
         setErrorMessage(
           error.response?.data?.message || 'Gagal menyimpan data',
         );
@@ -104,6 +104,7 @@ export default function FormSaldoUser({route, navigation}) {
               rules={{
                 required: 'Saldo harus diisi',
                 pattern: {value: /[0-9]{3,10}$/},
+                minLength: {value: 3, message: 'Saldo minimal 3 karakter'},
                 message: 'Saldo hanya diperbolehkan angka',
               }}
               render={({field: {onChange, value, onBlur}}) => (
@@ -134,14 +135,14 @@ export default function FormSaldoUser({route, navigation}) {
                     }`}
                     placeholder="Saldo"
                   />
-                  {errors.balance && (
-                    <Text className="text-red-400 font-poppins-regular text-xs mt-1">
-                      {errors.balance.message}
-                    </Text>
-                  )}
                 </>
               )}
             />
+            {errors.balance && (
+              <Text className="text-red-400 font-poppins-regular text-xs mt-1">
+                {errors.balance.message}
+              </Text>
+            )}
           </View>
           <View style={[styles.bottom]} className="p-3">
             <TouchableOpacity
@@ -172,7 +173,6 @@ export default function FormSaldoUser({route, navigation}) {
         bgIcon={'#e6f7e6'}
         title={'Berhasil Menyimpan Data'}
         subTitle={'Pastikan Data Sudah Benar'}
-        onClose={() => setModalSuccess(false)}
       />
       <ModalAfterProcess
         url={require('../../../../assets/lottie/failed-animation.json')}
@@ -183,7 +183,6 @@ export default function FormSaldoUser({route, navigation}) {
         iconColor={'#f43f5e'}
         iconSize={22}
         bgIcon={'#fdecef'}
-        onClose={() => setModalFailed(false)}
       />
     </>
   );

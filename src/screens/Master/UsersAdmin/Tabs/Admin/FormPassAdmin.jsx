@@ -53,14 +53,14 @@ export default function FormPassAdmin({route, navigation}) {
         setTimeout(() => {
           setModalSuccess(false);
           navigation.goBack();
-        }, 2000);
+        }, 3000);
       },
       onError: error => {
         const errorMsg = error.response?.data?.message || error.message;
         setModalFailed(true);
         setTimeout(() => {
           setModalFailed(false);
-        }, 2000);
+        }, 3000);
         setErrorMessage(errorMsg);
       },
     },
@@ -245,7 +245,7 @@ export default function FormPassAdmin({route, navigation}) {
         url={require('../../../../../../assets/lottie/failed-animation.json')}
         modalVisible={modalFailed}
         title={'Gagal Mengubah Password'}
-        subTitle={errorMessage || 'Pastikan data sudah benar'}
+        subTitle={errorMessage || 'Silahkan coba lagi'}
         icon={'close-sharp'}
         iconColor={'#f43f5e'}
         iconSize={22}

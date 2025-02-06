@@ -66,7 +66,7 @@ export default function Profile({navigation}) {
       setModalSuccessLogout(true);
       setTimeout(() => {
         setModalSuccessLogout(false);
-      }, 2000);
+      }, 3000);
       queryClient.invalidateQueries(['auth', 'user']);
     },
     onError: () => {
@@ -74,7 +74,7 @@ export default function Profile({navigation}) {
       setModalFailedLogout(true);
       setTimeout(() => {
         setModalFailedLogout(false);
-      }, 2000);
+      }, 3000);
     },
   });
   const {data} = useQuery({

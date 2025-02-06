@@ -24,21 +24,21 @@ export default mainMenu = [
     path: 'Shopeepay',
     ikon: 'wallet',
   },
-  // {
-  //   label: 'Dana',
-  //   path: 'Dana',
-  //   ikon: 'wallet',
-  // },
-  // {
-  //   label: 'GoPay',
-  //   ikon: 'wallet',
-  //   ikon: 'wallet',
-  // },
-  // {
-  //   label: 'OVO',
-  //   path: 'OVO',
-  //   ikon: 'wallet',
-  // },
+  {
+    label: 'Dana',
+    path: 'Dana',
+    ikon: 'wallet',
+  },
+  {
+    label: 'Gopay',
+    path : 'GoPay',
+    ikon: 'wallet',
+  },
+  {
+    label: 'OVO',
+    path: 'OVO',
+    ikon: 'wallet',
+  },
 ];
 
 export const gameMenu = [
@@ -47,16 +47,16 @@ export const gameMenu = [
     ikon: MobileLegendsIcon,
     path: '',
   },
-  // {
-  //   label: 'FreeFire',
-  //   ikon: FreeFireIcon,
-  //   path: '',
-  // },
-  // {
-  //   label: 'PUBG',
-  //   ikon: PUBGIcon,
-  //   path: '',
-  // },
+  {
+    label: 'FreeFire',
+    ikon: FreeFireIcon,
+    path: '',
+  },
+  {
+    label: 'PUBG',
+    ikon: PUBGIcon,
+    path: '',
+  },
   {
     label: 'Valorant',
     ikon: ValorantIcon,

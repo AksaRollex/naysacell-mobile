@@ -34,6 +34,8 @@ export default function RegisterPage({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalResendSuccess, setModalResendSuccess] = useState(false);
+  const [modalResendFailed, setModalResendFailed] = useState(false);
   const [modalFailed, setModalFailed] = useState(false);
   const [modalTerms, setModalTerms] = useState(false);
 
@@ -72,12 +74,11 @@ export default function RegisterPage({navigation}) {
       setModalTerms(true);
       setTimeout(() => {
         setModalTerms(false);
-      }, 2000);
+      }, 3000);
       return;
     }
     try {
       setIsLoading(true);
-      // Send all registration data when requesting OTP
       await axios.post('/auth/send-user-otp-regist', {
         email: data.email,
         name: data.name,
@@ -86,9 +87,12 @@ export default function RegisterPage({navigation}) {
         password: data.password,
       });
 
-      // Store registration data for later use
+      setModalResendSuccess(true);
+      setTimeout(() => {
+        setModalResendSuccess(false);
+      }, 3000);
+
       setRegistrationData(data);
-      // Show OTP input
       setShowOtpInput(true);
     } catch (error) {
       const message =
@@ -104,7 +108,7 @@ export default function RegisterPage({navigation}) {
       setModalFailed(true);
       setTimeout(() => {
         setModalFailed(false);
-      }, 2000);
+      }, 3000);
     } finally {
       setIsLoading(false);
     }
@@ -118,52 +122,50 @@ export default function RegisterPage({navigation}) {
         otp: otpCode,
       });
 
-      console.log('Response:', response.data); // Tambahkan ini
-
       if (response.data.status) {
-        console.log('Verifikasi sukses, akan navigasi ke login'); // Tambahkan ini
         setModalVisible(true);
         setTimeout(() => {
           setModalVisible(false);
           navigation.replace('loginPage');
-        }, 2000);
+        }, 3000);
       } else {
-        console.log('Status tidak true:', response.data); // Tambahkan ini
+        console.log('Status tidak true:', response.data);
+        setModalFailed(true);
+        setTimeout(() => {
+          setModalFailed(false);
+        }, 3000);
       }
     } catch (error) {
-      console.error('Error detail:', error); // Tambahkan ini
       const message = error.response?.data?.message || 'Verifikasi OTP gagal';
       setErrorMessage(message);
       setModalFailed(true);
       setTimeout(() => {
         setModalFailed(false);
-      }, 2000);
+      }, 3000);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleResendOTP = async () => {
     try {
       setIsLoading(true);
-      await axios.post('/auth/user/send-otp-regist', {
+      await axios.post('/auth/resend-user-otp-regist', {
         email: registrationData.email,
-        name: registrationData.name,
-        phone: registrationData.phone,
-        address: registrationData.address,
-        password: registrationData.password,
       });
-      // Show success message
-      setModalVisible(true);
+      setModalResendSuccess(true);
       setTimeout(() => {
-        setModalVisible(false);
-      }, 2000);
+        setModalResendSuccess(false);
+      }, 3000);
     } catch (error) {
+      console.log(error);
       const message =
         error.response?.data?.message || 'Gagal mengirim ulang OTP';
       setErrorMessage(message);
-      setModalFailed(true);
+      setModalResendFailed(true);
       setTimeout(() => {
-        setModalFailed(false);
-      }, 2000);
+        setModalResendFailed(false);
+      }, 3000);
     } finally {
       setIsLoading(false);
     }
@@ -261,13 +263,8 @@ export default function RegisterPage({navigation}) {
                 style={{
                   color: BLUE_COLOR,
                   fontFamily: 'Poppins-Regular',
-                  opacity: isLoading ? 0.7 : 1,
                 }}>
-                {isLoading ? (
-                  <ActivityIndicator color="white" size="small" />
-                ) : (
-                  'Kirim Ulang'
-                )}
+                Kirim Ulang
               </Text>
             </TouchableOpacity>
           </View>
@@ -290,321 +287,300 @@ export default function RegisterPage({navigation}) {
             </TouchableOpacity>
           </View>
         </View>
+
+        <ModalAfterProcess
+          modalVisible={modalResendSuccess}
+          icon={'checkmark-done-sharp'}
+          iconColor={'#95bb72'}
+          iconSize={22}
+          bgIcon={'#e6f7e6'}
+          title="Pengiriman OTP Berhasil"
+          subTitle="Silahkan untuk cek email anda"
+        />
+        <ModalAfterProcess
+          modalVisible={modalVisible}
+          icon={'checkmark-done-sharp'}
+          iconColor={'#95bb72'}
+          iconSize={22}
+          bgIcon={'#e6f7e6'}
+          title="Pendaftaran Berhasil"
+          subTitle="Kamu akan diarahkan ke halaman login"
+        />
+        <ModalAfterProcess
+          modalVisible={modalFailed}
+          icon={'close-sharp'}
+          iconColor={'#F44336'}
+          iconSize={22}
+          title="Pendaftaran Gagal"
+          subTitle={errorMessage || 'Pendaftaran Gagal, Silahkan Coba Lagi'}
+          bgIcon={'#fef2f2'}
+        />
+        <ModalAfterProcess
+          modalVisible={modalResendFailed}
+          icon={'close-sharp'}
+          iconColor={'#F44336'}
+          iconSize={22}
+          title="Pengiriman OTP Gagal"
+          subTitle={errorMessage || 'Pengiriman OTP Gagal, Silahkan Coba Lagi'}
+          bgIcon={'#fef2f2'}
+        />
       </View>
     );
   }
 
   return (
-    <View className="flex-1 ">
-      <View
-        style={{
-          backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
-        }}
-        className="h-[100vh]">
-        <ImageBackground
-          source={require('../../../assets/images/headerBg.jpg')}
-          className="w-full h-[200px] items-start justify-start ">
-          <View className="p-4">
-            <View className="justify-start flex-col items-start">
-              <Text className="text-white normal-case text-2xl font-poppins-semibold">
-                Daftar Akun
-              </Text>
-              <Text className="text-white normal-case text-sm font-poppins-medium">
-                Silahkan lengkapi form berikut untuk mendaftar
-              </Text>
-            </View>
-          </View>
-        </ImageBackground>
-        <ScrollView>
-          {/* OPEN FORM */}
-          <View>
-            {/* NAME */}
-            <View className="mt-2">
-              <Controller
-                name="name"
-                control={control}
-                rules={{
-                  required: 'Nama harus diisi',
-                  pattern: {
-                    value: /^[a-zA-Z0-9\s]+$/,
-                    message: 'Hanya huruf dan angka yang diperbolehkan',
-                  },
-                  maxLength: {
-                    value: 17,
-                    message: 'Nama Tidak Boleh Lebih Dari 17 Karakter',
-                  },
-                }}
-                render={({field: {onChange, onBlur, value}}) => (
-                  <View className="mx-3">
-                    <Text
-                      className="font-poppins-medium "
-                      style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                      Nama
-                    </Text>
-                    <TextInput
-                      placeholder="Username"
-                      label="name"
-                      style={{
-                        fontFamily: 'Poppins-Regular',
-                        backgroundColor: isDarkMode ? '#262626' : '#fff',
-                      }}
-                      className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
-                        errors.name ? 'border-red-500' : 'border-stone-600'
-                      }`}
-                      value={value}
-                      onChangeText={onChange}
-                      onBlur={onBlur}
-                      keyboardType="default"
-                      placeholderTextColor={SLATE_COLOR}></TextInput>
-                  </View>
-                )}
-              />
-              {errors.name && (
-                <Text
-                  className="mt-1  text-red-400 text-xs font-poppins-regular"
-                  style={{marginLeft: rem(1)}}>
-                  {errors.name.message}
+    <View className="w-full h-full">
+      <View className="flex-1 ">
+        <View
+          style={{
+            backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
+          }}
+          className="h-[100vh]">
+          <ImageBackground
+            source={require('../../../assets/images/headerBg.jpg')}
+            className="w-full h-[200px] items-start justify-start ">
+            <View className="p-4">
+              <View className="justify-start flex-col items-start">
+                <Text className="text-white normal-case text-2xl font-poppins-semibold">
+                  Daftar Akun
                 </Text>
-              )}
-            </View>
-            {/* EMAIL */}
-            <View className="mt-2">
-              <Controller
-                name="email"
-                control={control}
-                rules={{
-                  required: 'Email harus diisi',
-                  pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: 'Email tidak valid',
-                  },
-                }}
-                render={({field: {onChange, onBlur, value}}) => (
-                  <View className="mx-3">
-                    <Text
-                      className="font-poppins-medium "
-                      style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                      Email
-                    </Text>
-                    <TextInput
-                      value={value}
-                      onChangeText={onChange}
-                      onBlur={onBlur}
-                      placeholder="email@example.com"
-                      keyboardType="email-address"
-                      autonormal-case="none"
-                      placeholderTextColor={SLATE_COLOR}
-                      style={{
-                        fontFamily: 'Poppins-Regular',
-                        backgroundColor: isDarkMode ? '#262626' : '#fff',
-                      }}
-                      className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
-                        errors.email ? 'border-red-500' : 'border-stone-600'
-                      }`}
-                    />
-                  </View>
-                )}
-              />
-              {errors.email && (
-                <Text className="mt-1 text-red-400 text-xs mx-3 font-poppins-regular">
-                  {errors.email.message}
+                <Text className="text-white normal-case text-sm font-poppins-medium">
+                  Silahkan lengkapi form berikut untuk mendaftar
                 </Text>
-              )}
+              </View>
             </View>
-            {/* ADDRESS */}
-            <View className="mt-2">
-              <Controller
-                name="address"
-                control={control}
-                rules={{
-                  required: 'Alamat harus diisi',
-                }}
-                render={({field: {onChange, onBlur, value}}) => (
-                  <View className="mx-3">
-                    <Text
-                      className="font-poppins-medium "
-                      style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                      Alamat
-                    </Text>
-                    <TextInput
-                      value={value}
-                      onChangeText={onChange}
-                      onBlur={onBlur}
-                      placeholder="Alamat"
-                      keyboardType="default"
-                      autonormal-case="none"
-                      placeholderTextColor={SLATE_COLOR}
-                      style={{
-                        fontFamily: 'Poppins-Regular',
-                        backgroundColor: isDarkMode ? '#262626' : '#fff',
-                      }}
-                      className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
-                        errors.address ? 'border-red-500' : 'border-stone-600'
-                      }`}
-                    />
-                  </View>
-                )}
-              />
-              {errors.address && (
-                <Text className="mt-1 text-red-400 text-xs mx-3 font-poppins-regular">
-                  {errors.address.message}
-                </Text>
-              )}
-            </View>
-            {/* PHONE */}
-            <View className="mt-2">
-              <Controller
-                name="phone"
-                control={control}
-                rules={{
-                  required: 'Nomor Telepon harus diisi',
-                  pattern: {
-                    value: /^08[0-9]{8,13}$/,
-                    message:
-                      'Nomor telepon harus diawali 08 dan memiliki 10-15 digit',
-                  },
-                }}
-                render={({field: {onChange, onBlur, value}}) => (
-                  <View className="mx-3">
-                    <Text
-                      className="font-poppins-medium"
-                      style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                      Nomor Telepon
-                    </Text>
-                    <TextInput
-                      value={value}
-                      onChangeText={text => {
-                        if (text.length <= 15 && /^[0-9]*$/.test(text)) {
-                          onChange(text);
-                        }
-                      }}
-                      onBlur={onBlur}
-                      placeholder="Nomor Telepon"
-                      keyboardType="numeric"
-                      placeholderTextColor={SLATE_COLOR}
-                      style={{
-                        fontFamily: 'Poppins-Regular',
-                        backgroundColor: isDarkMode ? '#262626' : '#fff',
-                      }}
-                      className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
-                        errors.phone ? 'border-red-500' : 'border-stone-600'
-                      }`}
-                    />
-                  </View>
-                )}
-              />
-              {errors.phone && (
-                <Text className="mt-1 text-red-400 text-xs mx-3 font-poppins-regular">
-                  {errors.phone.message}
-                </Text>
-              )}
-            </View>
-            {/* PASSWORD */}
-            <View className="mt-2">
-              <Controller
-                name="password"
-                control={control}
-                rules={{
-                  required: 'Password harus diisi',
-                  minLength: {
-                    value: 8,
-                    message: 'Password minimal 8 karakter',
-                  },
-                }}
-                render={({field: {onChange, onBlur, value}}) => (
-                  <View className="relative mx-3">
-                    <Text
-                      className="font-poppins-medium "
-                      style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                      Password
-                    </Text>
-                    <TextInput
-                      value={value}
-                      onChangeText={onChange}
-                      onBlur={onBlur}
-                      placeholder="Password"
-                      placeholderTextColor={SLATE_COLOR}
-                      keyboardType="numeric"
-                      style={{
-                        fontFamily: 'Poppins-Regular',
-                        backgroundColor: isDarkMode ? '#262626' : '#fff',
-                      }}
-                      className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
-                        errors.password ? 'border-red-500' : 'border-stone-600'
-                      }`}
-                      secureTextEntry={showPassword}
-                    />
-                    <TouchableOpacity
-                      onPress={() => setShowPassword(!showPassword)}
-                      style={{
-                        position: 'absolute',
-                        top: '65%',
-                        right: 10,
-                        transform: [{translateY: -12}],
-                      }}>
-                      {showPassword ? (
-                        <MaterialCommunityIcons name="eye" size={25} />
-                      ) : (
-                        <MaterialCommunityIcons name="eye-off" size={25} />
-                      )}
-                    </TouchableOpacity>
-                  </View>
-                )}
-              />
-              {errors.password && (
-                <Text className="mt-1 text-red-400 text-xs mx-3 font-poppins-regular">
-                  {errors.password.message}
-                </Text>
-              )}
-            </View>
-            {/* PASSWORD CONFIRMATION */}
-            <View className="mt-2">
-              <View className="relative">
+          </ImageBackground>
+          <ScrollView>
+            {/* OPEN FORM */}
+            <View>
+              {/* NAME */}
+              <View className="mt-2">
                 <Controller
-                  name="password_confirmation"
+                  name="name"
                   control={control}
                   rules={{
-                    required: 'Konfirmasi Password harus diisi',
-                    validate: value =>
-                      value === password || 'Password tidak cocok',
+                    required: 'Nama harus diisi',
+                    pattern: {
+                      value: /^[a-zA-Z0-9\s]+$/,
+                      message: 'Hanya huruf dan angka yang diperbolehkan',
+                    },
+                    maxLength: {
+                      value: 17,
+                      message: 'Nama Tidak Boleh Lebih Dari 17 Karakter',
+                    },
+                  }}
+                  render={({field: {onChange, onBlur, value}}) => (
+                    <View className="mx-3">
+                      <Text
+                        className="font-poppins-medium "
+                        style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                        Nama
+                      </Text>
+                      <TextInput
+                        placeholder="Username"
+                        label="name"
+                        style={{
+                          fontFamily: 'Poppins-Regular',
+                          backgroundColor: isDarkMode ? '#262626' : '#fff',
+                        }}
+                        className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                          errors.name ? 'border-red-500' : 'border-stone-600'
+                        }`}
+                        value={value}
+                        onChangeText={onChange}
+                        onBlur={onBlur}
+                        maxLength={17}
+                        keyboardType="default"
+                        placeholderTextColor={SLATE_COLOR}></TextInput>
+                    </View>
+                  )}
+                />
+                {errors.name && (
+                  <Text
+                    className="mt-1  text-red-400 text-xs font-poppins-regular"
+                    style={{marginLeft: rem(1)}}>
+                    {errors.name.message}
+                  </Text>
+                )}
+              </View>
+              {/* EMAIL */}
+              <View className="mt-2">
+                <Controller
+                  name="email"
+                  control={control}
+                  rules={{
+                    required: 'Email harus diisi',
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                      message: 'Email tidak valid',
+                    },
+                  }}
+                  render={({field: {onChange, onBlur, value}}) => (
+                    <View className="mx-3">
+                      <Text
+                        className="font-poppins-medium "
+                        style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                        Email
+                      </Text>
+                      <TextInput
+                        value={value}
+                        onChangeText={onChange}
+                        onBlur={onBlur}
+                        placeholder="email@example.com"
+                        keyboardType="email-address"
+                        autonormal-case="none"
+                        placeholderTextColor={SLATE_COLOR}
+                        style={{
+                          fontFamily: 'Poppins-Regular',
+                          backgroundColor: isDarkMode ? '#262626' : '#fff',
+                        }}
+                        className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                          errors.email ? 'border-red-500' : 'border-stone-600'
+                        }`}
+                      />
+                    </View>
+                  )}
+                />
+                {errors.email && (
+                  <Text className="mt-1 text-red-400 text-xs mx-3 font-poppins-regular">
+                    {errors.email.message}
+                  </Text>
+                )}
+              </View>
+              {/* ADDRESS */}
+              <View className="mt-2">
+                <Controller
+                  name="address"
+                  control={control}
+                  rules={{
+                    required: 'Alamat harus diisi',
+                  }}
+                  render={({field: {onChange, onBlur, value}}) => (
+                    <View className="mx-3">
+                      <Text
+                        className="font-poppins-medium "
+                        style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                        Alamat
+                      </Text>
+                      <TextInput
+                        value={value}
+                        onChangeText={onChange}
+                        onBlur={onBlur}
+                        placeholder="Alamat"
+                        keyboardType="default"
+                        autonormal-case="none"
+                        placeholderTextColor={SLATE_COLOR}
+                        style={{
+                          fontFamily: 'Poppins-Regular',
+                          backgroundColor: isDarkMode ? '#262626' : '#fff',
+                        }}
+                        className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                          errors.address ? 'border-red-500' : 'border-stone-600'
+                        }`}
+                      />
+                    </View>
+                  )}
+                />
+                {errors.address && (
+                  <Text className="mt-1 text-red-400 text-xs mx-3 font-poppins-regular">
+                    {errors.address.message}
+                  </Text>
+                )}
+              </View>
+              {/* PHONE */}
+              <View className="mt-2">
+                <Controller
+                  name="phone"
+                  control={control}
+                  rules={{
+                    required: 'Nomor Telepon harus diisi',
+                    pattern: {
+                      value: /^08[0-9]{8,13}$/,
+                      message:
+                        'Nomor telepon harus diawali 08 dan memiliki 10-15 digit',
+                    },
+                  }}
+                  render={({field: {onChange, onBlur, value}}) => (
+                    <View className="mx-3">
+                      <Text
+                        className="font-poppins-medium"
+                        style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                        Nomor Telepon
+                      </Text>
+                      <TextInput
+                        value={value}
+                        onChangeText={text => {
+                          if (text.length <= 15 && /^[0-9]*$/.test(text)) {
+                            onChange(text);
+                          }
+                        }}
+                        onBlur={onBlur}
+                        placeholder="Nomor Telepon"
+                        keyboardType="numeric"
+                        placeholderTextColor={SLATE_COLOR}
+                        style={{
+                          fontFamily: 'Poppins-Regular',
+                          backgroundColor: isDarkMode ? '#262626' : '#fff',
+                        }}
+                        className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                          errors.phone ? 'border-red-500' : 'border-stone-600'
+                        }`}
+                      />
+                    </View>
+                  )}
+                />
+                {errors.phone && (
+                  <Text className="mt-1 text-red-400 text-xs mx-3 font-poppins-regular">
+                    {errors.phone.message}
+                  </Text>
+                )}
+              </View>
+              {/* PASSWORD */}
+              <View className="mt-2">
+                <Controller
+                  name="password"
+                  control={control}
+                  rules={{
+                    required: 'Password harus diisi',
+                    minLength: {
+                      value: 8,
+                      message: 'Password minimal 8 karakter',
+                    },
                   }}
                   render={({field: {onChange, onBlur, value}}) => (
                     <View className="relative mx-3">
                       <Text
                         className="font-poppins-medium "
                         style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                        Konfirmasi Password
+                        Password
                       </Text>
                       <TextInput
                         value={value}
                         onChangeText={onChange}
                         onBlur={onBlur}
-                        placeholder="Konfirmasi Password"
-                        keyboardType="numeric"
+                        placeholder="Password"
                         placeholderTextColor={SLATE_COLOR}
-                        secureTextEntry={showConfirmPassword}
+                        keyboardType="numeric"
                         style={{
                           fontFamily: 'Poppins-Regular',
                           backgroundColor: isDarkMode ? '#262626' : '#fff',
                         }}
                         className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
-                          errors.password_confirmation
+                          errors.password
                             ? 'border-red-500'
                             : 'border-stone-600'
                         }`}
+                        secureTextEntry={showPassword}
                       />
-
                       <TouchableOpacity
-                        onPress={() =>
-                          setShowConfirmPassword(!showConfirmPassword)
-                        }
+                        onPress={() => setShowPassword(!showPassword)}
                         style={{
                           position: 'absolute',
                           top: '65%',
                           right: 10,
                           transform: [{translateY: -12}],
                         }}>
-                        {showConfirmPassword ? (
+                        {showPassword ? (
                           <MaterialCommunityIcons name="eye" size={25} />
                         ) : (
                           <MaterialCommunityIcons name="eye-off" size={25} />
@@ -613,125 +589,186 @@ export default function RegisterPage({navigation}) {
                     </View>
                   )}
                 />
+                {errors.password && (
+                  <Text className="mt-1 text-red-400 text-xs mx-3 font-poppins-regular">
+                    {errors.password.message}
+                  </Text>
+                )}
               </View>
-              {errors.password_confirmation && (
-                <Text className="mt-1 text-red-400 text-xs mx-3 font-poppins-regular">
-                  {errors.password_confirmation.message}
-                </Text>
-              )}
-            </View>
-
-            {/* Submit Button */}
-            <View className="mt-4 flex-1 justify-center items-center">
-              <View className="items-center px-4">
-                <View className="flex-row items-center mb-4">
-                  <Checkbox
-                    value={isTermsAccepted}
-                    onValueChange={setIsTermsAccepted}
-                    tintColors={{
-                      true: BLUE_COLOR,
-                      false: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+              {/* PASSWORD CONFIRMATION */}
+              <View className="mt-2">
+                <View className="relative">
+                  <Controller
+                    name="password_confirmation"
+                    control={control}
+                    rules={{
+                      required: 'Konfirmasi Password harus diisi',
+                      validate: value =>
+                        value === password || 'Password tidak cocok',
                     }}
+                    render={({field: {onChange, onBlur, value}}) => (
+                      <View className="relative mx-3">
+                        <Text
+                          className="font-poppins-medium "
+                          style={{
+                            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+                          }}>
+                          Konfirmasi Password
+                        </Text>
+                        <TextInput
+                          value={value}
+                          onChangeText={onChange}
+                          onBlur={onBlur}
+                          placeholder="Konfirmasi Password"
+                          keyboardType="numeric"
+                          placeholderTextColor={SLATE_COLOR}
+                          secureTextEntry={showConfirmPassword}
+                          style={{
+                            fontFamily: 'Poppins-Regular',
+                            backgroundColor: isDarkMode ? '#262626' : '#fff',
+                          }}
+                          className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
+                            errors.password_confirmation
+                              ? 'border-red-500'
+                              : 'border-stone-600'
+                          }`}
+                        />
+
+                        <TouchableOpacity
+                          onPress={() =>
+                            setShowConfirmPassword(!showConfirmPassword)
+                          }
+                          style={{
+                            position: 'absolute',
+                            top: '65%',
+                            right: 10,
+                            transform: [{translateY: -12}],
+                          }}>
+                          {showConfirmPassword ? (
+                            <MaterialCommunityIcons name="eye" size={25} />
+                          ) : (
+                            <MaterialCommunityIcons name="eye-off" size={25} />
+                          )}
+                        </TouchableOpacity>
+                      </View>
+                    )}
                   />
-                  <View className="flex-row flex-wrap space-x-1 w-10/12 ml-2">
-                    <Text
-                      className="font-poppins-regular"
-                      style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
-                      Saya menyetujui
-                    </Text>
-                    <TouchableOpacity
-                      onPress={() => navigation.navigate('S&K')}>
+                </View>
+                {errors.password_confirmation && (
+                  <Text className="mt-1 text-red-400 text-xs mx-3 font-poppins-regular">
+                    {errors.password_confirmation.message}
+                  </Text>
+                )}
+              </View>
+
+              {/* Submit Button */}
+              <View className="mt-4 flex-1 justify-center items-center">
+                <View className="items-center px-4">
+                  <View className="flex-row items-center mb-4">
+                    <Checkbox
+                      value={isTermsAccepted}
+                      onValueChange={setIsTermsAccepted}
+                      tintColors={{
+                        true: BLUE_COLOR,
+                        false: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+                      }}
+                    />
+                    <View className="flex-row flex-wrap space-x-1 w-10/12 ml-2">
                       <Text
                         className="font-poppins-regular"
-                        style={{color: BLUE_COLOR}}>
-                        Syarat dan Ketentuan
+                        style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
+                        Saya menyetujui
                       </Text>
-                    </TouchableOpacity>
-                    <Text
-                      className="font-poppins-regular"
-                      style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
-                      serta
-                    </Text>
-                    <TouchableOpacity
-                      onPress={() => navigation.navigate('S&K')}>
+                      <TouchableOpacity
+                        onPress={() => navigation.navigate('S&K')}>
+                        <Text
+                          className="font-poppins-regular"
+                          style={{color: BLUE_COLOR}}>
+                          Syarat dan Ketentuan
+                        </Text>
+                      </TouchableOpacity>
                       <Text
                         className="font-poppins-regular"
-                        style={{color: BLUE_COLOR}}>
-                        Kebijakan Privasi
+                        style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
+                        serta
                       </Text>
-                    </TouchableOpacity>
-                    <Text
-                      className="font-poppins-regular"
-                      style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
-                      yang berlaku
-                    </Text>
+                      <TouchableOpacity
+                        onPress={() => navigation.navigate('S&K')}>
+                        <Text
+                          className="font-poppins-regular"
+                          style={{color: BLUE_COLOR}}>
+                          Kebijakan Privasi
+                        </Text>
+                      </TouchableOpacity>
+                      <Text
+                        className="font-poppins-regular"
+                        style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
+                        yang berlaku
+                      </Text>
+                    </View>
                   </View>
                 </View>
               </View>
+              <View className="mx-3">
+                <TouchableOpacity
+                  className="w-full rounded-xl px-4 h-12 items-center justify-center"
+                  style={{
+                    backgroundColor: BLUE_COLOR,
+                    opacity: isLoading ? 0.7 : 1,
+                  }}
+                  onPress={handleSubmit(onSubmit)}
+                  disabled={isLoading}>
+                  <Text className="text-white text-sm font-poppins-bold">
+                    {isLoading ? <ActivityIndicator color="#fff" /> : 'DAFTAR'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
-            <View className="mx-3">
+            {/* CLOSE FORM */}
+
+            <View className="flex-row items-center justify-start my-8 mx-3 ">
+              <Text
+                style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}
+                className="font-poppins-regular normal-case">
+                Sudah punya akun ?
+              </Text>
               <TouchableOpacity
-                className="w-full rounded-xl px-4 h-12 items-center justify-center"
-                style={{
-                  backgroundColor: BLUE_COLOR,
-                  opacity: isLoading ? 0.7 : 1,
-                }}
-                onPress={handleSubmit(onSubmit)}
-                disabled={isLoading}>
-                <Text className="text-white text-sm font-poppins-bold">
-                  {isLoading ? <ActivityIndicator color="#fff" /> : 'DAFTAR'}
+                onPress={() => navigation.navigate('loginPage')}>
+                <Text
+                  style={{color: BLUE_COLOR, fontFamily: 'Poppins-Regular'}}
+                  className="mx-1">
+                  Masuk
                 </Text>
               </TouchableOpacity>
             </View>
-          </View>
-          {/* CLOSE FORM */}
 
-          <View className="flex-row items-center justify-start my-8 mx-3 ">
-            <Text
-              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}
-              className="font-poppins-regular normal-case">
-              Sudah punya akun ?
-            </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('loginPage')}>
-              <Text
-                style={{color: BLUE_COLOR, fontFamily: 'Poppins-Regular'}}
-                className="mx-1">
-                Masuk
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          <View className="-mt-7 mb-8 mx-3">
-            <TouchableOpacity
-              onPress={() => navigation.navigate('bantuanLogin')}>
-              <Text
-                className="text-start  text-sm font-poppins-regular "
-                style={{color: BLUE_COLOR}}>
-                Butuh Bantuan ?
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
+            <View className="-mt-7 mb-8 mx-3">
+              <TouchableOpacity
+                onPress={() => navigation.navigate('bantuanLogin')}>
+                <Text
+                  className="text-start  text-sm font-poppins-regular "
+                  style={{color: BLUE_COLOR}}>
+                  Butuh Bantuan ?
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </View>
       </View>
-
       <ModalAfterProcess
-        url={require('../../../assets/lottie/success-animation.json')}
-        modalVisible={modalVisible}
-        title="Pendaftaran Berhasil"
-        subTitle="Silahkan Masuk Ke Aplikasi"
-      />
-      <ModalAfterProcess
-        url={require('../../../assets/lottie/failed-animation.json')}
         modalVisible={modalFailed}
+        icon={'close-sharp'}
+        iconColor={'#F44336'}
+        iconSize={22}
         title="Pendaftaran Gagal"
-        subTitle={errorMessage}
+        subTitle={errorMessage || 'Pendaftaran Gagal, Silahkan Coba Lagi'}
+        bgIcon={'#fef2f2'}
       />
       <ModalAfterProcess
-        url={require('../../../assets/lottie/failed-animation.json')}
         modalVisible={modalTerms}
         icon={'close-sharp'}
         iconColor={'#F44336'}
-        iconSize={30}
+        iconSize={22}
         bgIcon={'#fef2f2'}
         title="Centang Syarat & Ketentuan"
         subTitle="Harus centang syarat dan ketentuan terlebih dahulu untuk melanjutkan pendaftaran"

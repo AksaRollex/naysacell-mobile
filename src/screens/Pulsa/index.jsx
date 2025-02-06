@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import React, {useRef, useState, useEffect} from 'react';
 import {
@@ -153,7 +154,7 @@ export default function Pulsa({navigation}) {
       navigation.replace('SuccessNotif', {
         item: selectItem,
         customer_no: nomorTujuan,
-        transaction_data: response.data.data,
+        transaction_data: response.data.transaction,
       });
     } catch (error) {
       let errorMsg = error.response?.data?.message || 'Terjadi kesalahan';
@@ -171,7 +172,7 @@ export default function Pulsa({navigation}) {
       setModalFailed(true);
       setTimeout(() => {
         setModalFailed(false);
-      }, 2000);
+      }, 3000);
     }
   };
 
@@ -398,115 +399,125 @@ export default function Pulsa({navigation}) {
           visible={showModal}
           onDismiss={() => setShowModal(false)}
           title="Konfirmasi Pesanan">
-          <View
-            className="w-full p-3 rounded-xl   justify-between flex-col flex-wrap"
-            style={{
-              backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
-            }}>
-            <View
-              className="w-full p-3 rounded-xl flex-col "
-              style={{
-                borderColor: '#464646',
-                borderStyle: 'dashed',
-                borderWidth: 1,
-              }}>
-              <Text
-                className="text-center text-sm font-poppins-medium mt-2 mb-4 normal-case"
-                style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                Rincian pembelian
-              </Text>
-              <View className="flex-row justify-between items-center my-1 ">
-                <Text
-                  className="text-sm font-poppins-regular"
-                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                  Layanan
-                </Text>
-                <Text
-                  className="text-sm font-poppins-regular"
-                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                  {selectItem?.product_provider}
-                </Text>
+          <View style={{maxHeight: '100%'}}>
+            <ScrollView
+              style={{flexGrow: 1}}
+              showsVerticalScrollIndicator={true}>
+              <View
+                className="w-full p-3 rounded-xl   justify-between flex-col flex-wrap"
+                style={{
+                  backgroundColor: isDarkMode
+                    ? DARK_BACKGROUND
+                    : LIGHT_BACKGROUND,
+                }}>
+                <View
+                  className="w-full p-3 rounded-xl flex-col "
+                  style={{
+                    borderColor: '#464646',
+                    borderStyle: 'dashed',
+                    borderWidth: 1,
+                  }}>
+                  <Text
+                    className="text-center text-sm font-poppins-medium mt-2 mb-4 normal-case"
+                    style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                    Rincian pembelian
+                  </Text>
+                  <View className="flex-row justify-between items-center my-1 ">
+                    <Text
+                      className="text-sm font-poppins-regular"
+                      style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                      Layanan
+                    </Text>
+                    <Text
+                      className="text-sm font-poppins-regular"
+                      style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                      {selectItem?.product_provider}
+                    </Text>
+                  </View>
+                  <View className="flex-row justify-between items-center my-1 ">
+                    <Text
+                      className="text-sm font-poppins-regular"
+                      style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                      Nomor Tujuan
+                    </Text>
+                    <Text
+                      className="text-sm font-poppins-regular"
+                      style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                      {nomorTujuan}
+                    </Text>
+                  </View>
+                  <View className="flex-row justify-between items-center my-1 ">
+                    <Text
+                      className="text-sm font-poppins-regular"
+                      style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                      Produk
+                    </Text>
+                    <Text
+                      className="text-sm font-poppins-regular"
+                      style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                      {selectItem?.product_name}
+                    </Text>
+                  </View>
+                  <View className="flex-row justify-between items-center my-1 ">
+                    <Text
+                      className="text-sm font-poppins-regular"
+                      style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                      Harga
+                    </Text>
+                    <Text
+                      className="text-sm font-poppins-regular"
+                      style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                      {rupiah(selectItem?.product_price)}
+                    </Text>
+                  </View>
+                </View>
               </View>
-              <View className="flex-row justify-between items-center my-1 ">
-                <Text
-                  className="text-sm font-poppins-regular"
-                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                  Nomor Tujuan
-                </Text>
-                <Text
-                  className="text-sm font-poppins-regular"
-                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                  {nomorTujuan}
-                </Text>
+              <View
+                className="w-full p-3 rounded-xl  mt-5 justify-between flex-col flex-wrap"
+                style={{
+                  backgroundColor: isDarkMode
+                    ? DARK_BACKGROUND
+                    : LIGHT_BACKGROUND,
+                }}>
+                <View
+                  className="w-full p-3 rounded-xl flex-col "
+                  style={{
+                    borderColor: '#464646',
+                    borderStyle: 'dashed',
+                    borderWidth: 1,
+                  }}>
+                  <Text
+                    className="text-center normal-case text-sm font-poppins-medium mt-2 mb-4"
+                    style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                    Rincian pembayaran
+                  </Text>
+                  <View className="flex-row justify-between items-center my-1 ">
+                    <Text
+                      className="text-sm font-poppins-regular"
+                      style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                      Harga Produk
+                    </Text>
+                    <Text
+                      className="text-sm font-poppins-regular"
+                      style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                      {rupiah(selectItem?.product_price)}
+                    </Text>
+                  </View>
+                  <View className="flex-row justify-between items-center my-1 ">
+                    <Text
+                      className="text-sm font-poppins-semibold"
+                      style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                      Total
+                    </Text>
+                    <Text
+                      className="text-sm font-poppins-semibold"
+                      style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                      {rupiah(selectItem?.product_price)}
+                    </Text>
+                  </View>
+                </View>
               </View>
-              <View className="flex-row justify-between items-center my-1 ">
-                <Text
-                  className="text-sm font-poppins-regular"
-                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                  Produk
-                </Text>
-                <Text
-                  className="text-sm font-poppins-regular"
-                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                  {selectItem?.product_name}
-                </Text>
-              </View>
-              <View className="flex-row justify-between items-center my-1 ">
-                <Text
-                  className="text-sm font-poppins-regular"
-                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                  Harga
-                </Text>
-                <Text
-                  className="text-sm font-poppins-regular"
-                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                  {rupiah(selectItem?.product_price)}
-                </Text>
-              </View>
-            </View>
-          </View>
-          <View
-            className="w-full p-3 rounded-xl  mt-5 justify-between flex-col flex-wrap"
-            style={{
-              backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
-            }}>
-            <View
-              className="w-full p-3 rounded-xl flex-col "
-              style={{
-                borderColor: '#464646',
-                borderStyle: 'dashed',
-                borderWidth: 1,
-              }}>
-              <Text
-                className="text-center normal-case text-sm font-poppins-medium mt-2 mb-4"
-                style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                Rincian pembayaran
-              </Text>
-              <View className="flex-row justify-between items-center my-1 ">
-                <Text
-                  className="text-sm font-poppins-regular"
-                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                  Harga Produk
-                </Text>
-                <Text
-                  className="text-sm font-poppins-regular"
-                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                  {rupiah(selectItem?.product_price)}
-                </Text>
-              </View>
-              <View className="flex-row justify-between items-center my-1 ">
-                <Text
-                  className="text-sm font-poppins-semibold"
-                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                  Total
-                </Text>
-                <Text
-                  className="text-sm font-poppins-semibold"
-                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                  {rupiah(selectItem?.product_price)}
-                </Text>
-              </View>
-            </View>
+            </ScrollView>
           </View>
           {selectItem && (
             <View style={[styles.bottom(isDarkMode)]}>

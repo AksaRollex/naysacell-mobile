@@ -9,7 +9,7 @@ import {
   useColorScheme,
 } from 'react-native';
 import {AddIkon, BellIkon, HeaderBG, Headset} from '../../../assets';
-import mainMenu from '../../data/mainMenu';
+import mainMenu, {gameMenu} from '../../data/mainMenu';
 import axios from '../../libs/axios';
 import {rupiah} from '../../libs/utils';
 import {
@@ -284,54 +284,109 @@ export default function HomeScreen({navigation}) {
             </View>
           </View>
 
-          {/* TOPUP */}
-          <View
-            className=" rounded-xl p-3"
-            style={{
-              backgroundColor: isDarkMode ? '#262626' : '#fff',
-              marginHorizontal: HORIZONTAL_MARGIN,
-            }}>
-            <Text
-              className="text-sm font-poppins-medium"
-              style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-              Topup
-            </Text>
+          <View className="gap-y-3">
+            {/* TOPUP */}
             <View
+              className=" rounded-xl p-3"
               style={{
-                flexDirection: 'row',
-                flexWrap: 'wrap',
-                justifyContent: 'space-between',
-              }}
-              className="gap-2 mt-4">
-              {mainMenu.map(item => {
-                return (
-                  <TouchableOpacity
-                    key={item.label}
-                    style={{
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                    onPress={() => navigation.navigate(item.path)}
-                    className=" w-24   justify-center items-center opacity-0.5 ">
-                    <View className="w-24 h-11 justify-center items-center">
-                      <FontAwesome5Icon
-                        name={item.ikon}
-                        size={30}
-                        color={BLUE_COLOR}
-                      />
-                    </View>
-                    <View className="my-2">
-                      <Text
-                        className=" text-center text-xs font-poppins-medium"
-                        style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                        {item.label}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                );
-              })}
+                backgroundColor: isDarkMode ? '#262626' : '#fff',
+                marginHorizontal: HORIZONTAL_MARGIN,
+              }}>
+              <Text
+                className="text-sm font-poppins-medium"
+                style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                Topup
+              </Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  justifyContent: 'space-between',
+                }}
+                className="gap-2 mt-4">
+                {mainMenu.map(item => {
+                  return (
+                    <TouchableOpacity
+                      key={item.label}
+                      style={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                      onPress={() => navigation.navigate(item.path)}
+                      className=" w-24   justify-center items-center opacity-0.5 ">
+                      <View className="w-24 h-11 justify-center items-center">
+                        <FontAwesome5Icon
+                          name={item.ikon}
+                          size={30}
+                          color={BLUE_COLOR}
+                        />
+                      </View>
+                      <View className="my-2">
+                        <Text
+                          className=" text-center text-xs font-poppins-medium"
+                          style={{
+                            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+                          }}>
+                          {item.label}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </View>
+            {/* GAME */}
+            <View
+              className=" rounded-xl p-3"
+              style={{
+                backgroundColor: isDarkMode ? '#262626' : '#fff',
+                marginHorizontal: HORIZONTAL_MARGIN,
+              }}>
+              <Text
+                className="text-sm font-poppins-medium"
+                style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                Game
+              </Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  justifyContent: 'space-between',
+                }}
+                className="gap-2 mt-4">
+                {gameMenu.map(game => {
+                  return (
+                    <TouchableOpacity
+                      key={game.label}
+                      style={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                      onPress={() => navigation.navigate(game.path)}
+                      className=" w-24   justify-center items-center opacity-0.5 ">
+                      <View className="w-24 h-11 justify-center items-center">
+                        <FontAwesome5Icon
+                          name={game.ikon}
+                          size={30}
+                          color={BLUE_COLOR}
+                        />
+                      </View>
+                      <View className="my-2">
+                        <Text
+                          className=" text-center text-xs font-poppins-medium"
+                          style={{
+                            color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+                          }}>
+                          {game.label}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
             </View>
           </View>
+
           <View
             className=" rounded-xl my-4 py-4"
             style={{

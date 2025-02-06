@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
-  Image,
   Modal,
 } from 'react-native';
 import React, {useRef, useState} from 'react';
@@ -95,7 +94,7 @@ export default function Deposit({navigation}) {
         setModalFailed(true);
         setTimeout(() => {
           setModalFailed(false);
-        }, 2000);
+        }, 3000);
       },
     },
   );
@@ -135,14 +134,14 @@ export default function Deposit({navigation}) {
         setTimeout(() => {
           navigation.navigate('HomeScreen', {refresh: true});
           setSuccessModal(false);
-        }, 2000);
+        }, 3000);
       } else {
         setErrorMessage('Pembayaran gagal atau dibatalkan');
         setModalFailed(true);
         setShowPayment(false);
         setTimeout(() => {
           setModalFailed(false);
-        }, 2000);
+        }, 3000);
       }
     } catch (error) {
       console.error('Error parsing WebView message:', error);
@@ -154,7 +153,7 @@ export default function Deposit({navigation}) {
     if (!depositAmount) {
       setErrorMessage('Nominal Deposit tidak boleh kosong');
       setModalFailed(true);
-      setTimeout(() => setModalFailed(false), 2000);
+      setTimeout(() => setModalFailed(false), 3000);
       return;
     }
     handleTopup();
@@ -291,7 +290,7 @@ export default function Deposit({navigation}) {
         <View
           id="referensi_nominal"
           className="py-2 flex flex-row flex-wrap justify-between items-center">
-          {[100000, 150000, 200000, 400000, 600000, 900000].map(
+          {[100000, 150000, 300000, 400000, 600000, 900000].map(
             (amount, index) => (
               <TouchableOpacity
                 key={index}

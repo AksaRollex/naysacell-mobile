@@ -58,7 +58,7 @@ export default function LoginPage() {
       setModalVisible(true);
       setTimeout(() => {
         setModalVisible(false);
-      }, 2000);
+      }, 3000);
     },
   });
   return (
@@ -152,7 +152,17 @@ export default function LoginPage() {
             <Controller
               name="password"
               control={control}
-              rules={{required: 'Password Harus Diisi'}}
+              rules={{
+                required: 'Password harus diisi',
+                minLength: {
+                  value: 8,
+                  message: 'Password minimal 8 karakter',
+                },
+                pattern: {
+                  value: /^[0-9]+$/,
+                  message: 'Hanya angka yang diperbolehkan',
+                },
+              }}
               render={({field: {onChange, onBlur, value}}) => (
                 <View className="relative mx-3">
                   <Text

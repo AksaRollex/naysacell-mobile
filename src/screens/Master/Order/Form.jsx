@@ -7,9 +7,8 @@ import {
   ScrollView,
   ActivityIndicator,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import Toast from 'react-native-toast-message';
 import {
   DARK_BACKGROUND,
   LIGHT_BACKGROUND,
@@ -24,6 +23,7 @@ import {Controller, useForm} from 'react-hook-form';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
+import ModalAfterProcess from '../../../components/ModalAfterProcess';
 
 const orderStatusOptions = [
   {id: 'Pending', name: 'Menunggu'},
@@ -36,6 +36,13 @@ export default function FormOrder({route, navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
   const {id} = route.params || {};
   const queryClient = useQueryClient();
+
+  const [modalSuccess, setModalSuccess] = useState(false);
+  const [modalFailed, setModalFailed] = useState(false);
+  const [modalField, setModalField] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessageField, setErrorMessageField] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const {
     control,
@@ -55,15 +62,14 @@ export default function FormOrder({route, navigation}) {
     {
       enabled: !!id,
       onSuccess: data => {
-        // Ensure we're setting an array with the status
         setValue('order_status', data.order_status ? [data.order_status] : []);
       },
       onError: error => {
-        Toast.show({
-          type: 'error',
-          text1: 'Error',
-          text2: error.response.data.message,
-        });
+        setModalFailed(true);
+        setTimeout(() => {
+          setModalFailed(false);
+        }, 3000);
+        setErrorMessage(error.response?.data?.message || 'Terjadi kesalahan');
       },
     },
   );
@@ -78,22 +84,20 @@ export default function FormOrder({route, navigation}) {
     },
     {
       onSuccess: response => {
-        Toast.show({
-          type: 'success',
-          text1: 'Berhasil',
-          text2: response.data.message || 'Data berhasil disimpan',
-        });
-
+        setModalSuccess(true);
         queryClient.invalidateQueries('/master/order');
-        navigation.goBack();
+        setTimeout(() => {
+          setModalSuccess(false);
+          navigation.goBack();
+        }, 3000);
+        setSuccessMessage(response.data.message || 'Data Berhasil Diperbarui');
       },
       onError: error => {
-        const message = error.response?.data?.message || 'Terjadi kesalahan';
-        Toast.show({
-          type: 'error',
-          text1: 'Error',
-          text2: message,
-        });
+        setModalFailed(true);
+        setTimeout(() => {
+          setModalFailed(false);
+        }, 3000);
+        setErrorMessage(error.response?.data?.message || 'Terjadi kesalahan');
       },
     },
   );
@@ -104,11 +108,11 @@ export default function FormOrder({route, navigation}) {
     },
     errors => {
       console.log('Form errors:', errors);
-      Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: 'Harap lengkapi semua field yang diperlukan',
-      });
+      setModalField(true);
+      setTimeout(() => {
+        setModalField(false);
+      }, 3000);
+      setErrorMessageField(errors.order_status?.message || 'Terjadi kesalahan');
     },
   );
   return (
@@ -232,9 +236,11 @@ export default function FormOrder({route, navigation}) {
                       backgroundColor: isDarkMode ? '#262626' : '#fff',
                     },
                     backdrop: {
-                      backgroundColor: isDarkMode ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0.2)',
+                      backgroundColor: isDarkMode
+                        ? 'rgba(0,0,0,0.5)'
+                        : 'rgba(0,0,0,0.2)',
                     },
-                    scrollView: { 
+                    scrollView: {
                       backgroundColor: isDarkMode ? '#262626' : '#fff',
                     },
                     confirmText: {
@@ -265,7 +271,7 @@ export default function FormOrder({route, navigation}) {
               className="w-full rounded-xl mx-auto px-4 h-12 items-center justify-center"
               style={{
                 backgroundColor: BLUE_COLOR,
-                opacity: isLoadingData ? 0.7 : 1,
+                opacity: isSaving ? 0.7 : 1,
               }}
               disabled={isLoadingData || isSaving}
               onPress={onSubmit}>
@@ -280,6 +286,42 @@ export default function FormOrder({route, navigation}) {
           </View>
         </ScrollView>
       </View>
+      <ModalAfterProcess
+        modalVisible={modalFailed}
+        icon={'close-sharp'}
+        bgIcon={'#fef2f2'}
+        iconColor={'#ef5350'}
+        iconSize={24}
+        title={'Gagal Disimpan !'}
+        subTitle={errorMessage || 'Gagal menyimpan file'}
+      />
+      <ModalAfterProcess
+        modalVisible={modalField}
+        icon={'close-sharp'}
+        bgIcon={'#fef2f2'}
+        iconColor={'#ef5350'}
+        iconSize={24}
+        title={'Gagal Disimpan !'}
+        subTitle={errorMessage || 'Gagal menyimpan file'}
+      />
+      <ModalAfterProcess
+        modalVisible={modalField}
+        icon={'close-sharp'}
+        bgIcon={'#fef2f2'}
+        iconColor={'#ef5350'}
+        iconSize={24}
+        title={'Field Tidak Boleh Kosong !'}
+        subTitle={errorMessageField || 'field harus diisi'}
+      />
+      <ModalAfterProcess
+        modalVisible={modalSuccess}
+        icon={'checkmark-done-sharp'}
+        iconColor={'#95bb72'}
+        iconSize={24}
+        bgIcon={'#e6f7e6'}
+        title={successMessage || 'Data berhasil disimpan'}
+        subTitle={'Pastikan data sudah benar'}
+      />
     </View>
   );
 }

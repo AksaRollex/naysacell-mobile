@@ -60,7 +60,7 @@ export default function FormAdmin({route, navigation}) {
         setModalFailed(true);
         setTimeout(() => {
           setModalFailed(false);
-        }, 2000);
+        }, 3000);
         setErrorMessage(errorMsg);
       },
       retry: false,
@@ -101,14 +101,14 @@ export default function FormAdmin({route, navigation}) {
           navigation.navigate('Admin', {
             id: data?.id || null,
           });
-        }, 2000);
+        }, 3000);
       },
       onError: error => {
         const errorMsg = error.response?.data?.message || error.message;
         setModalFailed(true);
         setTimeout(() => {
           setModalFailed(false);
-        }, 2000);
+        }, 3000);
         setErrorMessage(errorMsg);
       },
     },
@@ -494,7 +494,7 @@ export default function FormAdmin({route, navigation}) {
         url={require('../../../../../../assets/lottie/failed-animation.json')}
         modalVisible={modalFailed}
         title={'Gagal Menyimpan Data'}
-        subTitle={errorMessage || 'Pastikan Data Sudah Benar'}
+        subTitle={errorMessage || 'Silahkan coba lagi'}
         icon={'close-sharp'}
         iconColor={'#f43f5e'}
         iconSize={22}

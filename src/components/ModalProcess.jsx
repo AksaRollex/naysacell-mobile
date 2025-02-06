@@ -29,6 +29,7 @@ export default function ModalProcess({
   iconSize,
   bgIcon,
   bgTrueText,
+  bgFalseText,
   buttonFalseColorText,
   buttonTrueColorText,
 }) {
@@ -49,7 +50,7 @@ export default function ModalProcess({
           </View>
           {/* <LottieView source={url} autoPlay loop={true} style={styles.lottie} /> */}
           <Text
-            style={styles.successTextTitle}
+            style={styles.successTextTitle(isDarkMode)}
             className="text-base my-1  normal-case font-poppins-semibold ">
             {title}
           </Text>
@@ -71,7 +72,8 @@ export default function ModalProcess({
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              className="w-full  bg-gray-100 border-gray-200 border py-3 rounded-xl items-center"
+              className={`w-full py-3 rounded-xl items-center`}
+              style={{backgroundColor: bgFalseText || '#fff'}}
               onPress={functionFalseButton}>
               <Text
                 className="font-poppins-semibold normal-case text-center"
@@ -92,8 +94,7 @@ const styles = StyleSheet.create({
     height: 250,
   },
   successTextTitle: isDarkMode => ({
-    textAlign: 'center',
-    color: isDarkMode ? WHITE_COLOR : DARK_COLOR,
+    color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
   }),
   successText: {
     fontSize: 14,

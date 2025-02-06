@@ -6,17 +6,18 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
   useColorScheme,
+  Dimensions,
 } from 'react-native';
 import React from 'react';
 import {
-  DARK_BACKGROUND,
   DARK_COLOR,
   LIGHT_COLOR,
-  WHITE_BACKGROUND,
   windowWidth,
+  DARK_BACKGROUND,
 } from '../utils/const';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 
+const windowHeight = Dimensions.get('window').height;
 export default function BottomModal({visible, onDismiss, title, children}) {
   const isDarkMode = useColorScheme() === 'dark';
   return (
@@ -38,7 +39,7 @@ export default function BottomModal({visible, onDismiss, title, children}) {
       </TouchableWithoutFeedback>
       <View
         style={{
-          height: '58%',
+          height: windowHeight * 0.580, 
           backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
           width: windowWidth,
           position: 'absolute',

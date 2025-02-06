@@ -21,6 +21,7 @@ import {Controller, useForm} from 'react-hook-form';
 import axios from '../../../libs/axios';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import ModalAfterProcess from '../../../components/ModalAfterProcess';
 const PHASES = {
   EMAIL: 'EMAIL',
   OTP: 'OTP',
@@ -33,8 +34,13 @@ export default function ForgotPasswordScreen() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [resendMessage, setResendMessage] = useState('');
   const [passwordIsSecure, setPasswordIsSecure] = useState(true);
   const [confirmPasswordIsSecure, setConfirmPasswordIsSecure] = useState(true);
+  const [modalResendFailed, setModalResendFailed] = useState(false);
+  const [modalResendSuccess, setModalResendSuccess] = useState(false);
+  const [modalSuccess, setModalSuccess] = useState(false);
+  const [modalFailed, setModalFailed] = useState(false);
 
   const {
     control,
@@ -57,10 +63,18 @@ export default function ForgotPasswordScreen() {
         setEmail(data.email);
         setPhase(PHASES.OTP);
         reset();
+        setModalResendSuccess(true);
+        setTimeout(() => {
+          setModalResendSuccess(false);
+        }, 3000);
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Terjadi kesalahan');
       console.log(err);
+      setModalFailed(true);
+      setTimeout(() => {
+        setModalFailed(false);
+      }, 3000);
     } finally {
       setLoading(false);
     }
@@ -97,10 +111,18 @@ export default function ForgotPasswordScreen() {
       });
 
       if (response.data.status) {
-        navigation.navigate('loginPage');
+        setModalSuccess(true);
+        setTimeout(() => {
+          setModalSuccess(false);
+          navigation.navigate('loginPage');
+        }, 3000);
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Terjadi kesalahan');
+      setModalFailed(true);
+      setTimeout(() => {
+        setModalFailed(false);
+      }, 3000);
     } finally {
       setLoading(false);
     }
@@ -126,7 +148,7 @@ export default function ForgotPasswordScreen() {
               Email
             </Text>
             <TextInput
-              placeholder="Masukkan Email"
+              placeholder="Email"
               label="Email"
               color={isDarkMode ? DARK_COLOR : '#000'}
               placeholderTextColor={SLATE_COLOR}
@@ -228,13 +250,21 @@ export default function ForgotPasswordScreen() {
               });
 
               if (response.data.status) {
-                setError('OTP baru telah dikirim ke email Anda');
+                setModalResendSuccess(true);
+                setTimeout(() => {
+                  setModalResendSuccess(false);
+                }, 3000);
+                setResendMessage('OTP baru telah dikirim ke email Anda');
                 setTimeout(() => setError(''), 5000);
               }
             } catch (err) {
               setError(
                 err.response?.data?.message || 'Gagal mengirim ulang OTP',
               );
+              setModalResendFailed(true);
+              setTimeout(() => {
+                setModalResendFailed(false);
+              }, 3000);
             } finally {
               setLoading(false);
             }
@@ -260,6 +290,10 @@ export default function ForgotPasswordScreen() {
             value: 8,
             message: 'Password minimal 8 karakter',
           },
+          pattern: {
+            value: /^[0-9]+$/,
+            message: 'Hanya angka yang diperbolehkan',
+          },
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <View className="mx-3 relative justify-center items-start">
@@ -272,7 +306,7 @@ export default function ForgotPasswordScreen() {
               placeholder="Password baru"
               label="Password"
               secureTextEntry={passwordIsSecure}
-              color={isDarkMode ? SLATE_COLOR : LIGHT_COLOR}
+              color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
               placeholderTextColor={SLATE_COLOR}
               style={{
                 fontFamily: 'Poppins-Regular',
@@ -281,6 +315,7 @@ export default function ForgotPasswordScreen() {
               className={`h-12 w-full rounded-xl px-4 border-[0.5px] ${
                 errors.password ? 'border-red-500' : 'border-stone-600'
               }`}
+              keyboardType="number-pad"
               onBlur={onBlur}
               value={value}
               onChangeText={onChange}
@@ -316,6 +351,10 @@ export default function ForgotPasswordScreen() {
             required: 'Konfirmasi password tidak boleh kosong',
             validate: (value, formValues) =>
               value === formValues.password || 'Password tidak sama',
+            pattern: {
+              value: /^[0-9]+$/,
+              message: 'Hanya angka yang diperbolehkan',
+            },
           }}
           render={({field: {onChange, onBlur, value}}) => (
             <View className="relative mx-3 justify-center items-start">
@@ -328,6 +367,7 @@ export default function ForgotPasswordScreen() {
                 placeholder="Konfirmasi password baru"
                 label="Konfirmasi Password"
                 color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
+                keyboardType="number-pad"
                 placeholderTextColor={SLATE_COLOR}
                 style={{
                   fontFamily: 'Poppins-Regular',
@@ -435,13 +475,13 @@ export default function ForgotPasswordScreen() {
           {phase === PHASES.NEW_PASSWORD && renderPasswordPhase()}
 
           {/* {errors[Object.keys(errors)[0]] && (
-            <Text className="mt-2 mx-3 text-red-400 font-poppins-regular text-start">
+            <Text className="mt-2 mx-3 text-red-400 font-poppins-regular text-xs text-start">
               {errors[Object.keys(errors)[0]].message}
             </Text>
           )} */}
 
           {error && (
-            <Text className="mt-2 mx-3 normal-case text-red-400 font-poppins-regular text-start">
+            <Text className=" mx-3 normal-case text-red-400 font-poppins-regular text-xs text-start">
               {error}
             </Text>
           )}
@@ -484,6 +524,43 @@ export default function ForgotPasswordScreen() {
           </View>
         </View>
       )}
+
+      <ModalAfterProcess
+        modalVisible={modalResendSuccess}
+        icon={'checkmark-done-sharp'}
+        iconColor={'#95bb72'}
+        iconSize={22}
+        bgIcon={'#e6f7e6'}
+        title={'Pengiriman OTP Berhasil'}
+        subTitle="Silahkan untuk cek email anda"
+      />
+      <ModalAfterProcess
+        modalVisible={modalSuccess}
+        icon={'checkmark-done-sharp'}
+        iconColor={'#95bb72'}
+        iconSize={22}
+        bgIcon={'#e6f7e6'}
+        title="Reset Password Sudah Berhasil"
+        subTitle="Password kamu telah berhasil terreset !"
+      />
+      <ModalAfterProcess
+        modalVisible={modalResendFailed}
+        icon={'close-sharp'}
+        iconColor={'#F44336'}
+        iconSize={22}
+        title="Pengiriman OTP Gagal"
+        subTitle={error || 'Pengiriman OTP gagal, silahkan coba lagi !'}
+        bgIcon={'#fef2f2'}
+      />
+      <ModalAfterProcess
+        modalVisible={modalFailed}
+        icon={'close-sharp'}
+        iconColor={'#F44336'}
+        iconSize={22}
+        title="Reset Password Gagal"
+        subTitle={error || 'Reset Password gagal, silahkan coba lagi !'}
+        bgIcon={'#fef2f2'}
+      />
     </View>
   );
 }

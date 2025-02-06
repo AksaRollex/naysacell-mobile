@@ -245,7 +245,7 @@ const HomeScreenNavigator = () => {
         name="SuccessNotif"
         component={SuccessNotif}
         options={{
-          title: 'Notifikasi Transaksi',
+          title: 'Detail Transaksi',
           headerTitleAlign: 'left',
           headerTitleStyle: {
             fontFamily: 'Poppins-SemiBold',

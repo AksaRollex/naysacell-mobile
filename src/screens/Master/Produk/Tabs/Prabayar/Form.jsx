@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
   Modal,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import Toast from 'react-native-toast-message';
 import {
@@ -25,6 +25,7 @@ import {
 import axios from '../../../../../libs/axios';
 import {Controller, useForm} from 'react-hook-form';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import ModalAfterProcess from '../../../../../components/ModalAfterProcess';
 
 export default function FormPrabayar({route, navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
@@ -32,6 +33,10 @@ export default function FormPrabayar({route, navigation}) {
   const queryClient = useQueryClient();
   const [modalType, setModalType] = React.useState(null);
   const [selectedCategory, setSelectedCategory] = React.useState('');
+  const [modalSuccess, setModalSuccess] = useState(false);
+  const [modalFailed, setModalFailed] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const {
     control,
@@ -54,7 +59,7 @@ export default function FormPrabayar({route, navigation}) {
         setValue('product_provider', data.product_provider);
         setValue('product_desc', data.product_desc);
         setValue('product_category', data.product_category);
-        console.log(data);
+        setSelectedCategory(data.product_category);
       },
       onError: error => {
         Toast.show({
@@ -87,22 +92,22 @@ export default function FormPrabayar({route, navigation}) {
     },
     {
       onSuccess: response => {
-        Toast.show({
-          type: 'success',
-          text1: 'Berhasil',
-          text2: response.data.message || 'Data berhasil disimpan',
-        });
+        setModalSuccess(true);
+        setTimeout(() => {
+          setModalFailed(false);
+          navigation.goBack();
+        }, 3000);
+        setSuccessMessage(response.data.message);
 
         queryClient.invalidateQueries('/master/product/prepaid');
-        navigation.goBack();
       },
       onError: error => {
-        const message = error.response?.data?.message || 'Terjadi kesalahan';
-        Toast.show({
-          type: 'error',
-          text1: 'Error',
-          text2: message,
-        });
+        setModalFailed(true);
+        setTimeout(() => {
+          setModalFailed(false);
+        }, 3000);
+
+        setErrorMessage(error.response?.data?.message || 'Terjadi kesalahan');
       },
     },
   );
@@ -277,8 +282,10 @@ export default function FormPrabayar({route, navigation}) {
             name="product_price"
             rules={{
               required: 'Harga Produk harus diisi',
-              pattern: {value: /[0-9]{3,10}$/},
-              message: 'Harga Produk hanya diperbolehkan angka',
+              pattern: {
+                value: /^[0-9]{3,10}$/,
+                message: 'Harga Produk hanya diperbolehkan angka',
+              },
             }}
             render={({field: {onChange, onBlur, value}}) => (
               <>
@@ -297,7 +304,7 @@ export default function FormPrabayar({route, navigation}) {
                   }}
                   onBlur={onBlur}
                   editable={!isLoadingData}
-                  keyboardType="numeric"
+                  keyboardType="number-pad"
                   placeholderTextColor={SLATE_COLOR}
                   style={{
                     fontFamily: 'Poppins-Regular',
@@ -472,6 +479,24 @@ export default function FormPrabayar({route, navigation}) {
           </TouchableOpacity>
         </View>
       </ScrollView>
+      <ModalAfterProcess
+        modalVisible={modalFailed}
+        icon={'close-sharp'}
+        bgIcon={'#fef2f2'}
+        iconColor={'#ef5350'}
+        iconSize={24}
+        title={'Gagal Disimpan !'}
+        subTitle={errorMessage || 'Gagal menyimpan file'}
+      />
+      <ModalAfterProcess
+        modalVisible={modalSuccess}
+        icon={'checkmark-done-sharp'}
+        iconColor={'#95bb72'}
+        iconSize={24}
+        bgIcon={'#e6f7e6'}
+        title={successMessage || 'Data berhasil disimpan'}
+        subTitle={'Pastikan data sudah benar'}
+      />
     </View>
   );
 }

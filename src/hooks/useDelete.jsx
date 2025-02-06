@@ -9,10 +9,10 @@ import {
 } from 'react-native';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import axios from '../libs/axios';
-import {DARK_COLOR, WHITE_BACKGROUND, WHITE_COLOR} from '../utils/const';
+import {DARK_COLOR, LIGHT_COLOR, WHITE_BACKGROUND, WHITE_COLOR} from '../utils/const';
 
 const ConfirmationModal = ({visible, onConfirm, onCancel, title, message}) => {
-  const isDarkMode = useColorScheme() === 'dark'; // Pindahkan ke dalam body fungsi
+  const isDarkMode = useColorScheme() === 'dark'; 
   return (
     <Modal
       animationType="fade"
@@ -51,44 +51,36 @@ const ConfirmationModal = ({visible, onConfirm, onCancel, title, message}) => {
           </View>
           <Text
             style={{
-              fontSize: 16,
-              marginVertical: 4,
-              fontWeight: '600',
-              color: isDarkMode ? '#fff' : '#000',
-            }}>
+              color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+            }}
+            className=" text-base my-1 normal-case font-poppins-semibold">
             {title}
           </Text>
           <Text
             style={{
-              fontSize: 14,
-              marginBottom: 16,
-              fontWeight: '400',
-              color: isDarkMode ? '#d1d1d1' : '#6b6b6b',
-            }}>
+              color: isDarkMode ? DARK_COLOR : '#6b6b6b',
+            }}
+            className=" text-sm text-start normal-case font-poppins-regular mb-4">
             {message}
           </Text>
-          <View style={{width: '100%', gap: 8}}>
+          <View className="w-full gap-y-2">
             <TouchableOpacity
-              style={{
-                width: '100%',
-                backgroundColor: '#f43f5e',
-                paddingVertical: 12,
-                borderRadius: 12,
-                alignItems: 'center',
-              }}
+              className="w-full py-3 rounded-xl items-center"
+              style={{backgroundColor: '#f43f5e'}}
               onPress={onConfirm}>
-              <Text style={{color: '#fff', fontWeight: '600'}}>Hapus</Text>
+              <Text
+                className="font-poppins-semibold normal-case text-center"
+                style={{color: '#fff'}}>
+                Hapus
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={{
-                width: '100%',
-                backgroundColor: '#f0f0f0',
-                paddingVertical: 12,
-                borderRadius: 12,
-                alignItems: 'center',
-              }}
-              onPress={onCancel}>
-              <Text style={{color: '#4f4f4f', fontWeight: '600'}}>
+              className="w-full py-3 rounded-xl items-center"
+              onPress={onCancel}
+              style={{backgroundColor: '#f0f0f0'}}>
+              <Text
+                className="font-poppins-semibold normal-case text-center"
+                style={{color: '#F43F5E'}}>
                 Batalkan
               </Text>
             </TouchableOpacity>
@@ -135,19 +127,16 @@ const SuccessOverlay = ({visible}) => {
           </View>
           <Text
             style={{
-              fontSize: 16,
-              marginVertical: 4,
-              fontWeight: '600',
-              color: isDarkMode ? WHITE_COLOR : DARK_COLOR,
-            }}>
+              color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+            }}
+            className=" text-base my-1 normal-case font-poppins-semibold">
             Berhasil Di Hapus!
           </Text>
           <Text
             style={{
-              fontSize: 14,
-              fontWeight: '400',
               color: isDarkMode ? WHITE_COLOR : '#6b6b6b',
-            }}>
+            }}
+            className=" text-sm text-start normal-case font-poppins-regular">
             Data yang telah dihapus tidak dapat dikembalikan!
           </Text>
         </View>
@@ -193,19 +182,16 @@ const FailedOverlay = ({visible, message}) => {
           </View>
           <Text
             style={{
-              fontSize: 16,
-              marginVertical: 4,
-              fontWeight: '600',
-              color: isDarkMode ? WHITE_COLOR : DARK_COLOR,
-            }}>
+              color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+            }}
+            className=" text-base my-1 normal-case font-poppins-semibold">
             Data Gagal Dihapus!
           </Text>
           <Text
             style={{
-              fontSize: 14,
-              fontWeight: '400',
-              color: isDarkMode ? WHITE_COLOR : '#6b6b6b',
-            }}>
+              color: isDarkMode ? DARK_COLOR : '#6b6b6b',
+            }}
+            className=" text-sm text-start normal-case font-poppins-regular">
             {message || 'Coba untuk menghapus kembali!'}
           </Text>
         </View>
@@ -237,13 +223,13 @@ export const useDelete = callback => {
       setIsSuccess(true);
       hideConfirmationModal();
       setOverlayVisible(true);
-      setTimeout(() => setOverlayVisible(false), 2000);
+      setTimeout(() => setOverlayVisible(false), 3000);
       onSuccess && onSuccess(response);
     } catch (error) {
       setIsSuccess(false);
       setOverlayVisible(true);
       hideConfirmationModal();
-      setTimeout(() => setOverlayVisible(false), 2000);
+      setTimeout(() => setOverlayVisible(false), 3000);
       if (onError) {
         const message = error.response?.data?.message;
         setErrorMessage(message);

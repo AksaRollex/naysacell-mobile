@@ -383,7 +383,7 @@ const Paginate = forwardRef(
             </View>
           )}
           ListEmptyComponent={() => (
-            <View className="flex-1 justify-center items-center my-20">
+            <View className="flex-1 justify-center items-center my-10">
               <Image
                 source={require('../../assets/images/datanotfound.png')}
                 className="w-60 h-60 opacity-60 "

@@ -114,7 +114,7 @@ export default function BPJSKesehatan() {
                 Total Tagihan
               </Text>
               <Text style={styles.valueModalData(isDarkMode)}>
-                {rupiah(120000)}
+                {rupiah(130000)}
               </Text>
             </View>
           </View>

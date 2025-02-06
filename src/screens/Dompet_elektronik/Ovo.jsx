@@ -1,57 +1,142 @@
 import {
-  StyleSheet,
   Text,
   View,
   TouchableOpacity,
   useColorScheme,
+  ActivityIndicator,
 } from 'react-native';
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   BLUE_COLOR,
   DARK_BACKGROUND,
   DARK_COLOR,
-  FONT_NORMAL,
-  GREY_COLOR,
-  HORIZONTAL_MARGIN,
+  LIGHT_BACKGROUND,
   LIGHT_COLOR,
-  SLATE_COLOR,
-  WHITE_BACKGROUND,
   WHITE_COLOR,
 } from '../../utils/const';
 import BottomModal from '../../components/BottomModal';
 import Input from '../../components/form/input';
-import { rupiah } from '../../libs/utils';
+import {rupiah} from '../../libs/utils';
 import ProductPaginate from '../../components/ProductPaginate';
+import ModalAfterProcess from '../../components/ModalAfterProcess';
+import {useMutation, useQueryClient} from '@tanstack/react-query';
+import axios from '../../libs/axios';
 
 export default function OVO({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
   const [nomorTujuan, setNomorTujuan] = useState('');
-
+  const [showProducts, setShowProducts] = useState(false);
+  const [modalFailed, setModalFailed] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectItem, setSelectedItem] = useState(null);
+  const [message, setMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const queryClient = useQueryClient();
 
   const paginateRef = useRef();
+
   const resetInput = () => {
-    setCustomerNo('');
+    setNomorTujuan('');
+    setShowProducts(false);
+    setSelectedItem(null);
+    setMessage('');
   };
 
-  const productOVO = ({item}) => {
+  const isValidNumber = nomorTujuan.length >= 3;
+
+  const handleNext = () => {
+    if (nomorTujuan.length < 8) {
+      setMessage('Nomor Minimal 8 Digit Ya!');
+      setShowProducts(false);
+    } else {
+      setMessage('');
+      setShowProducts(true);
+    }
+  };
+
+  const [userId, setUserId] = useState(null);
+  const [nameCustomer, setNameCustomer] = useState('');
+
+  useEffect(() => {
+    axios
+      .get('auth/me')
+      .then(res => {
+        setNameCustomer(res.data.user?.name);
+        setUserId(res.data.user?.id);
+      })
+      .catch(err => {
+        console.error('Error fetching data:', err);
+      });
+  }, []);
+
+  const handleTopup = async () => {
+    try {
+      if (!userId) {
+        Alert.alert('Error', 'User data tidak ditemukan');
+        return;
+      }
+
+      const response = await axios.post('/auth/submit-product', {
+        product_id: selectItem?.id,
+        customer_no: nomorTujuan,
+        quantity: 1,
+        product_name: selectItem?.product_name,
+        product_price: selectItem?.product_price,
+        customer_name: nameCustomer,
+        user_id: userId,
+      });
+      queryClient.invalidateQueries('/auth/histori');
+      navigation.replace('SuccessNotif', {
+        item: selectItem,
+        customer_no: nomorTujuan,
+        transaction_data: response.data.transaction,
+      });
+    } catch (error) {
+      let errorMsg = error.response?.data?.message || 'Terjadi kesalahan';
+
+      if (error.response?.data?.details) {
+        const details = error.response.data.details;
+        errorMsg += `\nSaldo: ${details.saldo_sekarang}\nTotal: ${details.total_pembelian}\nKurang: ${details.kekurangan_saldo}`;
+      }
+
+      if (error.response?.data?.suggestion) {
+        errorMsg += `\n${error.response.data.suggestion}`;
+      }
+
+      console.log(error);
+      setErrorMessage(errorMsg);
+      setModalFailed(true);
+      setTimeout(() => {
+        setModalFailed(false);
+      }, 3000);
+    }
+  };
+
+  const {mutate: topup, isLoading} = useMutation(handleTopup);
+
+  const productOvo = ({item}) => {
+    const isSelected = selectItem && selectItem.id === item.id;
     return (
       <TouchableOpacity
-        className="p-2 border border-gray-500 rounded-xl m-1 bg-[#404040]"
+        className={`p-2 border rounded-xl h-20 relative ${
+          isSelected
+            ? `border-green-500 bg-${isDarkMode ? '[#252525]' : '[]'}`
+            : `border-gray-500 bg-${isDarkMode ? '[#262626]' : '[]'}`
+        }`}
         onPress={() => {
-          setSelectedItem(item);
-          setShowModal(true);
+          setSelectedItem(isSelected ? null : item);
         }}>
-        <View className="items-start flex-col ">
-          <Text className="font-poppins-semibold text-base text-white">
+        <View className="items-start flex-col">
+          <Text
+            className="font-poppins-semibold text-sm "
+            style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
             {item.product_name}
           </Text>
           <View className="w-full">
-            <View className="justify-items-end items-end">
+            <View className="justify-items-end items-start">
               <Text
-                className="font-poppins-regular text-sm text-end "
-                style={{color: WHITE_COLOR}}>
+                className="font-poppins-regular text-sm"
+                style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
                 {rupiah(item.product_price)}
               </Text>
             </View>
@@ -60,140 +145,238 @@ export default function OVO({navigation}) {
       </TouchableOpacity>
     );
   };
+
   return (
     <>
       <View
-        className="w-full h-full"
+        className="w-full h-full p-3"
         style={{
-          backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
+          backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
         }}>
-        <View style={styles.container}>
-          <View style={styles.formGroup}>
+        <View>
+          <View
+            className="p-3  rounded-xl"
+            style={{backgroundColor: isDarkMode ? '#262626' : '#fff'}}>
+            <Text
+              className="text-sm font-poppins-semibold my-1 "
+              style={{color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR}}>
+              Nomor Tujuan
+            </Text>
             <Input
               value={nomorTujuan}
               placeholder="Masukkan Nomor Tujuan"
-              onChange={text => setNomorTujuan(text)}
+              onChange={text => {
+                setNomorTujuan(text);
+                setMessage('');
+                if (showProducts) {
+                  setShowProducts(false);
+                  setSelectedItem(null);
+                }
+              }}
               type="numeric"
               onDelete={resetInput}
-              style={{fontFamily: 'Poppins-Regular'}}
             />
           </View>
-        </View>
-        <ProductPaginate
-          renderItem={productOVO}
-          url="/master/product/prepaid"
-          ref={paginateRef}
-          payload={{
-            product_category: 'E-Money',
-            product_provider: 'OVO',
-          }}
-        />
 
-        {selectItem && (
-          <View style={[styles.bottom(isDarkMode)]}>
+          {message !== '' && (
+            <Text className="text-red-400 mt-1 text-xs font-poppins-regular">
+              {message}
+            </Text>
+          )}
+
+          {isValidNumber && !showProducts && (
             <TouchableOpacity
-              style={styles.bottomButton}
-              onPress={() => setShowModal(true)}>
-              <Text style={styles.buttonText}>Bayar</Text>
+              className="w-full rounded-xl mx-auto my-3 px-4 h-12 items-center justify-center"
+              style={{
+                backgroundColor: BLUE_COLOR,
+                // opacity: isLoading ? 0.7 : 1,
+              }}
+              onPress={handleNext}>
+              <Text className="text-white text-sm font-poppins-bold">
+                LANJUTKAN
+              </Text>
             </TouchableOpacity>
+          )}
+        </View>
+        {showProducts && (
+          <View style={{flex: 1}} className="my-4 h-full">
+            <View
+              className="w-full h-full rounded-xl p-3"
+              style={{backgroundColor: isDarkMode ? '#262626' : '#fff'}}>
+              <ProductPaginate
+                renderItem={productOvo}
+                url="/master/product/prepaid"
+                ref={paginateRef}
+                payload={{
+                  product_category: 'E-Money',
+                  product_provider: 'OVO',
+                }}
+              />
+            </View>
           </View>
         )}
+
         <BottomModal
           visible={showModal}
           onDismiss={() => setShowModal(false)}
-          title="Detail Transaksi">
-          <View>
-            <View style={styles.modalData(isDarkMode)}>
-              <Text style={styles.labelModalData(isDarkMode)}>
-                Nomor Tujuan
+          title="Konfirmasi Pesanan">
+          <View
+            className="w-full p-3 rounded-xl   justify-between flex-col flex-wrap"
+            style={{
+              backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
+            }}>
+            <View
+              className="w-full p-3 rounded-xl flex-col "
+              style={{
+                borderColor: '#464646',
+                borderStyle: 'dashed',
+                borderWidth: 1,
+              }}>
+              <Text
+                className="text-center normal-case  text-sm font-poppins-medium mt-2 mb-4"
+                style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                Rincian pembelian
               </Text>
-              <Text style={styles.valueModalData(isDarkMode)}>
-                {nomorTujuan}
-              </Text>
-            </View>
-            <View style={styles.modalData(isDarkMode)}>
-              <Text style={styles.labelModalData(isDarkMode)}>Produk </Text>
-              <Text style={styles.valueModalData(isDarkMode)}>
-                {selectItem?.product_name}
-              </Text>
-            </View>
-            <View style={styles.modalData(isDarkMode)}>
-              <Text style={styles.labelModalData(isDarkMode)}>Harga </Text>
-              <Text style={styles.valueModalData(isDarkMode)}>
-                {rupiah(selectItem?.product_buyer_price)}
-              </Text>
+              <View className="flex-row justify-between items-center my-1 ">
+                <Text
+                  className="text-sm font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  Layanan
+                </Text>
+                <Text
+                  className="text-sm font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  {selectItem?.product_provider}
+                </Text>
+              </View>
+              <View className="flex-row justify-between items-center my-1 ">
+                <Text
+                  className="text-sm font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  Nomor Tujuan
+                </Text>
+                <Text
+                  className="text-sm font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  {nomorTujuan}
+                </Text>
+              </View>
+              <View className="flex-row justify-between items-center my-1 ">
+                <Text
+                  className="text-sm font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  Produk
+                </Text>
+                <Text
+                  className="text-sm font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  {selectItem?.product_name}
+                </Text>
+              </View>
+              <View className="flex-row justify-between items-center my-1 ">
+                <Text
+                  className="text-sm font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  Harga
+                </Text>
+                <Text
+                  className="text-sm font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  {rupiah(selectItem?.product_price)}
+                </Text>
+              </View>
             </View>
           </View>
+          <View
+            className="w-full p-3 rounded-xl  mt-5 justify-between flex-col flex-wrap"
+            style={{
+              backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
+            }}>
+            <View
+              className="w-full p-3 rounded-xl flex-col "
+              style={{
+                borderColor: '#464646',
+                borderStyle: 'dashed',
+                borderWidth: 1,
+              }}>
+              <Text
+                className="text-center normal-case text-sm font-poppins-medium mt-2 mb-4"
+                style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                Rincian pembayaran
+              </Text>
+              <View className="flex-row justify-between items-center my-1 ">
+                <Text
+                  className="text-sm font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  Harga Produk
+                </Text>
+                <Text
+                  className="text-sm font-poppins-regular"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  {rupiah(selectItem?.product_price)}
+                </Text>
+              </View>
+              <View className="flex-row justify-between items-center my-1 ">
+                <Text
+                  className="text-sm font-poppins-semibold"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  Total
+                </Text>
+                <Text
+                  className="text-sm font-poppins-semibold"
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  {rupiah(selectItem?.product_price)}
+                </Text>
+              </View>
+            </View>
+          </View>
+
           {selectItem && (
-            <View style={[styles.bottom(isDarkMode)]}>
+            <View className="my-3">
               <TouchableOpacity
-                style={styles.bottomButton}
-                onPress={() =>
-                  navigation.navigate('SuccessNotif', {
-                    nomorTujuan: nomorTujuan,
-                    item: selectItem,
-                  })
-                }>
-                <Text style={styles.buttonLabel}>Bayar</Text>
+                className="w-full rounded-xl mx-auto px-4 h-12 items-center justify-center"
+                style={{
+                  backgroundColor: BLUE_COLOR,
+                  opacity: isLoading ? 0.7 : 1,
+                }}
+                onPress={() => topup()}>
+                {isLoading ? (
+                  <ActivityIndicator color="#ffffff" />
+                ) : (
+                  <Text className="text-white text-sm font-poppins-bold uppercase">
+                    Bayar
+                  </Text>
+                )}
               </TouchableOpacity>
             </View>
           )}
         </BottomModal>
+
+        {selectItem && (
+          <View>
+            <TouchableOpacity
+              className="w-full rounded-xl mx-auto px-4 h-12 items-center justify-center"
+              style={{
+                backgroundColor: BLUE_COLOR,
+                opacity: isLoading ? 0.7 : 1,
+              }}
+              onPress={() => setShowModal(true)}>
+              <Text className="text-white text-sm font-poppins-bold">
+                LANJUTKAN
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        <ModalAfterProcess
+          modalVisible={modalFailed}
+          title={'Kesalahan Pada Pembayaran'}
+          subTitle={errorMessage || 'Saldo Tidak Mencukupi'}
+          icon={'close-sharp'}
+          iconColor={'#f43f5e'}
+          iconSize={24}
+        />
       </View>
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    marginHorizontal: HORIZONTAL_MARGIN,
-    marginTop: 15,
-  },
-  formGroup: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    columnGap: 5,
-  },
-
-  bottom: isDarkMode => ({
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
-    marginHorizontal: HORIZONTAL_MARGIN,
-    marginVertical: 10,
-  }),
-  buttonText: {
-    color: WHITE_COLOR,
-    fontFamily: 'Poppins-SemiBold',
-    textAlign: 'center',
-  },
-  buttonLabel: {
-    color: WHITE_BACKGROUND,
-    textAlign: 'center',
-    fontFamily: 'Poppins-SemiBold',
-  },
-  bottomButton: {
-    backgroundColor: BLUE_COLOR,
-    padding: 10,
-    borderRadius: 5,
-  },
-  modalData: isDarkMode => ({
-    borderBottomWidth: 1,
-    borderBottomColor: isDarkMode ? SLATE_COLOR : GREY_COLOR,
-    paddingVertical: 5,
-    rowGap: 5,
-  }),
-  labelModalData: isDarkMode => ({
-    fontFamily: 'Poppins-SemiBold',
-    color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-    fontSize: FONT_NORMAL,
-  }),
-  valueModalData: isDarkMode => ({
-    fontFamily: 'Poppins-Regular',
-    color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-    fontSize: FONT_NORMAL,
-  }),
-});

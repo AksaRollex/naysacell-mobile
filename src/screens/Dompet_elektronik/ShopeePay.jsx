@@ -1,5 +1,4 @@
 import {
-  StyleSheet,
   Text,
   View,
   TouchableOpacity,
@@ -11,12 +10,8 @@ import {
   BLUE_COLOR,
   DARK_BACKGROUND,
   DARK_COLOR,
-  FONT_NORMAL,
-  GREY_COLOR,
   LIGHT_BACKGROUND,
   LIGHT_COLOR,
-  SLATE_COLOR,
-  WHITE_BACKGROUND,
   WHITE_COLOR,
 } from '../../utils/const';
 import BottomModal from '../../components/BottomModal';
@@ -24,7 +19,7 @@ import Input from '../../components/form/input';
 import {rupiah} from '../../libs/utils';
 import ProductPaginate from '../../components/ProductPaginate';
 import ModalAfterProcess from '../../components/ModalAfterProcess';
-import {useMutation} from '@tanstack/react-query';
+import {useMutation, useQueryClient} from '@tanstack/react-query';
 import axios from '../../libs/axios';
 
 export default function Shopeepay({navigation}) {
@@ -36,6 +31,7 @@ export default function Shopeepay({navigation}) {
   const [selectItem, setSelectedItem] = useState(null);
   const [message, setMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const queryClient = useQueryClient();
 
   const paginateRef = useRef();
 
@@ -93,7 +89,7 @@ export default function Shopeepay({navigation}) {
       navigation.replace('SuccessNotif', {
         item: selectItem,
         customer_no: nomorTujuan,
-        transaction_data: response.data.data,
+        transaction_data: response.data.transaction,
       });
     } catch (error) {
       let errorMsg = error.response?.data?.message || 'Terjadi kesalahan';
@@ -112,7 +108,7 @@ export default function Shopeepay({navigation}) {
       setModalFailed(true);
       setTimeout(() => {
         setModalFailed(false);
-      }, 2000);
+      }, 3000);
     }
   };
 
@@ -362,7 +358,7 @@ export default function Shopeepay({navigation}) {
               className="w-full rounded-xl mx-auto px-4 h-12 items-center justify-center"
               style={{
                 backgroundColor: BLUE_COLOR,
-                // opacity: isLoading ? 0.7 : 1,
+                opacity: isLoading ? 0.7 : 1,
               }}
               onPress={() => setShowModal(true)}>
               <Text className="text-white text-sm font-poppins-bold">
@@ -384,50 +380,3 @@ export default function Shopeepay({navigation}) {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    // marginHorizontal: HORIZONTAL_MARGIN,
-    marginTop: 15,
-  },
-  errorMessage: {
-    color: '#FF4B4B',
-    fontFamily: 'Poppins-Regular',
-    fontSize: 12,
-    marginTop: 8,
-    textAlign: 'left',
-  },
-  bottom: isDarkMode => ({
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
-  }),
-  buttonText: {
-    color: WHITE_COLOR,
-    fontFamily: 'Poppins-SemiBold',
-    textAlign: 'center',
-  },
-  buttonLabel: {
-    color: WHITE_BACKGROUND,
-    textAlign: 'center',
-    fontFamily: 'Poppins-SemiBold',
-  },
-
-  modalData: isDarkMode => ({
-    borderBottomWidth: 1,
-    borderBottomColor: isDarkMode ? SLATE_COLOR : GREY_COLOR,
-    paddingVertical: 5,
-    rowGap: 5,
-  }),
-  labelModalData: isDarkMode => ({
-    fontFamily: 'Poppins-SemiBold',
-    color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-    fontSize: FONT_NORMAL,
-  }),
-  valueModalData: isDarkMode => ({
-    fontFamily: 'Poppins-Regular',
-    color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-    fontSize: FONT_NORMAL,
-  }),
-});

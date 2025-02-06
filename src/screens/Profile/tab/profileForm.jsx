@@ -51,7 +51,7 @@ export default function ProfileForm({route}) {
     fetchUserData();
     setTimeout(() => {
       setRefreshing(false);
-    }, 2000);
+    }, 3000);
   }, [fetchUserData]);
 
   const [data, setData] = useState({
@@ -119,7 +119,7 @@ export default function ProfileForm({route}) {
           setModalSuccess(true);
           setTimeout(() => {
             setModalSuccess(false);
-          }, 2000);
+          }, 3000);
           query.invalidateQueries(['auth', 'user']);
         } catch (error) {
           console.error('Update error:', error.response?.data);
@@ -130,7 +130,7 @@ export default function ProfileForm({route}) {
           setModalFailed(true);
           setTimeout(() => {
             setModalFailed(false);
-          }, 2000);
+          }, 3000);
         }
       })();
     } else {
