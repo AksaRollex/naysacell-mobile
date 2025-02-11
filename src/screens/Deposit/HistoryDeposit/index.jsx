@@ -255,7 +255,7 @@ export default function HistoryDeposit({}) {
               <Text
                 className="text-sm font-poppins-regular"
                 style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                {item.user_number}
+                {item.user?.phone}
               </Text>
               <Text
                 className="text-sm font-poppins-regular"

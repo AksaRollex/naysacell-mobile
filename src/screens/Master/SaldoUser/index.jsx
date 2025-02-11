@@ -53,7 +53,7 @@ export default function SaldoUser({navigation}) {
                 <Text
                   className="font-poppins-medium text-base "
                   style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                  {item.user_name}
+                  {item.user?.name}
                 </Text>
                 <View className="bg-blue-100 rounded-md pl-2   mt-1 justify-center  items-center flex-row  py-1 max-w-[200px]">
                   <FontAwesome5Icon name="coins" color="#138EE9" size={17} />

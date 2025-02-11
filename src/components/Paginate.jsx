@@ -25,7 +25,7 @@ import axios from '../libs/axios';
 import {Skeleton} from '@rneui/themed';
 import LinearGradient from 'react-native-linear-gradient';
 import Icons from 'react-native-vector-icons/Feather';
-import {DARK_COLOR, LIGHT_COLOR} from '../utils/const';
+import {DARK_COLOR, LIGHT_COLOR, SLATE_COLOR} from '../utils/const';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -383,12 +383,12 @@ const Paginate = forwardRef(
             </View>
           )}
           ListEmptyComponent={() => (
-            <View className="flex-1 justify-center items-center my-10">
+            <View className="flex-1 justify-center items-center my-5">
               <Image
                 source={require('../../assets/images/datanotfound.png')}
-                className="w-60 h-60 opacity-60 "
+                className="w-28 h-28 my-5 opacity-60 "
               />
-              <Text className="text-gray-500 font-poppins-regular ">
+              <Text className=" font-poppins-regular text-xs " style={{  color : SLATE_COLOR }}>
                 Data Tidak Tersedia
               </Text>
             </View>

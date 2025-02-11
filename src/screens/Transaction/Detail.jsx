@@ -18,26 +18,33 @@ import IonIcons from 'react-native-vector-icons/Ionicons';
 
 export default function DetailTransaction({route}) {
   const {item} = route.params;
+  console.log(item);
   const isDarkMode = useColorScheme() === 'dark';
 
-  const getPaymentStatusColor = payment_status => {
-    if (payment_status === 'success') {
+  const getPaymentStatusColor = order_status => {
+    if (order_status === 'success') {
       return 'text-green-400';
-    } else if (payment_status === 'pending') {
+    } else if (order_status === 'pending') {
+      return 'text-blue-400';
+    } else if (order_status === 'process') {
       return 'text-yellow-400';
-    } else if (payment_status === 'failed') {
+    } else if (order_status === 'cancelled') {
       return 'text-red-400';
+    } else if (order_status === 'failed') {
+      return 'tet-red-400';
     }
   };
 
-  const getPaymentStatusText = payment_status => {
-    switch (payment_status) {
+  const getPaymentStatusText = order_status => {
+    switch (order_status) {
       case 'success':
         return 'Berhasil';
       case 'pending':
         return 'Pending';
       case 'failed ':
         return 'Gagal';
+      case 'cancelled':
+        return 'Dibatalkan';
       default:
         return 'Gagal';
     }
@@ -147,7 +154,7 @@ Tanggal: ${new Date(item?.created_at || '').toLocaleDateString('id-ID', {
               <Text
                 className="text-sm font-poppins-regular"
                 style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                Status Pesanan
+                Status Transaksi
               </Text>
               <Text
                 className={`font-poppins-semibold text-end ${getStatusColor(
@@ -160,13 +167,13 @@ Tanggal: ${new Date(item?.created_at || '').toLocaleDateString('id-ID', {
               <Text
                 className="text-sm font-poppins-regular"
                 style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                Status Pembayaran
+                Status Pesanan
               </Text>
               <Text
                 className={`font-poppins-semibold text-end ${getPaymentStatusColor(
-                  item.payment_status,
+                  item.order_status,
                 )}`}>
-                {getPaymentStatusText(item.payment_status)}
+                {getPaymentStatusText(item.order_status)}
               </Text>
             </View>
             <View className="flex-row justify-between items-center my-1 ">

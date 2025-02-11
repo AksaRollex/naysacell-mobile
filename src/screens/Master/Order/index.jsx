@@ -81,7 +81,7 @@ export default function Order({navigation}) {
     } else if (order_status === 'cancelled') {
       return '#ef4444';
     } else {
-      return '##3b82f6';
+      return '#3b82f6';
     }
   };
 
@@ -279,6 +279,7 @@ export default function Order({navigation}) {
   };
 
   const orderCards = ({item}) => {
+    console.log(item)
     const dropdownOptions = [
       {
         id: 'Edit',
@@ -293,7 +294,7 @@ export default function Order({navigation}) {
     ];
     return (
       <View
-        className="w-full p-2 flex-col  rounded-xl mt-4"
+        className="w-full p-2 flex-col rounded-xl mt-4"
         style={{
           elevation: 4,
           shadowColor: '#000',
@@ -302,9 +303,9 @@ export default function Order({navigation}) {
           shadowRadius: 3,
           backgroundColor: isDarkMode ? '#262626' : '#f8f8f8',
         }}>
-        <View className="flex-row w-full  my-2 justify-center ">
+        <View className="flex-row w-full my-2 justify-center">
           <View className="w-full flex-row justify-between items-start">
-            <View className="flex-row  items-center justify-center gap-x-2 ">
+            <View className="flex-row items-center justify-center gap-x-2">
               <View
                 className="items-center justify-center"
                 style={{
@@ -319,55 +320,54 @@ export default function Order({navigation}) {
                   color={BLUE_COLOR}
                 />
               </View>
-              <View className="flex-col  w-64 items-start justify-start ">
+              <View className="flex-col w-64 items-start justify-start">
                 <Text
-                  className="font-poppins-medium text-base "
+                  className="font-poppins-medium text-base"
                   style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                  {item?.customer_name}
+                  {item?.user?.name}
                 </Text>
 
                 <View className="flex-row gap-x-2">
-                  <View className="bg-red-100 rounded-md pl-2    mt-1 justify-center  items-center flex-row  py-1 max-w-[190px]">
+                  <View className="bg-red-100 rounded-md pl-2 mt-1 justify-center items-center flex-row py-1 max-w-[190px]">
                     <IonIcons name="cart" color="#f43f5e" size={15} />
                     <Text
                       className="font-poppins-regular text-xs mx-2"
                       style={{color: '#f43f5e'}}>
-                      {item?.product_name}
+                      {item?.product?.product_name}
                     </Text>
                   </View>
 
-                  <View className="flex-row ">
+                  <View className="flex-row">
                     <View
                       className={`rounded-md pl-2 mt-1 justify-center items-center flex-row py-1 max-w-[120px] ${backgroundColorOrderStatus(
-                        item?.order_status,
+                        item?.transaction_model.order_status,
                       )}`}>
                       <IonIcons
-                        name={iconOrderStatus(item?.order_status)}
-                        color={colorOrderStatus(item?.order_status)}
+                        name={iconOrderStatus(item?.transaction_model.order_status)}
+                        color={colorOrderStatus(item?.transaction_model.order_status)}
                         size={15}
                       />
-
                       <Text
                         className={`font-poppins-medium text-xs mx-2 ${textColorOrderStatus(
-                          item?.order_status,
+                          item?.transaction_model.order_status,
                         )}`}>
-                        {textOrderStatus(item?.order_status)}
+                        {textOrderStatus(item?.transaction_model.order_status)}
                       </Text>
                     </View>
                   </View>
                 </View>
                 <View className="flex-row gap-x-2">
-                  <View className="bg-green-100 rounded-md pl-2   mt-1 justify-center  items-center flex-row  py-1 max-w-[130px]">
+                  <View className="bg-green-100 rounded-md pl-2 mt-1 justify-center items-center flex-row py-1 max-w-[130px]">
                     <IonIcons name="call" color="#658844" size={15} />
                     <Text className="font-poppins-medium text-xs mx-2 text-[#658844]">
                       {item?.customer_no}
                     </Text>
                   </View>
-                  <View className="flex-row ">
-                    <View className="bg-blue-100 rounded-md pl-2   mt-1 justify-center  items-center flex-row  py-1 max-w-[120px]">
+                  <View className="flex-row">
+                    <View className="bg-blue-100 rounded-md pl-2 mt-1 justify-center items-center flex-row py-1 max-w-[120px]">
                       <IonIcons name="pricetag" color="#138EE9" size={15} />
                       <Text className="font-poppins-medium text-xs mx-2 text-[#138EE9]">
-                        {rupiah(item?.product_price)}
+                        {rupiah(item?.product?.product_price)}
                       </Text>
                     </View>
                   </View>
@@ -401,6 +401,7 @@ export default function Order({navigation}) {
       </View>
     );
   };
+
   return (
     <View
       className="w-full h-full"
@@ -408,7 +409,7 @@ export default function Order({navigation}) {
         backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
       }}>
       <View
-        className="rounded-lg "
+        className="rounded-lg"
         style={{backgroundColor: isDarkMode ? '#262626' : '#f8f8f8'}}></View>
       <Paginate
         url="/master/order"

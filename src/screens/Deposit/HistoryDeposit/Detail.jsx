@@ -27,6 +27,8 @@ export default function DetailHistoryDeposit({route}) {
       return '#3b82f6';
     } else if (status === 'failed') {
       return '#ef4444';
+    } else if (status === 'cancelled') {
+      return '#ef4444';
     } else {
       return '#3b82f6';
     }
@@ -138,7 +140,7 @@ Tanggal Deposit : ${new Date(item?.created_at || '').toLocaleDateString(
               <Text
                 className="text-sm font-poppins-regular"
                 style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                {item?.user_number}
+                {item?.user.phone}
               </Text>
             </View>
             <View className="flex-row justify-between items-center my-1">

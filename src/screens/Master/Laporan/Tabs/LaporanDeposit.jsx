@@ -435,7 +435,7 @@ export default function LaporanDeposit({navigation}) {
                 <Text
                   className="font-poppins-medium text-base "
                   style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
-                  {item?.user_name}
+                  {item?.user?.name}
                 </Text>
                 <Text
                   className="font-poppins-regular text-sm "
@@ -446,7 +446,7 @@ export default function LaporanDeposit({navigation}) {
                   <View className="bg-green-100 rounded-md pl-2   mt-1 justify-center  items-center flex-row  py-1 max-w-[120px]">
                     <IonIcons name="call" color="#658844" size={15} />
                     <Text className="font-poppins-medium text-xs mx-2 text-[#658844]">
-                      {item?.user_number}
+                      {item?.user?.phone}
                     </Text>
                   </View>
                   <View className="bg-gray-100 rounded-md pl-2    mt-1 justify-center  items-center flex-row  py-1 max-w-[190px]">

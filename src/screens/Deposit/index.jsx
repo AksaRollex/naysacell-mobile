@@ -301,7 +301,7 @@ export default function Deposit({navigation}) {
                 }}
                 onPress={() => handlePresetAmount(amount)}>
                 <Text
-                  className="font-poppins-regular"
+                  className="font-poppins-regular text-[13px]"
                   style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                   {rupiah(amount)}
                 </Text>

@@ -196,14 +196,14 @@ export default function HomeScreen({navigation}) {
                     fill={isDarkMode ? 'white' : 'black'}
                   />
                 </TouchableOpacity>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   onPress={() => navigation.navigate('Notifikasi')}>
                   <BellIkon
                     width={24}
                     height={24}
                     fill={isDarkMode ? 'white' : 'black'}
                   />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
             </View>
           </ImageBackground>
@@ -336,7 +336,7 @@ export default function HomeScreen({navigation}) {
               </View>
             </View>
             {/* GAME */}
-            <View
+            {/* <View
               className=" rounded-xl p-3"
               style={{
                 backgroundColor: isDarkMode ? '#262626' : '#fff',
@@ -384,7 +384,7 @@ export default function HomeScreen({navigation}) {
                   );
                 })}
               </View>
-            </View>
+            </View> */}
           </View>
 
           <View

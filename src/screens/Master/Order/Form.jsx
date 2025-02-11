@@ -74,16 +74,16 @@ export default function FormOrder({route, navigation}) {
     },
   );
 
-  const {mutate: update, isLoading: isSaving} = useMutation(
-    async data => {
+  const { mutate: update, isLoading: isSaving } = useMutation(
+    async (data) => {
       const requestData = {
-        order_status: data.order_status[0],
+        order_status: data.order_status[0], // Pastikan ini hanya mengirim status yang dipilih
       };
-
+  
       return axios.put(`/master/order/update/${id}`, requestData);
     },
     {
-      onSuccess: response => {
+      onSuccess: (response) => {
         setModalSuccess(true);
         queryClient.invalidateQueries('/master/order');
         setTimeout(() => {
@@ -92,15 +92,16 @@ export default function FormOrder({route, navigation}) {
         }, 3000);
         setSuccessMessage(response.data.message || 'Data Berhasil Diperbarui');
       },
-      onError: error => {
+      onError: (error) => {
         setModalFailed(true);
         setTimeout(() => {
           setModalFailed(false);
         }, 3000);
         setErrorMessage(error.response?.data?.message || 'Terjadi kesalahan');
       },
-    },
+    }
   );
+  
 
   const onSubmit = handleSubmit(
     data => {
