@@ -35,7 +35,7 @@ const ProductPaginate = forwardRef(
     const [dataList, setDataList] = useState([]);
     const [isFetchingMore, setIsFetchingMore] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
-    const cardData = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    const cardData = [1, 2, 3, 4, 5, 6, 7, 8];
 
     const {data, isFetching, refetch} = useQuery({
       queryKey: [url, page],
@@ -43,7 +43,6 @@ const ProductPaginate = forwardRef(
       placeholderData: {data: []},
       onSuccess: res => {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        // console.log(res.data, 888);
         if (page === 1) {
           setDataList(res.data);
         } else {
@@ -199,7 +198,7 @@ const ProductPaginate = forwardRef(
             <View className="flex-1 justify-center items-center my-20">
               <Image
                 source={require('../../assets/images/datanotfound.png')}
-                className="w-60 h-60 opacity-60"
+                className="w-40 h-40 opacity-60"
               />
               <Text className="text-gray-500 font-poppins-regular">
                 Data Tidak Ditemukan

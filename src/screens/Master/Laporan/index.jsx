@@ -54,7 +54,7 @@ export default function IndexLaporan({navigation}) {
             <TouchableOpacity
               key={index}
               style={styles.menuCard(isDarkMode)}
-              className="w-[48%]"
+              className="w-[46%]"
               onPress={() => navigation.navigate(menu.screen)}>
               <View
                 style={[
@@ -85,7 +85,6 @@ const styles = StyleSheet.create({
     backgroundColor: isDarkMode ? '#262626' : '#fff',
     borderRadius: 16,
     padding: 16,
-    width: '47%',
     elevation: 3,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},

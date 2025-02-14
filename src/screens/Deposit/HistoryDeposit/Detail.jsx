@@ -135,6 +135,18 @@ Tanggal Deposit : ${new Date(item?.created_at || '').toLocaleDateString(
               <Text
                 className="text-sm font-poppins-regular"
                 style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                Metode Pembayaran
+              </Text>
+              <Text
+                className="text-sm font-poppins-regular uppercase"
+                style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
+                  {item?.payment_type || 'Pending'}
+                </Text>
+            </View>
+            <View className="flex-row justify-between items-center my-1">
+              <Text
+                className="text-sm font-poppins-regular"
+                style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                 Nomor Tujuan
               </Text>
               <Text

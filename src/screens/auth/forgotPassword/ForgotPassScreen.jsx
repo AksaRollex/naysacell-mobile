@@ -469,19 +469,13 @@ export default function ForgotPasswordScreen() {
         </View>
       </ImageBackground>
       <View>
-        <View className="my-4">
+        <View className="my-3">
           {phase === PHASES.EMAIL && renderEmailPhase()}
           {phase === PHASES.OTP && renderOTPPhase()}
           {phase === PHASES.NEW_PASSWORD && renderPasswordPhase()}
 
-          {/* {errors[Object.keys(errors)[0]] && (
-            <Text className="mt-2 mx-3 text-red-400 font-poppins-regular text-xs text-start">
-              {errors[Object.keys(errors)[0]].message}
-            </Text>
-          )} */}
-
           {error && (
-            <Text className=" mx-3 normal-case text-red-400 font-poppins-regular text-xs text-start">
+            <Text className=" mx-3 mt-1 normal-case text-red-400 font-poppins-regular text-xs text-start">
               {error}
             </Text>
           )}

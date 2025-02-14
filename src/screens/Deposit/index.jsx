@@ -41,7 +41,6 @@ export default function Deposit({navigation}) {
   const [errorMessage, setErrorMessage] = useState('');
   const paginateRef = useRef();
 
-  // State untuk Midtrans
   const [showPayment, setShowPayment] = useState(false);
   const [snapToken, setSnapToken] = useState('');
 
@@ -63,13 +62,11 @@ export default function Deposit({navigation}) {
         amount: parseInt(depositAmount.replace(/\D/g, '')) || 0,
       };
 
-      const response = await axios.post('/auth/topup', requestData, {
-        headers: {
-          Authorization: `Bearer ${await AsyncStorage.getItem('userToken')}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
+      const response = await axios.post('/auth/topup', requestData);
+      const {snap_token, transaction} = response.data;
+      AsyncStorage.setItem('currentTransaction', JSON.stringify(transaction));
+      console.log('snap_token', snap_token);
+      console.log('transaction start : ', transaction);
       console.log('Topup Response:', response.data);
 
       return response.data;
@@ -110,8 +107,78 @@ export default function Deposit({navigation}) {
             source={{
               uri: `https://app.sandbox.midtrans.com/snap/v2/vtweb/${snapToken}`,
             }}
-            onMessage={onMessage}
             startInLoadingState={true}
+            onNavigationStateChange={navState => {
+              console.log('Navigation state changed:', navState);
+
+              if (navState.url.includes('#/success')) {
+                AsyncStorage.getItem('currentTransaction')
+                  .then(async storedTransaction => {
+                    const transaction = JSON.parse(storedTransaction);
+                    console.log(transaction)
+                    const callbackData = {
+                      order_id: transaction.deposit_code, // Sesuaikan dengan field di transaction
+                      transaction_status: 'settlement', // Atau status dari Midtrans
+                      payment_type: payment_type, // Sesuaikan dengan field di transaction
+                    };
+
+                    try {
+                      await axios.post('/midtrans-callback', callbackData);
+                      console.log('Callback success');
+
+                      queryClient.invalidateQueries('/auth/check-saldo');
+                      queryClient.invalidateQueries('/auth/histori');
+                      setShowPayment(false);
+                      navigation.navigate('Deposit');
+                    } catch (error) {
+                      console.error('Callback error:', error);
+                      setErrorMessage('Gagal memproses pembayaran');
+                      setModalFailed(true);
+                    }
+                  })
+                  .catch(error => {
+                    console.error('Error getting transaction data:', error);
+                    setShowPayment(false);
+                    setModalFailed(true);
+                  });
+              } else if (
+                navState.url.includes('#/failed') ||
+                navState.url.includes('#/cancel')
+              ) {
+                setShowPayment(false);
+                setErrorMessage('Pembayaran gagal atau dibatalkan');
+                setModalFailed(true);
+                navigation.navigate('Deposit');
+              }
+            }}
+            injectedJavaScript={`
+    window.addEventListener('message', function(event) {
+      window.ReactNativeWebView.postMessage(JSON.stringify(event.data));
+    });
+    
+    (function() {
+      let lastUrl = window.location.href;
+      new MutationObserver(() => {
+        const url = window.location.href;
+        if (url !== lastUrl) {
+          lastUrl = url;
+          window.ReactNativeWebView.postMessage(JSON.stringify({
+            type: 'urlChanged',
+            url: url
+          }));
+        }
+      }).observe(document, {subtree: true, childList: true});
+    })();
+    true;
+  `}
+            onError={syntheticEvent => {
+              const {nativeEvent} = syntheticEvent;
+              console.warn('WebView error: ', nativeEvent);
+              setShowPayment(false);
+              setErrorMessage('Terjadi kesalahan pada pembayaran');
+              setModalFailed(true);
+              navigation.navigate('Deposit');
+            }}
             renderLoading={() => (
               <View style={{flex: 1, justifyContent: 'center'}}>
                 <ActivityIndicator size="large" color={BLUE_COLOR} />
@@ -122,32 +189,6 @@ export default function Deposit({navigation}) {
       </Modal>
     );
   }
-  const onMessage = event => {
-    try {
-      const data = JSON.parse(event.nativeEvent.data);
-      console.log('Parsed payment status:', data);
-      if (data.status_code === '200' || data.status_code === '201') {
-        queryClient.invalidateQueries('/auth/check-saldo');
-        queryClient.invalidateQueries('/auth/histori');
-        setShowPayment(false);
-        setSuccessModal(true);
-        setTimeout(() => {
-          navigation.navigate('HomeScreen', {refresh: true});
-          setSuccessModal(false);
-        }, 3000);
-      } else {
-        setErrorMessage('Pembayaran gagal atau dibatalkan');
-        setModalFailed(true);
-        setShowPayment(false);
-        setTimeout(() => {
-          setModalFailed(false);
-        }, 3000);
-      }
-    } catch (error) {
-      console.error('Error parsing WebView message:', error);
-      setShowPayment(false);
-    }
-  };
 
   const onSubmit = () => {
     if (!depositAmount) {
@@ -158,27 +199,6 @@ export default function Deposit({navigation}) {
     }
     handleTopup();
   };
-
-  const paymentOptions = [
-    {
-      id: 'bca',
-      name: 'Bank BCA',
-      logo: require('../../../assets/images/bca-logo.png'),
-      method: 'Transfer Bank',
-    },
-    {
-      id: 'mandiri',
-      name: 'Bank Mandiri',
-      logo: require('../../../assets/images/mandiri-logo.png'),
-      method: 'Transfer Bank',
-    },
-    {
-      id: 'qris',
-      name: 'QRIS',
-      logo: require('../../../assets/images/qris-logo.png'),
-      method: 'QR Code Payment',
-    },
-  ];
 
   const colorStatusColor = status => {
     if (status === 'success') {
@@ -281,7 +301,9 @@ export default function Deposit({navigation}) {
                   }`}
                 />
                 {error && (
-                  <Text className="text-red-400 mt-1 font-poppins-regular text-xs">{error.message}</Text>
+                  <Text className="text-red-400 mt-1 font-poppins-regular text-xs">
+                    {error.message}
+                  </Text>
                 )}
               </View>
             )}
@@ -336,7 +358,7 @@ export default function Deposit({navigation}) {
           style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
           Riwayat Deposit
         </Text>
-        <View className="-mx-2">
+        <View className="-mx-2 h-[360px]">
           <ProductPaginate
             url="/auth/histori-deposit"
             renderItem={historiDepositCards}
@@ -376,7 +398,8 @@ export default function Deposit({navigation}) {
       <ModalAfterProcess
         modalVisible={failedModal}
         title="Deposit Gagal"
-        subTitle={errorMessage}
+        subTitle={errorMessage || 'Silahkan Coba Lagi'}
+        bgIcon={'#fde3e3'}
         icon={'close-sharp'}
         iconColor={'#f43f5e'}
         iconSize={24}

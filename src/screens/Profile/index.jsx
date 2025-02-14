@@ -60,7 +60,7 @@ export default function Profile({navigation}) {
 
   const queryClient = useQueryClient()
 
-  const {mutate: logout} = useMutation(() => axios.post('/auth/logout'), {
+  const {mutate: logout} = useMutation(() => axios.delete('/auth/logout'), {
     onSuccess: async () => {
       await AsyncStorage.removeItem('@auth-token');
       setModalSuccessLogout(true);

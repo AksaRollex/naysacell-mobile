@@ -12,6 +12,7 @@ import {
   DARK_COLOR,
   LIGHT_BACKGROUND,
   LIGHT_COLOR,
+  WHITE_BACKGROUND, 
   WHITE_COLOR,
 } from '../../utils/const';
 import BottomModal from '../../components/BottomModal';

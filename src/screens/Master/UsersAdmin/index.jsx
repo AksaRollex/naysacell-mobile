@@ -191,28 +191,26 @@ export default function IndexUsersAdmin({navigation}) {
         backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
       }}>
       <View className="gap-y-4 ">
-        <View className=" flex-row justify-between items-center p-3">
-          <View className="items-center flex-row gap-x-1 justify-between">
-            {mainMenus.map((menu, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.menuCard(isDarkMode)}
-                onPress={() => navigation.navigate(menu.screen)}>
-                <View
-                  style={[
-                    styles.menuIconContainer,
-                    {backgroundColor: menu.color},
-                  ]}
-                  className="rounded-full">
-                  <FontAwesome5 name={menu.icon} size={22} color="white" />
-                </View>
-                <Text style={styles.menuTitle(isDarkMode)}>{menu.title}</Text>
-                <Text style={styles.menuDescription(isDarkMode)}>
-                  {menu.description}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+        <View className="flex-row flex-wrap justify-between px-3 gap-3">
+          {mainMenus.map((menu, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.menuCard(isDarkMode)}
+              onPress={() => navigation.navigate(menu.screen)}>
+              <View
+                style={[
+                  styles.menuIconContainer,
+                  {backgroundColor: menu.color},
+                ]}
+                className="rounded-full">
+                <FontAwesome5 name={menu.icon} size={22} color="white" />
+              </View>
+              <Text style={styles.menuTitle(isDarkMode)}>{menu.title}</Text>
+              <Text style={styles.menuDescription(isDarkMode)}>
+                {menu.description}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </View>
       </View>
       <TouchableOpacity
@@ -266,7 +264,7 @@ const styles = StyleSheet.create({
     backgroundColor: isDarkMode ? '#262626' : '#fff',
     borderRadius: 16,
     padding: 16,
-    width: '49%',
+    width: '46%',
     elevation: 3,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},

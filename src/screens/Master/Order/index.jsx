@@ -65,7 +65,7 @@ export default function Order({navigation}) {
     } else if (order_status === 'processing') {
       return 'Proses';
     } else if (order_status === 'cancelled') {
-      return 'Gagal';
+      return 'Dibatalkan';
     } else {
       return 'Pending';
     }
@@ -320,7 +320,7 @@ export default function Order({navigation}) {
                   color={BLUE_COLOR}
                 />
               </View>
-              <View className="flex-col w-64 items-start justify-start">
+              <View className="flex-col w-36 items-start justify-start">
                 <Text
                   className="font-poppins-medium text-base"
                   style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
@@ -360,7 +360,7 @@ export default function Order({navigation}) {
                   <View className="bg-green-100 rounded-md pl-2 mt-1 justify-center items-center flex-row py-1 max-w-[130px]">
                     <IonIcons name="call" color="#658844" size={15} />
                     <Text className="font-poppins-medium text-xs mx-2 text-[#658844]">
-                      {item?.customer_no}
+                      {item?.transaction_model?.transaction_number}
                     </Text>
                   </View>
                   <View className="flex-row">

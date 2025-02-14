@@ -77,9 +77,10 @@ export default function RegisterPage({navigation}) {
       }, 3000);
       return;
     }
+
     try {
       setIsLoading(true);
-      await axios.post('/auth/send-user-otp-regist', {
+      const response = await axios.post('/auth/send-user-otp-regist', {
         email: data.email,
         name: data.name,
         phone: data.phone,
@@ -87,24 +88,34 @@ export default function RegisterPage({navigation}) {
         password: data.password,
       });
 
-      setModalResendSuccess(true);
-      setTimeout(() => {
-        setModalResendSuccess(false);
-      }, 3000);
+      if (response.data.status) {
+        setModalResendSuccess(true);
+        setTimeout(() => {
+          setModalResendSuccess(false);
+        }, 3000);
 
-      setRegistrationData(data);
-      setShowOtpInput(true);
-    } catch (error) {
-      const message =
-        error.response?.data?.message || 'Terjadi kesalahan saat mendaftar';
-      const errors = error.response?.data?.errors || {};
-      if (errors.email) {
-        setErrorMessage(errors.email[0]);
-      } else if (errors.phone) {
-        setErrorMessage(errors.phone[0]);
-      } else {
-        setErrorMessage(message);
+        setRegistrationData(data);
+        setShowOtpInput(true);
       }
+    } catch (error) {
+      console.log('Registration Error:', error.response?.data);
+
+      if (error.response) {
+        if (error.response.status === 422) {
+          setErrorMessage(error.response.data.message);
+        } else if (error.response.status === 400) {
+          setErrorMessage(error.response.data.message);
+        } else if (error.response.data?.message) {
+          setErrorMessage(error.response.data.message);
+        }
+      } else if (error.request) {
+        setErrorMessage(
+          'Gagal terhubung ke server. Periksa koneksi internet Anda.',
+        );
+      } else {
+        setErrorMessage('Terjadi kesalahan saat mendaftar. Silakan coba lagi.');
+      }
+
       setModalFailed(true);
       setTimeout(() => {
         setModalFailed(false);

@@ -14,6 +14,7 @@ import {
   LIGHT_COLOR,
   windowWidth,
   DARK_BACKGROUND,
+  WHITE_BACKGROUND,
 } from '../utils/const';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 
