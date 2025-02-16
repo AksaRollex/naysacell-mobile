@@ -40,7 +40,7 @@ export default function BottomModal({visible, onDismiss, title, children}) {
       </TouchableWithoutFeedback>
       <View
         style={{
-          height: windowHeight * 0.580, 
+          height: windowHeight * 0.65, 
           backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
           width: windowWidth,
           position: 'absolute',

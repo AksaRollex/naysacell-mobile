@@ -330,7 +330,7 @@ Tanggal Deposit : ${new Date(item?.created_at || '').toLocaleDateString(
                   <ActivityIndicator color="white" />
                 ) : (
                   <>
-                    <Text className=" normal-case font-poppins-bold text-white">
+                    <Text className=" font-poppins-bold uppercase text-white">
                       Lanjutkan Pembayaran
                     </Text>
                   </>

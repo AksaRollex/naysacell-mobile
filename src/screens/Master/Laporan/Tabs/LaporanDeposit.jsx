@@ -550,7 +550,7 @@ export default function LaporanDeposit({navigation}) {
         visible={modalTransactionStatus}
         onClose={() => setModalTransactionStatus(false)}
       />
-      <TouchableOpacity
+      {/* <TouchableOpacity
         onPress={() => setDownloadModalVisible(true)}
         disabled={isDownloading}
         style={{
@@ -564,7 +564,7 @@ export default function LaporanDeposit({navigation}) {
         }}>
         <MaterialCommunityIcons name="file-excel" size={28} color="#fff" />
       </TouchableOpacity>
-      {renderDownloadConfirmationModal()}
+      {renderDownloadConfirmationModal()} */}
       <DeleteConfirmationModal />
       <SuccessOverlayModal />
       <FailedOverlayModal />
@@ -579,19 +579,19 @@ export default function LaporanDeposit({navigation}) {
       />
       <ModalAfterProcess
         modalVisible={modalFailed}
-        iconName={'close'}
+        icon={'close'}
         iconColor={'#ef5350'}
         iconSize={24}
-        bgIcon={'red-100'}
+        bgIcon={'#fef2f2'}
         title={'File gagal di download'}
         subTitle={errorMessage || 'Gagal menyimpan file'}
       />
       <ModalAfterProcess
         modalVisible={modalError}
-        iconName={'settings-sharp'}
+        icon={'settings-sharp'}
         iconColor={'#ef5350'}
         iconSize={24}
-        bgIcon={'red-100'}
+        bgIcon={'#fef2f2'}
         title={'File gagal di download'}
         subTitle={'Izin penyimpanan diperlukan untuk mengunduh file'}
       />

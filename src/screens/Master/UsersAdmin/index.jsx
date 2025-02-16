@@ -213,7 +213,7 @@ export default function IndexUsersAdmin({navigation}) {
           ))}
         </View>
       </View>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         onPress={() => setDownloadModalVisible(true)}
         disabled={isDownloading}
         style={{
@@ -227,7 +227,7 @@ export default function IndexUsersAdmin({navigation}) {
         }}>
         <MaterialCommunityIcons name="file-excel" size={28} color="#fff" />
       </TouchableOpacity>
-      {renderDownloadConfirmationModal()}
+      {renderDownloadConfirmationModal()} */}
       <ModalAfterProcess
         modalVisible={modalSuccess}
         icon={'checkmark-done-sharp'}
@@ -239,19 +239,19 @@ export default function IndexUsersAdmin({navigation}) {
       />
       <ModalAfterProcess
         modalVisible={modalFailed}
-        iconName={'close'}
+        icon={'close'}
         iconColor={'#ef5350'}
         iconSize={24}
-        bgIcon={'red-100'}
+        bgIcon={'#fee2e2'}
         title={'File gagal di download'}
         subTitle={errorMessage || 'Gagal menyimpan file'}
       />
       <ModalAfterProcess
         modalVisible={modalError}
-        iconName={'settings-sharp'}
+        icon={'settings-sharp'}
         iconColor={'#ef5350'}
         iconSize={24}
-        bgIcon={'red-100'}
+        bgIcon={'#fee2e2'}
         title={'File gagal di download'}
         subTitle={'Izin penyimpanan diperlukan untuk mengunduh file'}
       />

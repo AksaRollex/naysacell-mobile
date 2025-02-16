@@ -269,7 +269,7 @@ export default function Prabayar({navigation}) {
               <Text
                 style={[
                   styles.modalTitle,
-                  {color: isDarkMode ? WHITE_COLOR : DARK_COLOR},
+                  {color: isDarkMode ? DARK_COLOR : LIGHT_COLOR},
                 ]}>
                 Pilih Filter
               </Text>
@@ -282,7 +282,7 @@ export default function Prabayar({navigation}) {
                 <MaterialIcons
                   name="close"
                   size={24}
-                  color={isDarkMode ? WHITE_COLOR : DARK_COLOR}
+                  color={isDarkMode ? DARK_COLOR : LIGHT_COLOR}
                 />
               </TouchableOpacity>
             </View>
@@ -293,7 +293,7 @@ export default function Prabayar({navigation}) {
               <View className="flex-1 mr-2">
                 <Text
                   className="font-poppins-semibold mb-2"
-                  style={{color: isDarkMode ? WHITE_COLOR : DARK_COLOR}}>
+                  style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
                   Kategori
                 </Text>
                 <ScrollView className="max-h-64">
@@ -556,7 +556,7 @@ export default function Prabayar({navigation}) {
         style={styles.plusIcon}
         onPress={() => navigation.navigate('FormPrabayar')}
       />
-      <TouchableOpacity
+      {/* <TouchableOpacity
         onPress={() => setDownloadModalVisible(true)}
         disabled={isDownloading}
         style={{
@@ -570,7 +570,7 @@ export default function Prabayar({navigation}) {
         }}>
         <MaterialCommunityIcons name="file-excel" size={28} color="#fff" />
       </TouchableOpacity>
-      {renderDownloadConfirmationModal()}
+      {renderDownloadConfirmationModal()} */}
       <ModalAfterProcess
         modalVisible={modalSuccess}
         icon={'checkmark-done-sharp'}
@@ -582,7 +582,7 @@ export default function Prabayar({navigation}) {
       />
       <ModalAfterProcess
         modalVisible={modalFailed}
-        iconName={'close'}
+        icon={'close-sharp'}
         iconColor={'#ef5350'}
         iconSize={24}
         bgIcon={'red-100'}
@@ -591,7 +591,7 @@ export default function Prabayar({navigation}) {
       />
       <ModalAfterProcess
         modalVisible={modalError}
-        iconName={'settings-sharp'}
+        icon={'settings-sharp'}
         iconColor={'#ef5350'}
         iconSize={24}
         bgIcon={'red-100'}
