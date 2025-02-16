@@ -8,6 +8,7 @@ import {
   ScrollView,
   ActivityIndicator,
   Modal,
+  SafeAreaView,
 } from 'react-native';
 import React, {useRef, useState} from 'react';
 import {
@@ -55,6 +56,9 @@ export default function Deposit({navigation}) {
   };
 
   const queryClient = useQueryClient();
+  const refetch = () => {
+    queryClient.invalidateQueries(['/auth/check-saldo']);
+  };
 
   const {mutate: handleTopup, isLoading} = useMutation(
     async () => {
@@ -114,32 +118,50 @@ export default function Deposit({navigation}) {
               if (navState.url.includes('#/success')) {
                 AsyncStorage.getItem('currentTransaction')
                   .then(async storedTransaction => {
+                    const storedPaymentType = await AsyncStorage.getItem(
+                      'current_payment_type',
+                    );
+                    console.log('Stored payment type:', storedPaymentType);
+
                     const transaction = JSON.parse(storedTransaction);
-                    console.log(transaction)
+                    console.log('full transaction response : ', transaction);
                     const callbackData = {
-                      order_id: transaction.deposit_code, // Sesuaikan dengan field di transaction
-                      transaction_status: 'settlement', // Atau status dari Midtrans
-                      payment_type: payment_type, // Sesuaikan dengan field di transaction
+                      order_id: transaction.deposit_code,
+                      transaction_status: 'settlement',
+                      payment_type: storedPaymentType || 'bank_transfer',
                     };
+
+                    console.log('Callback data:', callbackData);
 
                     try {
                       await axios.post('/midtrans-callback', callbackData);
                       console.log('Callback success');
-
+                      await AsyncStorage.removeItem('current_payment_type');
                       queryClient.invalidateQueries('/auth/check-saldo');
+                      refetch();
                       queryClient.invalidateQueries('/auth/histori');
                       setShowPayment(false);
+                      setSuccessModal(true);
+                      setTimeout(() => {
+                        setSuccessModal(false);
+                      }, 3000);
                       navigation.navigate('Deposit');
                     } catch (error) {
                       console.error('Callback error:', error);
                       setErrorMessage('Gagal memproses pembayaran');
                       setModalFailed(true);
+                      setTimeout(() => {
+                        setModalFailed(false);
+                      }, 3000);
                     }
                   })
                   .catch(error => {
                     console.error('Error getting transaction data:', error);
                     setShowPayment(false);
                     setModalFailed(true);
+                    setTimeout(() => {
+                      setModalFailed(false);
+                    }, 3000);
                   });
               } else if (
                 navState.url.includes('#/failed') ||
@@ -148,29 +170,41 @@ export default function Deposit({navigation}) {
                 setShowPayment(false);
                 setErrorMessage('Pembayaran gagal atau dibatalkan');
                 setModalFailed(true);
-                navigation.navigate('Deposit');
+                setTimeout(() => {
+                  setModalFailed(false);
+                }, 3000);
+                (async () => {
+                  try {
+                    const authStatus = await axios.get('/auth/check-status');
+                    if (authStatus.data.isAuthenticated) {
+                      navigation.navigate('Deposit');
+                    }
+                  } catch (error) {
+                    console.error('Auth check failed:', error);
+                  }
+                })();
               }
             }}
             injectedJavaScript={`
-    window.addEventListener('message', function(event) {
-      window.ReactNativeWebView.postMessage(JSON.stringify(event.data));
-    });
-    
-    (function() {
-      let lastUrl = window.location.href;
-      new MutationObserver(() => {
-        const url = window.location.href;
-        if (url !== lastUrl) {
-          lastUrl = url;
-          window.ReactNativeWebView.postMessage(JSON.stringify({
-            type: 'urlChanged',
-            url: url
-          }));
-        }
-      }).observe(document, {subtree: true, childList: true});
-    })();
-    true;
-  `}
+      window.addEventListener('message', function(event) {
+        window.ReactNativeWebView.postMessage(JSON.stringify(event.data));
+      });
+      
+      (function() {
+        let lastUrl = window.location.href;
+        new MutationObserver(() => {
+          const url = window.location.href;
+          if (url !== lastUrl) {
+            lastUrl = url;
+            window.ReactNativeWebView.postMessage(JSON.stringify({
+              type: 'urlChanged',
+              url: url
+            }));
+          }
+        }).observe(document, {subtree: true, childList: true});
+      })();
+      true;
+    `}
             onError={syntheticEvent => {
               const {nativeEvent} = syntheticEvent;
               console.warn('WebView error: ', nativeEvent);
@@ -242,7 +276,7 @@ export default function Deposit({navigation}) {
   };
 
   return (
-    <ScrollView
+    <View
       className="w-full h-full"
       style={{
         backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
@@ -358,14 +392,14 @@ export default function Deposit({navigation}) {
           style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>
           Riwayat Deposit
         </Text>
-        <View className="-mx-2 h-[360px]">
+        <View className="-mx-2 h-[350px]">
           <ProductPaginate
             url="/auth/histori-deposit"
             renderItem={historiDepositCards}
             ref={paginateRef}
           />
         </View>
-        <View className="items-end justify-end  w-full ">
+        <View className="items-end justify-end  w-full mt-5">
           <TouchableOpacity
             className="flex-row items-end justify-end"
             onPress={() => {
@@ -404,7 +438,7 @@ export default function Deposit({navigation}) {
         iconColor={'#f43f5e'}
         iconSize={24}
       />
-    </ScrollView>
+    </View>
   );
 }
 

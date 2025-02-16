@@ -93,9 +93,9 @@ android {
             keyPassword 'android'
         }
         release {
-            storeFile file('naysacell.keystore')
+            storeFile file('naysacells.keystore')
             storePassword '12345678'
-            keyAlias 'naysacell'
+            keyAlias 'naysacells'
             keyPassword '12345678'
     }
     }

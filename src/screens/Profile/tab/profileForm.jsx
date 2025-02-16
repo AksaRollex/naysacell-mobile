@@ -28,9 +28,9 @@ export default function ProfileForm({route}) {
   const [modalSuccess, setModalSuccess] = useState(false);
   const [modalFailed, setModalFailed] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [file, setFile] = React.useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [modalFailedData, setModalFailedData] = useState({});
   const query = useQueryClient();
   const {
     control,
@@ -79,10 +79,11 @@ export default function ProfileForm({route}) {
       setData(userData);
     } catch (error) {
       console.error('Error fetching data:', error);
-      Toast.show({
-        type: 'error',
-        text1: 'Gagal mengambil data',
-      });
+      setErrorMessage(error.response?.data?.message || 'Gagal Memuat Data');
+      setModalFailedData(true)
+      setTimeout(() => {
+        setModalFailedData(false)
+      }, 3000);
     } finally {
       setIsLoading(false);
     }
@@ -409,7 +410,6 @@ export default function ProfileForm({route}) {
         icon="checkmark-done-sharp"
         iconColor={'#95bb72'}
         bgIcon={'#e6f7e6'}
-        url={require('../../../../assets/lottie/success-animation.json')}
       />
       <ModalAfterProcess
         modalVisible={modalFailed}
@@ -418,7 +418,14 @@ export default function ProfileForm({route}) {
         bgIcon={'#fdecef'}
         title="Gagal Memperbarui Data"
         subTitle={errorMessage}
-        url={require('../../../../assets/lottie/failed-animation.json')}
+      />
+      <ModalAfterProcess
+        modalVisible={modalFailedData}
+        icon="close-sharp"
+        iconColor={'#f43f5e'}
+        bgIcon={'#fdecef'}
+        title="Gagal Mengambil Data"
+        subTitle={errorMessage}
       />
     </View>
   );

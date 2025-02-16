@@ -8,10 +8,11 @@ const axios = Axios.create({
   // mode: 'no-cors',
   headers: {
     'Content-Type': 'application/json',
-    // "Content-Type": "multipart/form-data",
-    Accept: 'application/json',
+    'Accept': 'application/json',
     'X-Requested-With': 'XMLHttpRequest',
-  },
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+},
 });
 
 axios.interceptors.request.use(async config => {

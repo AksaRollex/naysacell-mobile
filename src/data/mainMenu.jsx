@@ -29,16 +29,16 @@ export default mainMenu = [
     path: 'Dana',
     ikon: 'wallet',
   },
-  {
-    label: 'Gopay',
-    path : 'GoPay',
-    ikon: 'wallet',
-  },
-  {
-    label: 'OVO',
-    path: 'OVO',
-    ikon: 'wallet',
-  },
+  // {
+  //   label: 'Gopay',
+  //   path : 'GoPay',
+  //   ikon: 'wallet',
+  // },
+  // {
+  //   label: 'OVO',
+  //   path: 'OVO',
+  //   ikon: 'wallet',
+  // },
 ];
 
 export const gameMenu = [

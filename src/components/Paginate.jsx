@@ -374,7 +374,7 @@ const Paginate = forwardRef(
           data={dataList}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
-          onScroll={handleScroll}
+          // onScroll={handleScroll}
           showsVerticalScrollIndicator={false}
           ListFooterComponent={() => (
             <View className="justify-end items-start">

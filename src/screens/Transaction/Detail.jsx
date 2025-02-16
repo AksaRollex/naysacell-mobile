@@ -26,7 +26,7 @@ export default function DetailTransaction({route}) {
       return 'text-green-400';
     } else if (order_status === 'pending') {
       return 'text-blue-400';
-    } else if (order_status === 'process') {
+    } else if (order_status === 'processing') {
       return 'text-yellow-400';
     } else if (order_status === 'cancelled') {
       return 'text-red-400';
@@ -45,6 +45,8 @@ export default function DetailTransaction({route}) {
         return 'Gagal';
       case 'cancelled':
         return 'Dibatalkan';
+      case 'processing':
+        return 'Proses';
       default:
         return 'Gagal';
     }
@@ -55,7 +57,7 @@ export default function DetailTransaction({route}) {
       case 'success':
         return 'text-green-400';
       case 'Pending':
-        return 'text-yellow-400';
+        return 'text-blue-400';
       case 'Gagal':
       case 'Failed ':
         return 'text-red-400';

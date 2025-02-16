@@ -1,5 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
+  ActivityIndicator,
   ImageBackground,
   ScrollView,
   StyleSheet,
@@ -45,6 +46,7 @@ export default function HomeScreen({navigation}) {
   const [saldo, setSaldo] = useState('');
   const [saldoIsLoading, setSaldoIsLoading] = useState(false);
   const paginateRef = useRef();
+  const [isLoading, setIsLoading] = useState(true);
 
   const getStatusColor = status => {
     switch (status) {
@@ -122,13 +124,19 @@ export default function HomeScreen({navigation}) {
   }, []);
 
   useEffect(() => {
+    setIsLoading(true);
     axios
       .get('/auth/me')
       .then(response => {
-        setData(response.data.user);
+        if (response.data && response.data.user) {
+          setData(response.data.user);
+        }
       })
       .catch(error => {
         console.error('Error fetching data:', error);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, []);
 
@@ -154,7 +162,7 @@ export default function HomeScreen({navigation}) {
 
   return (
     <>
-      <ScrollView
+      <View
         style={{
           backgroundColor: isDarkMode ? DARK_BACKGROUND : LIGHT_BACKGROUND,
         }}>
@@ -175,7 +183,13 @@ export default function HomeScreen({navigation}) {
                 justifyContent: 'space-between',
                 padding: 20,
               }}>
-              {data && (
+              {isLoading ? (
+                <Text
+                  style={{color: 'white'}}
+                  className="font-poppins-semibold">
+                  Memuat...
+                </Text>
+              ) : (
                 <Text
                   style={{
                     color: isDarkMode ? 'white' : 'white',
@@ -183,7 +197,7 @@ export default function HomeScreen({navigation}) {
                     marginBottom: 5,
                   }}
                   className="font-poppins-semibold">
-                  {greeting} , {data.name || 'Pengguna'}
+                  {greeting} , {data?.name || 'Pengguna'}
                 </Text>
               )}
 
@@ -226,7 +240,7 @@ export default function HomeScreen({navigation}) {
               borderBottomColor: '#404040',
               elevation: 0.5,
             }}
-            className="my-4">
+            className="-mt-10 mb-4">
             <View className="flex-row gap-x-2 h-full justify-center items-center">
               <IonIcons
                 name="wallet"
@@ -400,38 +414,46 @@ export default function HomeScreen({navigation}) {
                 Riwayat Transaksi Terakhir
               </Text>
             </View>
-            <Paginate
-              url="/auth/histori/home"
-              renderItem={transactionCard}
-              ref={paginateRef}
-              showSearchSkeleton={false}
-              showListFooter={false}
-              showPaginationInfo={false}
-              widthSkeleton={true}
-              showSearch={false}
-            />
+            <View className="h-72">
+              <Paginate
+                url="/auth/histori/home"
+                renderItem={transactionCard}
+                ref={paginateRef}
+                showSearchSkeleton={false}
+                showListFooter={false}
+                showPaginationInfo={false}
+                widthSkeleton={true}
+                showSearch={false}
+              />
+            </View>
             <View className=" flex-row  items-end justify-end px-2 w-full ">
               <TouchableOpacity
                 className="flex-row items-end justify-end"
                 onPress={() => {
                   navigation.navigate('Transaksi');
                 }}>
-                <Text
-                  value
-                  className="text-xs font-poppins-regular "
-                  style={{color: isDarkMode ? SLATE_COLOR : SLATE_COLOR}}>
-                  Lihat Semua Transaksi
-                </Text>
-                <MaterialCommunityIcons
-                  name="chevron-double-right"
-                  size={17}
-                  color={isDarkMode ? SLATE_COLOR : SLATE_COLOR}
-                />
+                {isLoading ? (
+                  <></>
+                ) : (
+                  <>
+                    <Text
+                      value
+                      className="text-xs font-poppins-regular "
+                      style={{color: isDarkMode ? SLATE_COLOR : SLATE_COLOR}}>
+                      Lihat Semua Transaksi
+                    </Text>
+                    <MaterialCommunityIcons
+                      name="chevron-double-right"
+                      size={17}
+                      color={isDarkMode ? SLATE_COLOR : SLATE_COLOR}
+                    />
+                  </>
+                )}
               </TouchableOpacity>
             </View>
           </View>
         </View>
-      </ScrollView>
+      </View>
     </>
   );
 }
